@@ -71,7 +71,7 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - Non usare l'articolo di Industria Italiana sul Premio MICS.
 
 ## Brand
-- Font Metropolis (Regular, Bold, Italic), self-hosted woff2 (licenza OFL).
+- Font Metropolis (Regular, Bold, Italic), self-hosted woff2 in `src/assets/fonts` (pubblico dominio, Unlicense).
 - Palette: verdi #9CED40 #30A016; azzurri #57F0FE #35D2F3 #169FCC; blu #1373A8 #00355D.
 - Tema scuro su base #00355D (variante più profonda per gli sfondi); azzurri per evidenziare, verdi per "difetto trovato"/esito positivo; logo bianco su scuro.
 - Logo: usare solo il vettoriale ufficiale fornito da bt (non ricostruirlo). Finché manca: segnaposto ben segnalati.
