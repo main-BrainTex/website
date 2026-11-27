@@ -1,0 +1,368 @@
+---
+// Modulo contatti unico per tutti i pubblici: il campo "Chi sei?" finisce nell'oggetto dell'email.
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    name: 'Nome e cognome',
+    email: 'Email',
+    audience: 'Chi sei?',
+    choose: 'Scegli…',
+    audiences: {
+      cliente: 'Azienda tessile / cliente',
+      candidato: 'Candidato',
+      investitore: 'Investitore',
+      partner: 'Partner, costruttore o integratore',
+      stampa: 'Stampa',
+      altro: 'Altro',
+    },
+    company: 'Azienda o ente',
+    link: 'Profilo LinkedIn o portfolio',
+    linkHint: 'Utile soprattutto per le candidature.',
+    message: 'Messaggio',
+    optional: 'facoltativo',
+    privacyBefore: 'Ho letto la ',
+    privacyLink: 'Privacy Policy',
+    privacyAfter: ' e acconsento al trattamento dei miei dati per ricevere una risposta.',
+    send: 'Invia il messaggio',
+    sending: 'Invio in corso…',
+    errors: {
+      name: 'Scrivi il tuo nome.',
+      email: 'Inserisci un indirizzo email valido.',
+      audience: 'Scegli una voce.',
+      link: 'Inserisci un indirizzo web completo (https://…).',
+      message: 'Scrivi un messaggio di almeno 10 caratteri.',
+      privacy: 'Per inviare il messaggio serve il consenso.',
+    },
+    ok: 'Grazie! Il messaggio è arrivato: ti risponderemo il prima possibile.',
+    failed: 'Non siamo riusciti a inviare il messaggio. Riprova tra qualche minuto o scrivici su LinkedIn.',
+    notConfigured: 'Il modulo non è ancora attivo in questa versione del sito.',
+    invalid: 'Controlla i campi evidenziati.',
+    noscript: 'Per inviare il modulo serve JavaScript attivo. In alternativa scrivici su LinkedIn.',
+    required: 'obbligatorio',
+  },
+  en: {
+    name: 'Full name',
+    email: 'Email',
+    audience: 'Who are you?',
+    choose: 'Choose…',
+    audiences: {
+      cliente: 'Textile company / customer',
+      candidato: 'Candidate',
+      investitore: 'Investor',
+      partner: 'Partner, machine builder or integrator',
+      stampa: 'Press',
+      altro: 'Other',
+    },
+    company: 'Company or organisation',
+    link: 'LinkedIn profile or portfolio',
+    linkHint: 'Especially useful for applications.',
+    message: 'Message',
+    optional: 'optional',
+    privacyBefore: 'I have read the ',
+    privacyLink: 'Privacy Policy',
+    privacyAfter: ' and agree to the processing of my data in order to receive a reply.',
+    send: 'Send message',
+    sending: 'Sending…',
+    errors: {
+      name: 'Please enter your name.',
+      email: 'Please enter a valid email address.',
+      audience: 'Please choose an option.',
+      link: 'Please enter a full web address (https://…).',
+      message: 'Please write a message of at least 10 characters.',
+      privacy: 'Your consent is required to send the message.',
+    },
+    ok: 'Thank you! Your message has arrived: we will reply as soon as possible.',
+    failed: 'We could not send your message. Please try again in a few minutes or write to us on LinkedIn.',
+    notConfigured: 'The form is not active yet in this version of the site.',
+    invalid: 'Please check the highlighted fields.',
+    noscript: 'JavaScript is required to send this form. Alternatively, write to us on LinkedIn.',
+    required: 'required',
+  },
+}[lang];
+
+// Messaggi passati allo script tramite attributi data-* (niente script inline, per la CSP).
+const messages = JSON.stringify({
+  sending: t.sending,
+  ok: t.ok,
+  failed: t.failed,
+  notConfigured: t.notConfigured,
+  invalid: t.invalid,
+});
+---
+
+<form class="contact-form" data-contact-form data-messages={messages} data-lang={lang} novalidate>
+  <noscript><p class="form-status form-status--error">{t.noscript}</p></noscript>
+
+  <div class="field">
+    <label for="cf-name">{t.name} <span class="req" aria-hidden="true">*</span></label>
+    <input id="cf-name" name="name" type="text" autocomplete="name" required maxlength="120" aria-describedby="cf-name-err" />
+    <p class="field__error" id="cf-name-err" data-error={t.errors.name}></p>
+  </div>
+
+  <div class="field">
+    <label for="cf-email">{t.email} <span class="req" aria-hidden="true">*</span></label>
+    <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="200" aria-describedby="cf-email-err" />
+    <p class="field__error" id="cf-email-err" data-error={t.errors.email}></p>
+  </div>
+
+  <div class="field">
+    <label for="cf-audience">{t.audience} <span class="req" aria-hidden="true">*</span></label>
+    <select id="cf-audience" name="audience" required aria-describedby="cf-audience-err">
+      <option value="">{t.choose}</option>
+      {Object.entries(t.audiences).map(([value, label]) => <option value={value}>{label}</option>)}
+    </select>
+    <p class="field__error" id="cf-audience-err" data-error={t.errors.audience}></p>
+  </div>
+
+  <div class="field">
+    <label for="cf-company">{t.company} <span class="opt">({t.optional})</span></label>
+    <input id="cf-company" name="company" type="text" autocomplete="organization" maxlength="160" />
+  </div>
+
+  <div class="field field--wide">
+    <label for="cf-link">{t.link} <span class="opt">({t.optional})</span></label>
+    <input id="cf-link" name="link" type="url" inputmode="url" placeholder="https://" maxlength="300" aria-describedby="cf-link-hint cf-link-err" />
+    <p class="field__hint" id="cf-link-hint">{t.linkHint}</p>
+    <p class="field__error" id="cf-link-err" data-error={t.errors.link}></p>
+  </div>
+
+  <div class="field field--wide">
+    <label for="cf-message">{t.message} <span class="req" aria-hidden="true">*</span></label>
+    <textarea id="cf-message" name="message" rows="6" required minlength="10" maxlength="5000" aria-describedby="cf-message-err"></textarea>
+    <p class="field__error" id="cf-message-err" data-error={t.errors.message}></p>
+  </div>
+
+  <!-- Trappola per bot: invisibile alle persone e agli screen reader -->
+  <div class="hp" aria-hidden="true">
+    <label for="cf-botcheck">Non compilare</label>
+    <input id="cf-botcheck" name="botcheck" type="checkbox" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="field field--wide field--check">
+    <input id="cf-privacy" name="privacy" type="checkbox" required aria-describedby="cf-privacy-err" />
+    <label for="cf-privacy">
+      {t.privacyBefore}<a href={href('privacy', lang)} target="_blank" rel="noopener">{t.privacyLink}</a>{t.privacyAfter}
+      <span class="req" aria-hidden="true">*</span>
+    </label>
+    <p class="field__error" id="cf-privacy-err" data-error={t.errors.privacy}></p>
+  </div>
+
+  <div class="field--wide contact-form__footer">
+    <button class="btn" type="submit">{t.send}</button>
+    <p class="form-status" role="status" aria-live="polite" data-status></p>
+  </div>
+</form>
+
+<style>
+  .contact-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 1.5rem;
+  }
+
+  @media (max-width: 40rem) {
+    .contact-form {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .field--wide {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .req {
+    color: var(--cyan-300);
+  }
+
+  .opt {
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid rgb(169 196 214 / 0.45);
+    border-radius: var(--radius-sm);
+    background: var(--bg-deep);
+    color: var(--text);
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+
+  [aria-invalid='true'] {
+    border-color: #ff8f8f;
+  }
+
+  .field__hint {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .field__error {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #ffb3b3;
+  }
+
+  .field__error:empty {
+    display: none;
+  }
+
+  .field--check {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.4rem 0.75rem;
+  }
+
+  .field--check input {
+    width: 1.25rem;
+    min-height: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.2rem;
+    accent-color: var(--cyan-200);
+  }
+
+  .field--check label {
+    font-weight: 400;
+  }
+
+  .field--check .field__error {
+    grid-column: 2;
+  }
+
+  .hp {
+    display: none;
+  }
+
+  .contact-form__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+
+  .form-status {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .form-status--ok {
+    color: var(--green-300);
+  }
+
+  .form-status--error {
+    color: #ffb3b3;
+  }
+</style>
+
+<script>
+  import { sendContactMessage } from '../lib/form-submit';
+  import { track } from '../lib/analytics';
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  if (form) {
+    const msg = JSON.parse(form.dataset.messages ?? '{}') as Record<string, string>;
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const audience = form.elements.namedItem('audience') as HTMLSelectElement;
+
+    // Preseleziona "Chi sei?" dal link di provenienza (es. ?chi=candidato).
+    const preset = new URLSearchParams(location.search).get('chi');
+    if (preset && [...audience.options].some((o) => o.value === preset)) audience.value = preset;
+
+    const setStatus = (text: string, kind: 'ok' | 'error' | '' = '') => {
+      status.textContent = text;
+      status.className = `form-status${kind ? ` form-status--${kind}` : ''}`;
+    };
+
+    const fields = [...form.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+      'input:not([name="botcheck"]), select, textarea',
+    )];
+
+    const validate = (field: (typeof fields)[number]) => {
+      if (field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement) {
+        if (field.type !== 'checkbox') field.value = field.value.trim();
+      }
+      const valid = field.checkValidity();
+      const error = form.querySelector<HTMLElement>(`#${field.id}-err`);
+      field.setAttribute('aria-invalid', String(!valid));
+      if (error) error.textContent = valid ? '' : (error.dataset.error ?? '');
+      return valid;
+    };
+
+    // Dopo il primo errore, il campo si ricontrolla mentre l'utente lo corregge.
+    fields.forEach((field) =>
+      field.addEventListener('input', () => {
+        if (field.getAttribute('aria-invalid') === 'true') validate(field);
+      }),
+    );
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const invalid = fields.filter((f) => !validate(f));
+      if (invalid.length) {
+        setStatus(msg.invalid, 'error');
+        invalid[0].focus();
+        return;
+      }
+
+      const data = new FormData(form);
+      button.disabled = true;
+      setStatus(msg.sending);
+      const result = await sendContactMessage({
+        name: String(data.get('name')),
+        email: String(data.get('email')),
+        audience: audience.selectedOptions[0].text,
+        company: String(data.get('company') ?? ''),
+        link: String(data.get('link') ?? ''),
+        message: String(data.get('message')),
+        lang: form.dataset.lang ?? 'it',
+        honeypot: data.get('botcheck') !== null,
+      });
+      button.disabled = false;
+
+      if (result.ok) {
+        track('generate_lead', { form: 'contatti', audience: audience.value });
+        form.reset();
+        fields.forEach((f) => f.removeAttribute('aria-invalid'));
+        setStatus(msg.ok, 'ok');
+      } else {
+        setStatus(result.reason === 'not-configured' ? msg.notConfigured : msg.failed, 'error');
+      }
+    });
+  }
+</script>
