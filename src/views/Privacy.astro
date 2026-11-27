@@ -1,0 +1,205 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { SITE } from '../config';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+// Recapito del titolare: obbligatorio nell'informativa (unica email mostrata sul sito).
+const privacyEmail = 'account@braintex.it';
+const meta = {
+  it: {
+    title: 'Privacy Policy',
+    description: 'Informativa sul trattamento dei dati personali del sito braintex.it di BrainTex srl.',
+    eyebrow: 'Informativa privacy',
+    h1: 'Privacy Policy',
+    lead: 'Come BrainTex srl tratta i dati personali di chi visita il sito e ci scrive.',
+  },
+  en: {
+    title: 'Privacy Policy',
+    description: 'Information on the processing of personal data on the braintex.it website of BrainTex srl.',
+    eyebrow: 'Privacy notice',
+    h1: 'Privacy Policy',
+    lead: 'How BrainTex srl processes the personal data of website visitors and of people who write to us.',
+  },
+}[lang];
+---
+
+<Base lang={lang} routeKey="privacy" title={meta.title} description={meta.description}>
+  <PageHero eyebrow={meta.eyebrow} title={meta.h1} lead={meta.lead} />
+  <section class="section">
+    <div class="wrap prose">
+      <DraftNotice lang={lang} />
+      {
+        lang === 'it' ? (
+          <>
+            <p class="muted">Ultimo aggiornamento: 27 novembre 2026.</p>
+
+            <h2>1. Titolare del trattamento</h2>
+            <p>
+              {SITE.legalName}, sede legale a {SITE.legalSeat}, P.IVA {SITE.vat}, REA {SITE.rea}.
+              Per qualsiasi richiesta sui dati personali: <a href={`mailto:${privacyEmail}`}>{privacyEmail}</a>.
+            </p>
+
+            <h2>2. Quali dati trattiamo</h2>
+            <ul>
+              <li>
+                <strong>Dati del modulo di contatto:</strong> nome e cognome, email, tipo di
+                richiesta (“Chi sei?”), azienda o ente e link a profilo o portfolio se li indichi, testo
+                del messaggio.
+              </li>
+              <li>
+                <strong>Dati di navigazione:</strong> dati tecnici (ad esempio indirizzo IP, browser,
+                pagine richieste) registrati dal servizio di hosting per il funzionamento e la sicurezza
+                del sito.
+              </li>
+              <li>
+                <strong>Dati statistici:</strong> solo se acconsenti, dati di utilizzo raccolti da
+                Google Analytics 4. Dettagli nella <a href={href('cookies', lang)}>Cookie Policy</a>.
+              </li>
+            </ul>
+
+            <h2>3. Perché li trattiamo e su quale base</h2>
+            <ul>
+              <li>
+                Rispondere alle tue richieste e, se ne fai richiesta, valutare una collaborazione o una
+                fornitura: misure precontrattuali e nostro legittimo interesse a rispondere (art. 6.1.b e
+                6.1.f GDPR).
+              </li>
+              <li>
+                Valutare candidature spontanee: misure precontrattuali su tua richiesta (art. 6.1.b
+                GDPR).
+              </li>
+              <li>
+                Garantire il funzionamento e la sicurezza del sito: legittimo interesse (art. 6.1.f
+                GDPR).
+              </li>
+              <li>Statistiche di utilizzo del sito: consenso (art. 6.1.a GDPR), revocabile in ogni momento.</li>
+            </ul>
+
+            <h2>4. Per quanto tempo li conserviamo</h2>
+            <p>
+              I messaggi ricevuti dal modulo sono conservati per il tempo necessario a gestire la
+              richiesta e comunque non oltre 24 mesi, salvo l’avvio di un rapporto contrattuale. Le
+              candidature sono conservate per non oltre 24 mesi. I dati statistici seguono i tempi
+              indicati nella Cookie Policy.
+            </p>
+
+            <h2>5. A chi li comunichiamo</h2>
+            <p>
+              I dati non vengono venduti né diffusi. Possono trattarli, come responsabili del
+              trattamento, i fornitori dei servizi che usiamo:
+            </p>
+            <ul>
+              <li>il servizio di invio dei moduli (Web3Forms), che inoltra il messaggio alla nostra casella;</li>
+              <li>il fornitore della posta elettronica aziendale;</li>
+              <li>il fornitore di hosting del sito;</li>
+              <li>Google Ireland Limited, per Google Analytics 4, solo con il tuo consenso.</li>
+            </ul>
+            <p>
+              Alcuni fornitori possono trattare i dati anche fuori dall’Unione europea; in questi casi il
+              trasferimento avviene con le garanzie previste dal GDPR (ad esempio decisioni di
+              adeguatezza o clausole contrattuali standard).
+            </p>
+
+            <h2>6. I tuoi diritti</h2>
+            <p>
+              Puoi chiedere in ogni momento l’accesso ai tuoi dati, la rettifica, la cancellazione, la
+              limitazione del trattamento, la portabilità, e opporti al trattamento basato sul legittimo
+              interesse (artt. 15–22 GDPR). Puoi revocare il consenso alle statistiche dal link
+              “Preferenze cookie” in fondo a ogni pagina. Scrivi a{' '}
+              <a href={`mailto:${privacyEmail}`}>{privacyEmail}</a>. Hai anche il diritto di proporre
+              reclamo al Garante per la protezione dei dati personali (garanteprivacy.it).
+            </p>
+
+            <h2>7. Modifiche</h2>
+            <p>
+              Possiamo aggiornare questa informativa; la data di ultimo aggiornamento è indicata in alto.
+            </p>
+          </>
+        ) : (
+          <>
+            <p class="muted">Last updated: 27 November 2026.</p>
+
+            <h2>1. Data controller</h2>
+            <p>
+              {SITE.legalName}, registered office in {SITE.legalSeat}, Italy, VAT no. {SITE.vat}, REA{' '}
+              {SITE.rea}. For any request about personal data:{' '}
+              <a href={`mailto:${privacyEmail}`}>{privacyEmail}</a>.
+            </p>
+
+            <h2>2. What data we process</h2>
+            <ul>
+              <li>
+                <strong>Contact form data:</strong> full name, email, type of request (“Who are you?”),
+                company or organisation and profile or portfolio link if you provide them, message text.
+              </li>
+              <li>
+                <strong>Browsing data:</strong> technical data (e.g. IP address, browser, pages
+                requested) logged by the hosting service for the operation and security of the site.
+              </li>
+              <li>
+                <strong>Analytics data:</strong> only with your consent, usage data collected by Google
+                Analytics 4. Details in the <a href={href('cookies', lang)}>Cookie Policy</a>.
+              </li>
+            </ul>
+
+            <h2>3. Why we process it and on what legal basis</h2>
+            <ul>
+              <li>
+                Replying to your requests and, if you ask, assessing a partnership or supply:
+                pre-contractual measures and our legitimate interest in replying (Art. 6(1)(b) and
+                6(1)(f) GDPR).
+              </li>
+              <li>Assessing spontaneous applications: pre-contractual measures at your request (Art. 6(1)(b) GDPR).</li>
+              <li>Ensuring the operation and security of the site: legitimate interest (Art. 6(1)(f) GDPR).</li>
+              <li>Website usage statistics: consent (Art. 6(1)(a) GDPR), which you can withdraw at any time.</li>
+            </ul>
+
+            <h2>4. How long we keep it</h2>
+            <p>
+              Messages received through the form are kept for as long as needed to handle the request
+              and in any case no longer than 24 months, unless a contractual relationship begins.
+              Applications are kept for no longer than 24 months. Analytics data follows the periods
+              stated in the Cookie Policy.
+            </p>
+
+            <h2>5. Who we share it with</h2>
+            <p>
+              Data is never sold or disclosed. It may be processed, as data processors, by the providers
+              of the services we use:
+            </p>
+            <ul>
+              <li>the form delivery service (Web3Forms), which forwards the message to our mailbox;</li>
+              <li>our business email provider;</li>
+              <li>the website hosting provider;</li>
+              <li>Google Ireland Limited, for Google Analytics 4, only with your consent.</li>
+            </ul>
+            <p>
+              Some providers may process data outside the European Union; in such cases transfers take
+              place with the safeguards required by the GDPR (e.g. adequacy decisions or standard
+              contractual clauses).
+            </p>
+
+            <h2>6. Your rights</h2>
+            <p>
+              You may at any time request access to your data, rectification, erasure, restriction of
+              processing and portability, and object to processing based on legitimate interest
+              (Arts. 15–22 GDPR). You can withdraw consent to analytics through the “Cookie preferences”
+              link at the bottom of every page. Write to{' '}
+              <a href={`mailto:${privacyEmail}`}>{privacyEmail}</a>. You also have the right to lodge a
+              complaint with the Italian Data Protection Authority (garanteprivacy.it).
+            </p>
+
+            <h2>7. Changes</h2>
+            <p>We may update this notice; the date of the last update is shown at the top.</p>
+          </>
+        )
+      }
+    </div>
+  </section>
+</Base>

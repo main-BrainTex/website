@@ -67,7 +67,7 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - Footer obbligatorio in tutte le lingue, con i loghi: "Realizzato con il finanziamento del Fondo Sociale Europeo Plus" e "Finanziato dall'Unione europea – NextGenerationEU".
 - Dati societari: BrainTex srl · P.IVA 02789950033 · REA NO-317837 · Capitale sociale 22.222,22 €. Sede legale Romagnano Sesia (NO), sede operativa Biella.
 - Nessuna posizione aperta: solo candidatura spontanea.
-- Contatti pubblici: solo form + LinkedIn (nessuna email in chiaro).
+- Contatti pubblici: solo form + LinkedIn (nessuna email in chiaro), salvo il recapito del titolare richiesto per legge nella Privacy Policy (account@braintex.it, da confermare con bt).
 - Non usare l'articolo di Industria Italiana sul Premio MICS.
 
 ## Brand

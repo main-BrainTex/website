@@ -1,0 +1,24 @@
+---
+// Avviso visibile sui testi legali non ancora verificati. Rimuovere dopo la revisione del consulente.
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const text = {
+  it: 'Bozza da verificare con un consulente privacy prima della pubblicazione.',
+  en: 'Draft to be reviewed by a privacy consultant before publication.',
+}[lang];
+---
+
+<p class="draft" role="note">{text}</p>
+
+<style>
+  .draft {
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--cyan-300);
+    background: rgb(53 210 243 / 0.08);
+    font-weight: 700;
+  }
+</style>
