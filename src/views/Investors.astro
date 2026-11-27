@@ -1,0 +1,121 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const contact = href('contact', lang);
+
+const t = {
+  it: {
+    title: 'Investitori e partner',
+    description:
+      'BrainTex per investitori, costruttori di macchine, integratori, università e istituzioni: visione, mercati adiacenti e opportunità di collaborazione.',
+    eyebrow: 'Investitori e partner',
+    h1: 'Costruiamo insieme il controllo qualità del futuro.',
+    lead: 'Partiamo dal tessile, dove il controllo a vista è ancora la norma. La stessa tecnologia può portare valore ovunque un materiale scorra in rotoli.',
+    blocks: [
+      {
+        id: 'investitori',
+        eyebrow: 'Investitori',
+        title: 'Una tecnologia nata nel tessile, pronta a crescere.',
+        text: [
+          'BrainTex controlla il 100% del tessuto in tempo reale, è già validata in produzione su specola e controllo finito ed è protetta da una domanda di brevetto depositata.',
+          'Guardiamo ai mercati adiacenti in cui il controllo qualità su materiali continui è decisivo: carta, pneumatici, packaging e pelle.',
+        ],
+        audience: 'investitore',
+        cta: 'Contattaci come investitore',
+      },
+      {
+        id: 'partner',
+        eyebrow: 'Costruttori di macchine e integratori',
+        title: 'Il controllo qualità, dentro la tua macchina.',
+        text: [
+          'BrainTex è pensato per montarsi su macchinari esistenti. Se costruisci o integri macchine per il tessile, possiamo portare insieme l’ispezione automatica ai tuoi clienti.',
+        ],
+        audience: 'partner',
+        cta: 'Proponi una collaborazione',
+      },
+      {
+        id: 'istituzioni',
+        eyebrow: 'Università, istituzioni e bandi',
+        title: 'Ricerca applicata, con i piedi in fabbrica.',
+        text: [
+          'Nati dall’Academy di I3P e incubati al Politecnico di Torino, collaboriamo volentieri a progetti di ricerca, bandi e iniziative per l’innovazione del settore.',
+        ],
+        audience: 'partner',
+        cta: 'Scrivici',
+      },
+    ],
+  },
+  en: {
+    title: 'Investors & partners',
+    description:
+      'BrainTex for investors, machine builders, integrators, universities and institutions: vision, adjacent markets and partnership opportunities.',
+    eyebrow: 'Investors & partners',
+    h1: 'Let’s build the future of quality control together.',
+    lead: 'We start from textiles, where visual inspection is still the norm. The same technology can add value wherever material runs in rolls.',
+    blocks: [
+      {
+        id: 'investitori',
+        eyebrow: 'Investors',
+        title: 'A technology born in textiles, ready to grow.',
+        text: [
+          'BrainTex inspects 100% of the fabric in real time, is already validated in production on inspection tables and final inspection, and is protected by a filed patent application.',
+          'We look at adjacent markets where quality control on continuous materials is critical: paper, tyres, packaging and leather.',
+        ],
+        audience: 'investitore',
+        cta: 'Contact us as an investor',
+      },
+      {
+        id: 'partner',
+        eyebrow: 'Machine builders & integrators',
+        title: 'Quality control, built into your machine.',
+        text: [
+          'BrainTex is designed to be mounted on existing machines. If you build or integrate textile machinery, together we can bring automated inspection to your customers.',
+        ],
+        audience: 'partner',
+        cta: 'Propose a partnership',
+      },
+      {
+        id: 'istituzioni',
+        eyebrow: 'Universities, institutions & funding',
+        title: 'Applied research, with feet on the factory floor.',
+        text: [
+          'Born from the I3P Academy and incubated at Politecnico di Torino, we are glad to take part in research projects, calls and initiatives for innovation in the sector.',
+        ],
+        audience: 'partner',
+        cta: 'Write to us',
+      },
+    ],
+  },
+}[lang];
+---
+
+<Base lang={lang} routeKey="investors" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
+
+  {
+    t.blocks.map((b, i) => (
+      <section id={b.id} class:list={['section', { 'section--raised': i % 2 === 1 }]}>
+        <div class="wrap split">
+          <div data-reveal>
+            <p class="eyebrow">{b.eyebrow}</p>
+            <h2>{b.title}</h2>
+          </div>
+          <div data-reveal="1">
+            {b.text.map((p) => (
+              <p class="lead">{p}</p>
+            ))}
+            <a class="btn btn--ghost" href={`${contact}?chi=${b.audience}`}>
+              {b.cta}
+            </a>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+</Base>
