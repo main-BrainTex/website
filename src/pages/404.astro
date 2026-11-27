@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { href } from '../i18n';
+---
+
+<Base
+  lang="it"
+  title="Pagina non trovata"
+  description="La pagina che cerchi non esiste o è stata spostata."
+>
+  <section class="section notfound">
+    <div class="wrap">
+      <p class="eyebrow">Errore 404</p>
+      <h1>Questo filo non porta da nessuna parte.</h1>
+      <p class="lead">
+        La pagina che cerchi non esiste o è stata spostata. Nessun difetto nel tessuto: solo un
+        link sbagliato.
+      </p>
+      <div class="actions">
+        <a class="btn" href={href('home', 'it')}>Torna alla home</a>
+        <a class="btn btn--ghost" href={href('contact', 'it')}>Contattaci</a>
+      </div>
+      <p class="muted notfound__en" lang="en">
+        Page not found. <a href={href('home', 'en')}>Go to the English home page</a>.
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .notfound {
+    min-height: 60vh;
+    display: grid;
+    align-items: center;
+  }
+
+  .notfound__en {
+    margin-top: 3rem;
+  }
+</style>
