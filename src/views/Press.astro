@@ -1,0 +1,169 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+// Articoli approvati. Titoli riassunti dall'argomento di ciascun articolo; da verificare con le testate.
+// Non inserire l'articolo di Industria Italiana sul Premio MICS.
+const articles = [
+  {
+    source: 'Cliclavoro – Ministero del Lavoro',
+    topic: { it: 'Intervista: l’intelligenza artificiale al servizio del controllo qualità', en: 'Interview: artificial intelligence for quality control' },
+    date: '2026-11-05',
+    url: 'https://cliclavoro.gov.it/news/trend-interviste/braintex-lintelligenza-artificiale-al-servizio-del-controllo-qualita',
+  },
+  {
+    source: 'Forbes Italia',
+    topic: { it: 'Classifica Forbes Under 30 2026', en: 'Forbes Under 30 2026 list' },
+    url: 'https://forbes.it/classifiche-forbes/under-30/under-30-2026/',
+  },
+  {
+    source: 'I3P',
+    topic: { it: 'Le startup I3P selezionate da Forbes Under 30 2026', en: 'I3P startups selected by Forbes Under 30 2026' },
+    url: 'https://www.i3p.it/news/tredici-startupper-i3p-frontiere-tecnologia-selezionati-forbes-under-30-2026',
+  },
+  {
+    source: 'Torino Cronaca',
+    topic: { it: 'I torinesi nella Forbes Under 30 2026', en: 'Turin’s entries in Forbes Under 30 2026' },
+    url: 'https://www.torinocronaca.it/news/ultime-notizie/646104/dallo-spazio-alle-corsie-degli-ospedali-chi-sono-i-torinesi-nella-forbes-under-30-2026.html',
+  },
+  {
+    source: 'StartupNews Italia',
+    topic: { it: 'Premio MICS Futuro Made in Italy: i 10 vincitori', en: 'MICS Award Futuro Made in Italy: the 10 winners' },
+    url: 'https://www.startupnewsitalia.it/premio-mics-futuro-made-in-italy-i-10-vincitori-della-call-4-circular-startup/',
+  },
+  {
+    source: 'Il Denaro',
+    topic: { it: 'Premio MICS: i progetti finalisti presentati a Napoli', en: 'MICS Award: finalist projects presented in Naples' },
+    url: 'https://www.ildenaro.it/premio-mics-futuro-made-in-italy-presentati-a-napoli-i-progetti-finalisti/',
+  },
+  {
+    source: 'Fondazione Novara Sviluppo',
+    topic: { it: 'BrainTex vince Start Up Now 2025', en: 'BrainTex wins Start Up Now 2025' },
+    url: 'https://www.novarasviluppo.it/braintex-vince-startupnow-2025/',
+  },
+  {
+    source: 'Corriere di Novara',
+    topic: { it: 'BrainTex vince Start Up Now 2025', en: 'BrainTex wins Start Up Now 2025' },
+    url: 'https://corrieredinovara.it/attualita/fondazione-novara-sviluppo-braintex-vince-start-up-now-2025/',
+  },
+  {
+    source: 'Prima Novara',
+    topic: { it: 'BrainTex al primo posto nel bando Start Up Now 2025', en: 'BrainTex takes first place in Start Up Now 2025' },
+    url: 'https://primanovara.it/attualita/braintex-trionfa-al-bando-start-up-now-2025-di-fondazione-novara-sviluppo/',
+  },
+  {
+    source: 'I3P',
+    topic: { it: 'Quattro startup I3P tra le migliori del Premio Nazionale per l’Innovazione 2025', en: 'Four I3P startups among the best at the National Innovation Award 2025' },
+    url: 'https://www.i3p.it/en/news/four-i3p-startups-selected-among-best-young-companies-national-innovation-award-pni-2025',
+  },
+  {
+    source: 'Regione Piemonte',
+    topic: { it: 'Start Cup Piemonte Valle d’Aosta 2025: i finalisti premiati', en: 'Start Cup Piemonte Valle d’Aosta 2025: finalists awarded' },
+    url: 'https://www.regione.piemonte.it/web/temi/fondi-progetti-europei/fondo-sociale-europeo-fse/start-cup-piemonte-valle-daosta-2025-premiati-finalisti',
+  },
+  {
+    source: 'Notizia Oggi',
+    topic: { it: 'L’intelligenza artificiale nel tessile: Romagnano premia due giovani imprenditori', en: 'AI in textiles: Romagnano honours two young entrepreneurs' },
+    url: 'https://notiziaoggi.it/novarese/lintelligenza-artificiale-nel-tessile-romagnano-premia-due-giovani-imprenditori/',
+  },
+];
+
+const t = {
+  it: {
+    title: 'Parlano di noi',
+    description:
+      'Rassegna stampa BrainTex: interviste, articoli e premi, da Forbes Under 30 al Premio MICS, PNI 2025 e Start Up Now.',
+    eyebrow: 'Stampa',
+    h1: 'Parlano di noi.',
+    lead: 'Interviste, articoli e premi che raccontano BrainTex. Sei un giornalista? Scrivici dal modulo di contatto scegliendo “Stampa”.',
+    read: 'Leggi l’articolo',
+    newTab: '(si apre in una nuova scheda)',
+    awards: 'Tutti i riconoscimenti',
+    contact: 'Contatti per la stampa',
+    locale: 'it-IT',
+  },
+  en: {
+    title: 'Press',
+    description:
+      'BrainTex in the press: interviews, articles and awards, from Forbes Under 30 to the MICS Award, PNI 2025 and Start Up Now.',
+    eyebrow: 'Press',
+    h1: 'In the press.',
+    lead: 'Interviews, articles and awards about BrainTex (mostly in Italian). Are you a journalist? Write to us through the contact form choosing “Press”.',
+    read: 'Read the article',
+    newTab: '(opens in a new tab)',
+    awards: 'All our awards',
+    contact: 'Press contact',
+    locale: 'en-GB',
+  },
+}[lang];
+
+const fmt = (iso: string) =>
+  new Date(iso).toLocaleDateString(t.locale, { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<Base lang={lang} routeKey="press" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead}>
+    <div class="actions">
+      <a class="btn btn--ghost" href={`${href('contact', lang)}?chi=stampa`}>{t.contact}</a>
+      <a class="btn btn--ghost" href={href('about', lang)}>{t.awards}</a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap">
+      <ul class="grid grid--3 plain">
+        {
+          articles.map((a, i) => (
+            <li data-reveal={String((i % 3) + 1)}>
+              <a class="card article" href={a.url} target="_blank" rel="noopener">
+                <span class="article__source">{a.source}</span>
+                <h2 class="article__title">{a.topic[lang]}</h2>
+                {a.date && <time datetime={a.date}>{fmt(a.date)}</time>}
+                <span class="card__more">
+                  {t.read} <span class="visually-hidden">{t.newTab}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .article {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .article__source {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+  }
+
+  .article__title {
+    margin-block: 0.75rem;
+    font-size: 1.2rem;
+  }
+
+  .article time {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .article .card__more {
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+</style>
