@@ -1,0 +1,329 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { STATS } from '../config';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    title: 'La soluzione: controllo qualità tessile con IA',
+    description:
+      'Come funziona BrainTex: visione artificiale e intelligenza artificiale che si integrano sui macchinari tessili esistenti, localizzano i difetti e producono mappa e report di ogni pezza.',
+    eyebrow: 'La soluzione',
+    h1: 'Un sistema che impara il tuo tessuto e non perde un metro.',
+    lead: 'BrainTex è un sistema innovativo di controllo qualità: si integra con i macchinari lungo la filiera tessile e usa l’intelligenza artificiale per rilevare i difetti.',
+    techEyebrow: 'La tecnologia Brain',
+    techTitle: 'Guarda, capisce, segnala.',
+    techText:
+      'Telecamere ad alta risoluzione inquadrano il tessuto mentre avanza; l’acquisizione è sincronizzata con il movimento della pezza. L’intelligenza artificiale analizza ogni immagine e restituisce posizione e contorno di ogni difetto.',
+    views: [
+      { title: 'Cosa vede la camera', text: 'L’immagine acquisita sul tessuto in movimento.' },
+      { title: 'Cosa vedi tu', text: 'Lo stesso tratto di pezza, come appare a occhio nudo.' },
+      { title: 'Cosa vede BrainTex', text: 'Il difetto localizzato e contornato dal sistema.' },
+    ],
+    imagePlaceholder: 'Immagine in arrivo',
+    featEyebrow: 'Le caratteristiche',
+    featTitle: 'Pensato per la produzione vera.',
+    features: [
+      {
+        title: 'Autonomia',
+        text: `Impara da solo e si adatta in fretta quando cambia il tessuto: meno di ${STATS.minutesToLearnFabric} minuti per un articolo nuovo.`,
+      },
+      {
+        title: 'Localizzazione',
+        text: 'Individua e contorna il difetto con precisione, per evitare rilavorazioni inutili.',
+      },
+      {
+        title: 'Adattabilità',
+        text: 'Un sistema flessibile, che si regola sulle esigenze della produzione con un clic.',
+      },
+      {
+        title: 'Complessità',
+        text: 'Rileva difetti invisibili all’occhio umano, anche su disegni complessi.',
+      },
+    ],
+    outEyebrow: 'Cosa ottieni',
+    outTitle: 'Ogni pezza ha la sua storia, scritta in dati.',
+    outputs: [
+      {
+        title: 'Avviso immediato',
+        text: 'L’operatore riceve la segnalazione in tempo reale, su tablet o con un segnale luminoso.',
+      },
+      {
+        title: 'Mappa dei difetti',
+        text: 'Per ogni pezza, la posizione di ogni difetto lungo il tessuto.',
+      },
+      {
+        title: 'Report per pezza',
+        text: 'Un documento chiaro per la qualità interna e per rispondere a richieste o contestazioni.',
+      },
+    ],
+    machEyebrow: 'Dove si installa',
+    machTitle: 'Sui macchinari che hai già.',
+    machText:
+      'BrainTex si monta sulle macchine esistenti. Ecco a che punto siamo per ciascun tipo di macchina.',
+    machines: [
+      { name: 'Specola', status: 'ok' },
+      { name: 'Controllo finito', status: 'ok' },
+      { name: 'Telaio', status: 'progress' },
+      { name: 'Finissaggio, rameuse, taglio e altre macchine', status: 'eval' },
+    ],
+    status: {
+      ok: 'Validato in produzione',
+      progress: 'In validazione tecnologica',
+      eval: 'Su richiesta / da valutare',
+    },
+    machinesCaption: 'Stato di BrainTex per tipo di macchina',
+    machineCol: 'Macchina',
+    statusCol: 'Stato',
+    trustEyebrow: 'Dati e proprietà intellettuale',
+    trustTitle: 'I tuoi dati restano tuoi.',
+    trust: [
+      'I modelli sono addestrati per ogni singolo cliente e non vengono usati per altre aziende; il trattamento di immagini e dati è definito nel contratto.',
+      'La tecnologia BrainTex è protetta da una domanda di brevetto depositata.',
+    ],
+    ctaTitle: 'Provalo sul tuo tessuto.',
+    ctaText: 'Raccontaci la tua produzione: valutiamo insieme dove BrainTex può portare più valore.',
+    ctaButton: 'Contattaci',
+  },
+  en: {
+    title: 'The solution: AI-powered textile quality control',
+    description:
+      'How BrainTex works: machine vision and artificial intelligence that integrate with existing textile machines, locate defects and produce a defect map and report for every piece.',
+    eyebrow: 'The solution',
+    h1: 'A system that learns your fabric and never misses a metre.',
+    lead: 'BrainTex is an innovative quality control system: it integrates with machines along the textile supply chain and uses artificial intelligence to detect defects.',
+    techEyebrow: 'The Brain technology',
+    techTitle: 'It sees, understands, flags.',
+    techText:
+      'High-resolution cameras frame the fabric as it moves; image capture is synchronised with the movement of the piece. Artificial intelligence analyses every image and returns the position and outline of each defect.',
+    views: [
+      { title: 'What the camera sees', text: 'The image captured on the moving fabric.' },
+      { title: 'What you see', text: 'The same stretch of fabric, as it looks to the naked eye.' },
+      { title: 'What BrainTex sees', text: 'The defect located and outlined by the system.' },
+    ],
+    imagePlaceholder: 'Image coming soon',
+    featEyebrow: 'Features',
+    featTitle: 'Built for real production.',
+    features: [
+      {
+        title: 'Autonomy',
+        text: `It learns on its own and adapts quickly when the fabric changes: less than ${STATS.minutesToLearnFabric} minutes for a new article.`,
+      },
+      {
+        title: 'Localisation',
+        text: 'It pinpoints and outlines each defect precisely, to avoid unnecessary rework.',
+      },
+      {
+        title: 'Adaptability',
+        text: 'A flexible system that adjusts to production needs with one click.',
+      },
+      {
+        title: 'Complexity',
+        text: 'It detects defects invisible to the human eye, even on complex patterns.',
+      },
+    ],
+    outEyebrow: 'What you get',
+    outTitle: 'Every piece has its story, written in data.',
+    outputs: [
+      {
+        title: 'Instant alert',
+        text: 'The operator is alerted in real time, on a tablet or with a light signal.',
+      },
+      { title: 'Defect map', text: 'For every piece, the position of each defect along the fabric.' },
+      {
+        title: 'Report per piece',
+        text: 'A clear document for internal quality and for answering requests or disputes.',
+      },
+    ],
+    machEyebrow: 'Where it fits',
+    machTitle: 'On the machines you already have.',
+    machText:
+      'BrainTex is mounted on existing machines. Here is where we stand for each type of machine.',
+    machines: [
+      { name: 'Inspection table (specola)', status: 'ok' },
+      { name: 'Final inspection', status: 'ok' },
+      { name: 'Loom', status: 'progress' },
+      { name: 'Finishing, stenter, cutting and other machines', status: 'eval' },
+    ],
+    status: {
+      ok: 'Validated in production',
+      progress: 'In technology validation',
+      eval: 'On request / to be assessed',
+    },
+    machinesCaption: 'BrainTex status by machine type',
+    machineCol: 'Machine',
+    statusCol: 'Status',
+    trustEyebrow: 'Data and intellectual property',
+    trustTitle: 'Your data stays yours.',
+    trust: [
+      'Models are trained for each individual customer and are not used for other companies; the processing of images and data is defined in the contract.',
+      'BrainTex technology is protected by a filed patent application.',
+    ],
+    ctaTitle: 'Try it on your fabric.',
+    ctaText: 'Tell us about your production: together we will assess where BrainTex can add the most value.',
+    ctaButton: 'Contact us',
+  },
+}[lang];
+
+const tagClass = { ok: 'tag--ok', progress: 'tag--progress', eval: 'tag--eval' } as const;
+---
+
+<Base lang={lang} routeKey="solution" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.techEyebrow}</p>
+        <h2>{t.techTitle}</h2>
+        <p class="lead">{t.techText}</p>
+      </div>
+      <ol class="grid grid--3 views">
+        {
+          t.views.map((v, i) => (
+            <li data-reveal={String(i + 1)}>
+              <div class="placeholder views__img">{t.imagePlaceholder}</div>
+              <h3>{v.title}</h3>
+              <p class="muted">{v.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.featEyebrow}</p>
+        <h2>{t.featTitle}</h2>
+      </div>
+      <ul class="grid grid--4 plain">
+        {
+          t.features.map((f, i) => (
+            <li class="card" data-reveal={String(i + 1)}>
+              <span class="card__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.outEyebrow}</p>
+        <h2>{t.outTitle}</h2>
+      </div>
+      <ul class="grid grid--3 plain">
+        {
+          t.outputs.map((o, i) => (
+            <li class="card" data-reveal={String(i + 1)}>
+              <h3>{o.title}</h3>
+              <p>{o.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.machEyebrow}</p>
+        <h2>{t.machTitle}</h2>
+        <p class="lead">{t.machText}</p>
+      </div>
+      <table class="machines" data-reveal="1">
+        <caption class="visually-hidden">{t.machinesCaption}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{t.machineCol}</th>
+            <th scope="col">{t.statusCol}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            t.machines.map((m) => (
+              <tr>
+                <th scope="row">{m.name}</th>
+                <td>
+                  <span class={`tag ${tagClass[m.status as keyof typeof tagClass]}`}>
+                    {t.status[m.status as keyof typeof t.status]}
+                  </span>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.trustEyebrow}</p>
+        <h2>{t.trustTitle}</h2>
+      </div>
+      <div class="grid grid--2">
+        {t.trust.map((p, i) => <p class="lead" data-reveal={String(i + 1)}>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title={t.ctaTitle} text={t.ctaText} button={t.ctaButton} link={href('contact', lang)} />
+</Base>
+
+<style>
+  .views {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .views__img {
+    aspect-ratio: 4 / 3;
+    margin-bottom: 1.25rem;
+  }
+
+  .machines {
+    width: 100%;
+    max-width: 46rem;
+    border-collapse: collapse;
+  }
+
+  .machines th,
+  .machines td {
+    padding: 1rem 0.75rem 1rem 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .machines thead th {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .machines tbody th {
+    font-weight: 700;
+  }
+
+  .machines td {
+    text-align: right;
+  }
+</style>

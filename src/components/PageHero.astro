@@ -1,0 +1,32 @@
+---
+// Intestazione delle pagine interne: occhiello, unico h1 della pagina e sottotitolo.
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+}
+const { eyebrow, title, lead } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="wrap">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    padding-block: clamp(3.5rem, 9vw, 6.5rem) clamp(2.5rem, 6vw, 4rem);
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(45rem 25rem at 100% 0%, rgb(53 210 243 / 0.13), transparent 60%),
+      linear-gradient(180deg, var(--bg-deep), var(--bg));
+  }
+
+  .page-hero h1 {
+    max-width: 22ch;
+  }
+</style>
