@@ -22,7 +22,7 @@ export default defineConfig({
       directives: [
         "default-src 'self'",
         "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com",
-        "connect-src 'self' https://api.web3forms.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+        "connect-src 'self' https://api.simplyforms.app https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
         "font-src 'self'",
         "object-src 'none'",
         "base-uri 'self'",

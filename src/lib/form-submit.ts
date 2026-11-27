@@ -1,10 +1,10 @@
 // UNICO punto di invio dei messaggi del sito.
-// Servizio attuale: Web3Forms (piano gratuito), recapito ad account@braintex.it.
+// Servizio attuale: SimplyForms (server in Germania, inoltra il messaggio ad account@braintex.it senza conservarlo).
 // Per cambiare servizio basta riscrivere questo file mantenendo la stessa funzione esportata.
 
-const ENDPOINT = 'https://api.web3forms.com/submit';
-// Chiave pubblica legata alla casella di destinazione: arriva dalla variabile di build, mai dal codice.
-const ACCESS_KEY = import.meta.env.PUBLIC_WEB3FORMS_KEY as string | undefined;
+// Identificativo pubblico del modulo (non è un segreto): arriva dalla variabile di build, mai dal codice.
+const FORM_ID = import.meta.env.PUBLIC_FORM_ID as string | undefined;
+const ENDPOINT = `https://api.simplyforms.app/v1/forms/${FORM_ID}`;
 
 export interface ContactMessage {
   name: string;
@@ -22,7 +22,7 @@ export interface ContactMessage {
 export type SendResult = { ok: true } | { ok: false; reason: 'not-configured' | 'failed' };
 
 export async function sendContactMessage(msg: ContactMessage): Promise<SendResult> {
-  if (!ACCESS_KEY) return { ok: false, reason: 'not-configured' };
+  if (!FORM_ID) return { ok: false, reason: 'not-configured' };
   if (msg.honeypot) return { ok: true }; // finge il successo con i bot, senza inviare nulla
 
   try {
@@ -30,7 +30,7 @@ export async function sendContactMessage(msg: ContactMessage): Promise<SendResul
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        access_key: ACCESS_KEY,
+        // "subject" e "from_name" sono campi speciali del servizio; "email" diventa il Reply-To.
         subject: `[braintex.it] ${msg.audience} – ${msg.name}`,
         from_name: 'Sito braintex.it',
         name: msg.name,
@@ -40,7 +40,6 @@ export async function sendContactMessage(msg: ContactMessage): Promise<SendResul
         'LinkedIn / portfolio': msg.link || '—',
         Messaggio: msg.message,
         Lingua: msg.lang,
-        botcheck: false,
       }),
     });
     const data = (await res.json().catch(() => ({}))) as { success?: boolean };

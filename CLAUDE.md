@@ -53,8 +53,9 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 
 ## Form contatti
 - Destinatario: account@braintex.it, tramite servizio esterno senza server e senza branding.
-- Decisione (27/11/2026): servizio con dati trattati in UE (da scegliere). Web3Forms scartato: gestore in India, messaggi conservati fino a 3 anni, anti-spam negli USA. Il servizio scelto va documentato nella Privacy Policy (DPA, sub-fornitori, conservazione).
-- Chiave/endpoint forniti come variabile di build (`PUBLIC_WEB3FORMS_KEY` finché si usa Web3Forms, variabile GitHub), mai scritti nel codice.
+- Servizio scelto (27/11/2026): SimplyForms (ditta individuale, Rep. Ceca; server Hetzner in Germania; inoltra senza conservare, max 5 giorni in coda SMTP; DPA accettato alla registrazione). Web3Forms scartato: gestore in India, messaggi conservati fino a 3 anni, anti-spam negli USA. Il servizio va documentato nella Privacy Policy.
+- Piano gratuito SimplyForms: 1 dominio, 1 modulo, 250 email/mese, 50 invii/giorno; anti-spam solo limite di frequenza (più il nostro honeypot); mittente "via SimplyForms" nella casella. Al passaggio in produzione il dominio va cambiato da github.io a www.braintex.it (o piano a pagamento).
+- Identificativo del modulo come variabile di build `PUBLIC_FORM_ID` (variabile GitHub): è pubblico per natura ma non va scritto nel codice.
 - Invio isolato in un solo modulo (`src/lib/form-submit.ts`): per cambiare servizio si cambia solo lì.
 - Anti-spam: honeypot + filtri del servizio. Niente captcha di terze parti (nessuno script esterno oltre a GA).
 - Validazione campi, messaggi chiari di conferma/errore, campo "Chi sei?" che finisce nell'oggetto.
@@ -93,4 +94,4 @@ Per tutto ciò che non si può fare da qui (account, chiavi, impostazioni GitHub
 
 ## Comandi
 - `npm ci` installa le dipendenze · `npm run dev` sviluppo locale · `npm run build` compila in `dist/` · `npm run preview` serve la build.
-- Variabili di build (vedi `.env.example`): `BASE_PATH`, `DEPLOY_TARGET` (`production` solo per il sito pubblico), `PUBLIC_WEB3FORMS_KEY`.
+- Variabili di build (vedi `.env.example`): `BASE_PATH`, `DEPLOY_TARGET` (`production` solo per il sito pubblico), `PUBLIC_FORM_ID`.

@@ -30,7 +30,7 @@ jobs:
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
           DEPLOY_TARGET: preview
-          PUBLIC_WEB3FORMS_KEY: ${{ vars.PUBLIC_WEB3FORMS_KEY }}
+          PUBLIC_FORM_ID: ${{ vars.PUBLIC_FORM_ID }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
