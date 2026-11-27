@@ -1,0 +1,205 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE } from '../config';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+// Ordine e ruoli come sul sito attuale.
+const team = [
+  { name: 'Francesco Mascarana', role: 'Chief Executive Officer' },
+  { name: 'Mirko Agarla', role: 'Chief Technology Officer' },
+  { name: 'Sergio Gugliandolo', role: 'Chief Product Officer' },
+  { name: 'Simone Torino', role: 'Chief Operating Officer' },
+  { name: 'Marco Buzzonetti', role: 'Chief Financial Officer' },
+  { name: 'Andrea Gullì', role: 'VP of Technology' },
+];
+const initials = (name: string) =>
+  name
+    .split(' ')
+    .map((p) => p[0])
+    .join('');
+
+const t = {
+  it: {
+    title: 'Chi siamo: il team BrainTex',
+    description:
+      'BrainTex srl è una startup fondata a novembre 2024 e incubata in I3P, l’incubatore del Politecnico di Torino. Conosci il team e i riconoscimenti ricevuti.',
+    eyebrow: 'Chi siamo',
+    h1: 'Un team nato per vedere quello che sfugge.',
+    lead: 'BrainTex srl è stata fondata a novembre 2024 ed è incubata in I3P, l’incubatore del Politecnico di Torino. Il team è nato dall’Academy di I3P per aspiranti imprenditori.',
+    storyEyebrow: 'La nostra storia',
+    storyTitle: 'Tra il Politecnico e il distretto tessile.',
+    story: [
+      'Uniamo intelligenza artificiale, visione artificiale ed elettronica con l’esperienza di chi il tessuto lo lavora ogni giorno.',
+      `La sede legale è a ${SITE.legalSeat}; la sede operativa è a ${SITE.operationalSeat}, nel cuore del distretto tessile.`,
+    ],
+    teamEyebrow: 'Conosci il team',
+    teamTitle: 'Il team che guida il cambiamento.',
+    photoPlaceholder: 'Foto in arrivo',
+    awardsEyebrow: 'Riconoscimenti',
+    awardsTitle: 'Premi e selezioni.',
+    awards: [
+      {
+        title: 'Forbes Under 30 2026',
+        text: 'Forbes Italia; Mirko Agarla, Sergio Gugliandolo, Francesco Mascarana, Simone Torino; categoria Manufacturing & Industry.',
+      },
+      {
+        title: 'Premio MICS Futuro Made in Italy',
+        text: 'Tra i 10 vincitori su 264 candidature.',
+      },
+      { title: 'PNI 2025', text: 'Top 4 Industrial e Premio Venture CDP.' },
+      { title: 'Start Up Now 2025', text: 'Primo premio, Fondazione Novara Sviluppo.' },
+      { title: 'Start Cup Piemonte Valle d’Aosta 2025', text: '' },
+    ],
+    pressLink: 'Leggi cosa dicono di noi',
+    ctaTitle: 'Vuoi far parte della squadra?',
+    ctaText: 'Non ci sono posizioni aperte, ma la candidatura spontanea è sempre benvenuta.',
+    ctaButton: 'Lavora con noi',
+  },
+  en: {
+    title: 'About us: the BrainTex team',
+    description:
+      'BrainTex srl is a startup founded in November 2024 and incubated at I3P, the Politecnico di Torino incubator. Meet the team and see our awards.',
+    eyebrow: 'About us',
+    h1: 'A team built to see what others miss.',
+    lead: 'BrainTex srl was founded in November 2024 and is incubated at I3P, the Politecnico di Torino incubator. The team was born from the I3P Academy for aspiring entrepreneurs.',
+    storyEyebrow: 'Our story',
+    storyTitle: 'Between the Politecnico and the textile district.',
+    story: [
+      'We combine artificial intelligence, machine vision and electronics with the experience of people who work with fabric every day.',
+      `Our registered office is in ${SITE.legalSeat}; our operational site is in ${SITE.operationalSeat}, at the heart of the textile district.`,
+    ],
+    teamEyebrow: 'Meet the team',
+    teamTitle: 'The team leading the change.',
+    photoPlaceholder: 'Photo coming soon',
+    awardsEyebrow: 'Awards',
+    awardsTitle: 'Awards and selections.',
+    awards: [
+      {
+        title: 'Forbes Under 30 2026',
+        text: 'Forbes Italia; Mirko Agarla, Sergio Gugliandolo, Francesco Mascarana, Simone Torino; Manufacturing & Industry category.',
+      },
+      {
+        title: 'MICS Award – Futuro Made in Italy',
+        text: 'Among the 10 winners out of 264 applications.',
+      },
+      { title: 'PNI 2025 (National Innovation Award)', text: 'Top 4 Industrial and CDP Venture Award.' },
+      { title: 'Start Up Now 2025', text: 'First prize, Fondazione Novara Sviluppo.' },
+      { title: 'Start Cup Piemonte Valle d’Aosta 2025', text: '' },
+    ],
+    pressLink: 'Read what they say about us',
+    ctaTitle: 'Want to join the team?',
+    ctaText: 'There are no open positions right now, but spontaneous applications are always welcome.',
+    ctaButton: 'Careers',
+  },
+}[lang];
+---
+
+<Base lang={lang} routeKey="about" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
+
+  <section class="section">
+    <div class="wrap split">
+      <div data-reveal>
+        <p class="eyebrow">{t.storyEyebrow}</p>
+        <h2>{t.storyTitle}</h2>
+      </div>
+      <div data-reveal="1">
+        {t.story.map((p) => <p class="lead">{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.teamEyebrow}</p>
+        <h2>{t.teamTitle}</h2>
+      </div>
+      <ul class="grid grid--3 plain">
+        {
+          team.map((m, i) => (
+            <li class="member" data-reveal={String((i % 3) + 1)}>
+              <div class="placeholder member__photo" title={t.photoPlaceholder}>
+                <span aria-hidden="true">{initials(m.name)}</span>
+              </div>
+              <h3>{m.name}</h3>
+              <p class="muted">{m.role}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.awardsEyebrow}</p>
+        <h2>{t.awardsTitle}</h2>
+      </div>
+      <ul class="awards plain">
+        {
+          t.awards.map((a) => (
+            <li data-reveal>
+              <h3>{a.title}</h3>
+              {a.text && <p class="muted">{a.text}</p>}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="awards__more"><a href={href('press', lang)}>{t.pressLink}</a></p>
+    </div>
+  </section>
+
+  <CtaBand title={t.ctaTitle} text={t.ctaText} button={t.ctaButton} link={href('careers', lang)} />
+</Base>
+
+<style>
+  .member__photo {
+    aspect-ratio: 1;
+    margin-bottom: 1rem;
+    border-radius: var(--radius);
+  }
+
+  .member__photo span {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--cyan-300);
+  }
+
+  .member h3 {
+    margin-bottom: 0.2rem;
+  }
+
+  .awards li {
+    display: grid;
+    grid-template-columns: minmax(12rem, 22rem) 1fr;
+    gap: 0.5rem 2rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .awards h3,
+  .awards p {
+    margin: 0;
+  }
+
+  @media (max-width: 40rem) {
+    .awards li {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .awards__more {
+    margin-top: 2rem;
+    font-weight: 700;
+  }
+</style>

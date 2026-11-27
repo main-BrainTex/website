@@ -224,6 +224,20 @@ a:hover {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
 }
 
+/* Due colonne: titolo a sinistra, testo a destra */
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: start;
+}
+
+@media (max-width: 48rem) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Lista senza puntini (griglie di card) */
 .plain {
   margin: 0;
