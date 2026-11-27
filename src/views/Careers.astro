@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const applyLink = `${href('contact', lang)}?chi=candidato`;
+
+const t = {
+  it: {
+    title: 'Lavora con noi',
+    description:
+      'Lavora con BrainTex: intelligenza artificiale e visione artificiale per il tessile. Nessuna posizione aperta al momento, candidatura spontanea sempre benvenuta.',
+    eyebrow: 'Lavora con noi',
+    h1: 'Ti piace trovare quello che gli altri non vedono?',
+    lead: 'Al momento non ci sono posizioni aperte. Ma siamo sempre curiosi di conoscere persone in gamba: mandaci una candidatura spontanea.',
+    apply: 'Invia la candidatura',
+    whatEyebrow: 'Cosa facciamo',
+    whatTitle: 'Tecnologia vera, su macchine vere.',
+    what: [
+      {
+        title: 'Intelligenza artificiale',
+        text: 'Modelli che imparano un tessuto nuovo in pochi minuti e trovano difetti che sfuggono all’occhio.',
+      },
+      {
+        title: 'Hardware ed elettronica',
+        text: 'Unità di ispezione che lavorano tutti i giorni in fabbrica, accanto alle persone.',
+      },
+      {
+        title: 'Software e prodotto',
+        text: 'Applicazioni che portano le informazioni giuste all’operatore, nel momento giusto.',
+      },
+      {
+        title: 'Rapporto con le aziende',
+        text: 'Ascolto della produzione, installazione e affiancamento nel distretto tessile.',
+      },
+    ],
+    howEyebrow: 'Come candidarti',
+    howTitle: 'Due minuti, nessun formato da rispettare.',
+    how: 'Compila il modulo di contatto scegliendo “Candidato”: raccontaci chi sei e cosa ti piacerebbe fare, e aggiungi il link al tuo profilo LinkedIn o al tuo portfolio.',
+  },
+  en: {
+    title: 'Careers',
+    description:
+      'Work at BrainTex: artificial intelligence and machine vision for textiles. No open positions right now, spontaneous applications always welcome.',
+    eyebrow: 'Careers',
+    h1: 'Do you enjoy finding what others miss?',
+    lead: 'There are no open positions right now. But we are always curious to meet talented people: send us a spontaneous application.',
+    apply: 'Apply now',
+    whatEyebrow: 'What we do',
+    whatTitle: 'Real technology, on real machines.',
+    what: [
+      {
+        title: 'Artificial intelligence',
+        text: 'Models that learn a new fabric in minutes and find defects the eye misses.',
+      },
+      {
+        title: 'Hardware and electronics',
+        text: 'Inspection units working every day on the factory floor, alongside people.',
+      },
+      {
+        title: 'Software and product',
+        text: 'Applications that bring the right information to the operator at the right time.',
+      },
+      {
+        title: 'Working with companies',
+        text: 'Listening to production, installation and on-site support in the textile district.',
+      },
+    ],
+    howEyebrow: 'How to apply',
+    howTitle: 'Two minutes, no format required.',
+    how: 'Fill in the contact form choosing “Candidate”: tell us who you are and what you would like to do, and add a link to your LinkedIn profile or portfolio.',
+  },
+}[lang];
+---
+
+<Base lang={lang} routeKey="careers" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead}>
+    <div class="actions">
+      <a class="btn" href={applyLink}>{t.apply}</a>
+    </div>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.whatEyebrow}</p>
+        <h2>{t.whatTitle}</h2>
+      </div>
+      <ul class="grid grid--4 plain">
+        {
+          t.what.map((w, i) => (
+            <li class="card" data-reveal={String(i + 1)}>
+              <h3>{w.title}</h3>
+              <p>{w.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap split">
+      <div data-reveal>
+        <p class="eyebrow">{t.howEyebrow}</p>
+        <h2>{t.howTitle}</h2>
+      </div>
+      <div data-reveal="1">
+        <p class="lead">{t.how}</p>
+        <a class="btn" href={applyLink}>{t.apply}</a>
+      </div>
+    </div>
+  </section>
+</Base>
