@@ -1,7 +1,7 @@
 ---
 // Racconto a scorrimento della home: quattro eventi lungo la filiera, ciascuno con il finale
 // "senza" e "con BrainTex". Esempio illustrativo, nessun dato reale. Solo CSS/SVG e poco JS.
-import type { Lang } from '../i18n';
+import { href, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -14,6 +14,8 @@ const t = {
     title: 'Lo stesso difetto, due finali diversi.',
     lead: 'Senza controllo, un difetto viaggia verso valle e costa di più a ogni fase. Scorri la giornata e confronta.',
     note: 'Esempio illustrativo: eventi e conseguenze sono semplificati.',
+    enter: 'Entra in fabbrica',
+    demo: 'Esplora la simulazione completa',
     modeLabel: 'Mostra il finale',
     without: 'Senza BrainTex',
     with: 'Con BrainTex',
@@ -77,6 +79,8 @@ const t = {
     title: 'The same defect, two different endings.',
     lead: 'Without inspection, a defect travels downstream and costs more at every stage. Scroll through the day and compare.',
     note: 'Illustrative example: events and consequences are simplified.',
+    enter: 'Step into the factory',
+    demo: 'Explore the full simulation',
     modeLabel: 'Show the ending',
     without: 'Without BrainTex',
     with: 'With BrainTex',
@@ -193,10 +197,19 @@ const t = {
         }
       </ol>
     </div>
+
+    <div class="actions story__actions">
+      <a class="btn" href={href('factory', lang)}>{t.enter}</a>
+      <a class="btn btn--ghost" href={`${href('factory', lang)}#demo`}>{t.demo}</a>
+    </div>
   </div>
 </section>
 
 <style>
+  .story__actions {
+    justify-content: center;
+  }
+
   .story__grid {
     display: grid;
     grid-template-columns: minmax(16rem, 0.8fr) 1.2fr;
