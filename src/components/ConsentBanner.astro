@@ -10,6 +10,8 @@ const t = {
   it: {
     label: 'Consenso ai cookie',
     text: 'Usiamo cookie di statistica (Google Analytics) solo se ci dai il consenso, per capire come viene usato il sito. Nessuna profilazione pubblicitaria.',
+    close: 'Chiudendo il banner con la X continui a navigare senza cookie di statistica.',
+    closeLabel: 'Chiudi e continua senza accettare',
     more: 'Cookie Policy',
     accept: 'Accetta',
     reject: 'Rifiuta',
@@ -17,6 +19,8 @@ const t = {
   en: {
     label: 'Cookie consent',
     text: 'We use analytics cookies (Google Analytics) only with your consent, to understand how the site is used. No advertising profiling.',
+    close: 'If you close this banner with the X, you keep browsing without analytics cookies.',
+    closeLabel: 'Close and continue without accepting',
     more: 'Cookie Policy',
     accept: 'Accept',
     reject: 'Reject',
@@ -25,8 +29,12 @@ const t = {
 ---
 
 <section class="consent" aria-label={t.label} data-consent hidden>
+  <button class="consent__close" type="button" data-consent-choice="denied" aria-label={t.closeLabel}>
+    <span aria-hidden="true"></span>
+  </button>
   <p>
     {t.text}
+    {t.close}
     <a href={href('cookies', lang)}>{t.more}</a>
   </p>
   <div class="consent__actions">
@@ -53,6 +61,44 @@ const t = {
 
   .consent p {
     margin-bottom: 1rem;
+    padding-right: 2rem;
+  }
+
+  /* La X ha la stessa funzione di "Rifiuta" (Linee guida cookie del Garante) */
+  .consent__close {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .consent__close:hover {
+    border-color: var(--text);
+  }
+
+  .consent__close span,
+  .consent__close span::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.9rem;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .consent__close span {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .consent__close span::after {
+    content: '';
+    transform: translate(-50%, -50%) rotate(90deg);
   }
 
   .consent__actions {

@@ -11,17 +11,24 @@ declare global {
 
 export type Choice = 'granted' | 'denied';
 
-const STORAGE_KEY = 'bt-consent-v1';
+const STORAGE_KEY = 'bt-consent';
+// Linee guida cookie del Garante: la scelta non si ripropone prima di 6 mesi; dopo 6 mesi si chiede di nuovo.
+const MAX_AGE_MS = 1000 * 60 * 60 * 24 * 182;
 const PRODUCTION_HOSTS = ['www.braintex.it', 'braintex.it'];
 
 const gaId = document.documentElement.dataset.ga;
 const enabled = Boolean(gaId) && PRODUCTION_HOSTS.includes(location.hostname);
 let loaded = false;
 
+/** Scelta salvata, oppure null se assente o più vecchia di 6 mesi. */
 export function readChoice(): Choice | null {
   try {
-    const value = localStorage.getItem(STORAGE_KEY);
-    return value === 'granted' || value === 'denied' ? value : null;
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null') as {
+      choice?: unknown;
+      date?: unknown;
+    } | null;
+    const fresh = typeof saved?.date === 'number' && Date.now() - saved.date < MAX_AGE_MS;
+    return fresh && (saved?.choice === 'granted' || saved?.choice === 'denied') ? saved.choice : null;
   } catch {
     return null;
   }
@@ -29,7 +36,7 @@ export function readChoice(): Choice | null {
 
 function saveChoice(choice: Choice) {
   try {
-    localStorage.setItem(STORAGE_KEY, choice);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ choice, date: Date.now() }));
   } catch {
     // Archiviazione non disponibile: la scelta vale solo per questa pagina.
   }
