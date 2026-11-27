@@ -1,0 +1,91 @@
+---
+// Banner cookie leggero: Accetta e Rifiuta hanno lo stesso peso; la scelta è modificabile dal footer.
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = {
+  it: {
+    label: 'Consenso ai cookie',
+    text: 'Usiamo cookie di statistica (Google Analytics) solo se ci dai il consenso, per capire come viene usato il sito. Nessuna profilazione pubblicitaria.',
+    more: 'Cookie Policy',
+    accept: 'Accetta',
+    reject: 'Rifiuta',
+  },
+  en: {
+    label: 'Cookie consent',
+    text: 'We use analytics cookies (Google Analytics) only with your consent, to understand how the site is used. No advertising profiling.',
+    more: 'Cookie Policy',
+    accept: 'Accept',
+    reject: 'Reject',
+  },
+}[lang];
+---
+
+<section class="consent" aria-label={t.label} data-consent hidden>
+  <p>
+    {t.text}
+    <a href={href('cookies', lang)}>{t.more}</a>
+  </p>
+  <div class="consent__actions">
+    <button class="btn btn--ghost" type="button" data-consent-choice="denied">{t.reject}</button>
+    <button class="btn btn--ghost" type="button" data-consent-choice="granted">{t.accept}</button>
+  </div>
+</section>
+
+<style>
+  .consent {
+    position: fixed;
+    z-index: 60;
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    max-width: 34rem;
+    padding: 1.25rem 1.4rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+    box-shadow: 0 20px 50px -10px rgb(0 0 0 / 0.6);
+    font-size: 0.95rem;
+  }
+
+  .consent p {
+    margin-bottom: 1rem;
+  }
+
+  .consent__actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .consent__actions .btn {
+    flex: 1;
+    min-height: 2.75rem;
+  }
+</style>
+
+<script>
+  import { readChoice, setChoice, type Choice } from '../lib/analytics';
+
+  const banner = document.querySelector<HTMLElement>('[data-consent]');
+  if (banner) {
+    if (!readChoice()) banner.hidden = false;
+
+    banner.addEventListener('click', (e) => {
+      const button = (e.target as Element).closest<HTMLButtonElement>('[data-consent-choice]');
+      if (!button) return;
+      setChoice(button.dataset.consentChoice as Choice);
+      banner.hidden = true;
+    });
+
+    // Pulsante "Preferenze cookie" nel footer: riapre il banner.
+    document.querySelectorAll('[data-consent-open]').forEach((el) =>
+      el.addEventListener('click', () => {
+        banner.hidden = false;
+        banner.querySelector('button')?.focus();
+      }),
+    );
+  }
+</script>

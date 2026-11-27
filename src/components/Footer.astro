@@ -50,6 +50,7 @@ const year = new Date().getFullYear();
       <ul>
         <li><a href={href('privacy', lang)}>{f.privacy}</a></li>
         <li><a href={href('cookies', lang)}>{f.cookies}</a></li>
+        <li><button class="linklike" type="button" data-consent-open>{f.cookiePrefs}</button></li>
       </ul>
     </div>
   </div>
@@ -134,6 +135,20 @@ const year = new Date().getFullYear();
 
   .site-footer__legal p {
     margin: 0;
+  }
+
+  .linklike {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--text);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .linklike:hover {
+    color: var(--accent);
+    text-decoration: underline;
   }
 
   .site-footer__legal ul {
