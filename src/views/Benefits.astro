@@ -1,0 +1,245 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { AREAS, BENEFITS, ROLES, type AreaKey, type RoleKey } from '../data/benefits';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const total = BENEFITS.length;
+const areaKeys = Object.keys(AREAS) as AreaKey[];
+const roleKeys = Object.keys(ROLES) as RoleKey[];
+
+const t = {
+  it: {
+    title: 'Benefici: cosa cambia con BrainTex',
+    description: `${total} benefici di BrainTex in sei aree: produzione, qualità, macchine e processo, dati, persone e sostenibilità. Filtra per area o per il tuo ruolo.`,
+    eyebrow: 'Benefici',
+    h1: 'Un difetto visto in tempo cambia tutto quello che viene dopo.',
+    lead: `${total} benefici in sei aree. Alcuni li vedi da subito, altri crescono nel tempo, man mano che i dati si accumulano. Scegli il tuo ruolo per vedere quelli che contano per te.`,
+    filters: 'Filtra i benefici',
+    area: 'Area',
+    role: 'Il tuo ruolo',
+    all: 'Tutti',
+    forWhom: 'Per',
+    count: (n: number) => (n === 1 ? '1 beneficio' : `${n} benefici`),
+    ctaTitle: 'Quali contano di più per te?',
+    ctaText: 'Raccontaci la tua produzione: partiamo dai benefici che ti servono davvero.',
+    ctaButton: 'Richiedi una demo',
+  },
+  en: {
+    title: 'Benefits: what changes with BrainTex',
+    description: `${total} BrainTex benefits across six areas: production, quality, machines and process, data, people and sustainability. Filter by area or by your role.`,
+    eyebrow: 'Benefits',
+    h1: 'A defect spotted in time changes everything that comes after.',
+    lead: `${total} benefits across six areas. Some you see straight away, others grow over time as data builds up. Choose your role to see the ones that matter to you.`,
+    filters: 'Filter the benefits',
+    area: 'Area',
+    role: 'Your role',
+    all: 'All',
+    forWhom: 'For',
+    count: (n: number) => (n === 1 ? '1 benefit' : `${n} benefits`),
+    ctaTitle: 'Which ones matter most to you?',
+    ctaText: 'Tell us about your production: we start from the benefits you really need.',
+    ctaButton: 'Request a demo',
+  },
+}[lang];
+
+// Etichette del contatore passate allo script senza codice inline (CSP).
+const countLabels = JSON.stringify({ one: t.count(1), many: t.count(2).replace('2', '{n}') });
+---
+
+<Base lang={lang} routeKey="benefits" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
+
+  <section class="section benefits" data-benefits data-count-labels={countLabels}>
+    <div class="wrap">
+      <div class="filters" role="group" aria-label={t.filters}>
+        <div class="filters__group">
+          <span class="filters__label" id="flt-area">{t.area}</span>
+          <div class="chips" role="group" aria-labelledby="flt-area">
+            <button type="button" class="chip" data-filter="area" data-value="" aria-pressed="true">{t.all}</button>
+            {
+              areaKeys.map((k) => (
+                <button type="button" class="chip" data-filter="area" data-value={k} aria-pressed="false">
+                  {AREAS[k][lang]}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+        <div class="filters__group">
+          <span class="filters__label" id="flt-role">{t.role}</span>
+          <div class="chips" role="group" aria-labelledby="flt-role">
+            <button type="button" class="chip" data-filter="role" data-value="" aria-pressed="true">{t.all}</button>
+            {
+              roleKeys.map((k) => (
+                <button type="button" class="chip" data-filter="role" data-value={k} aria-pressed="false">
+                  {ROLES[k][lang]}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+        <p class="filters__count" role="status" aria-live="polite" data-count>{t.count(total)}</p>
+      </div>
+
+      {
+        areaKeys.map((area) => (
+          <section class="area" data-area-group={area} aria-labelledby={`area-${area}`}>
+            <h2 id={`area-${area}`}>{AREAS[area][lang]}</h2>
+            <ul class="grid grid--3 plain">
+              {BENEFITS.filter((x) => x.area === area).map((x) => (
+                <li class="card benefit" data-area={x.area} data-roles={x.roles.join(' ')}>
+                  <p class="benefit__text">{x.text[lang]}</p>
+                  <p class="benefit__roles">
+                    {t.forWhom}: {x.roles.map((r) => ROLES[r][lang]).join(', ')}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand title={t.ctaTitle} text={t.ctaText} button={t.ctaButton} link={href('contact', lang)} />
+</Base>
+
+<style>
+  .filters {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: 3rem;
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+  }
+
+  /* Senza JavaScript i filtri non servono: si vede tutto il catalogo */
+  @media (scripting: none) {
+    .filters {
+      display: none;
+    }
+  }
+
+  .filters__label {
+    display: block;
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chip {
+    min-height: 2.5rem;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid rgb(169 196 214 / 0.4);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .chip:hover {
+    border-color: var(--cyan-300);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--cyan-200);
+    border-color: var(--cyan-200);
+    color: var(--bg-deep);
+    font-weight: 700;
+  }
+
+  .filters__count {
+    margin: 0;
+    font-weight: 700;
+    color: var(--green-300);
+  }
+
+  .area {
+    margin-bottom: 3rem;
+  }
+
+  .area h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .area[hidden],
+  .benefit[hidden] {
+    display: none;
+  }
+
+  .benefit {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .benefit__text {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+
+  .benefit__roles {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-benefits]');
+  if (root) {
+    const labels = JSON.parse(root.dataset.countLabels ?? '{}') as { one: string; many: string };
+    const countEl = root.querySelector<HTMLElement>('[data-count]')!;
+    const state = { area: '', role: '' };
+
+    const apply = () => {
+      let shown = 0;
+      root.querySelectorAll<HTMLElement>('[data-area-group]').forEach((group) => {
+        let groupShown = 0;
+        group.querySelectorAll<HTMLElement>('.benefit').forEach((item) => {
+          const ok =
+            (!state.area || item.dataset.area === state.area) &&
+            (!state.role || (item.dataset.roles ?? '').split(' ').includes(state.role));
+          item.hidden = !ok;
+          if (ok) groupShown += 1;
+        });
+        group.hidden = groupShown === 0;
+        shown += groupShown;
+      });
+      countEl.textContent = shown === 1 ? labels.one : labels.many.replace('{n}', String(shown));
+    };
+
+    root.addEventListener('click', (e) => {
+      const chip = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
+      if (!chip) return;
+      const key = chip.dataset.filter as 'area' | 'role';
+      state[key] = chip.dataset.value ?? '';
+      root
+        .querySelectorAll<HTMLButtonElement>(`[data-filter="${key}"]`)
+        .forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      apply();
+    });
+  }
+</script>

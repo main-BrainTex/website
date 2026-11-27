@@ -7,6 +7,7 @@ export const LANGS: Lang[] = ['it', 'en'];
 export const ROUTES = {
   home: { it: '/', en: '/en' },
   solution: { it: '/soluzione', en: '/en/solution' },
+  benefits: { it: '/benefici', en: '/en/benefits' },
   about: { it: '/chi-siamo', en: '/en/about' },
   careers: { it: '/lavora-con-noi', en: '/en/careers' },
   investors: { it: '/investitori-e-partner', en: '/en/investors-partners' },
@@ -44,6 +45,7 @@ export const UI = {
     langSwitchLabel: 'Read in English',
     nav: {
       solution: 'Soluzione',
+      benefits: 'Benefici',
       about: 'Chi siamo',
       careers: 'Lavora con noi',
       investors: 'Investitori e partner',
@@ -75,6 +77,7 @@ export const UI = {
     langSwitchLabel: 'Leggi in italiano',
     nav: {
       solution: 'Solution',
+      benefits: 'Benefits',
       about: 'About us',
       careers: 'Careers',
       investors: 'Investors & partners',

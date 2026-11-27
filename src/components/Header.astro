@@ -9,7 +9,7 @@ interface Props {
 const { lang, routeKey } = Astro.props;
 const t = UI[lang];
 const other = LANGS.find((l) => l !== lang)!;
-const items: RouteKey[] = ['solution', 'about', 'careers', 'investors', 'press'];
+const items: RouteKey[] = ['solution', 'benefits', 'about', 'careers', 'investors', 'press'];
 ---
 
 <header class="site-header">
@@ -157,7 +157,7 @@ const items: RouteKey[] = ['solution', 'about', 'careers', 'investors', 'press']
     top: 6px;
   }
 
-  @media (max-width: 62rem) {
+  @media (max-width: 72rem) {
     .nav-toggle {
       display: block;
     }
@@ -199,13 +199,13 @@ const items: RouteKey[] = ['solution', 'about', 'careers', 'investors', 'press']
   }
 
   /* Senza JS il menu resta visibile e il pulsante sparisce; con JS si apre col pulsante */
-  @media (max-width: 62rem) and (scripting: none) {
+  @media (max-width: 72rem) and (scripting: none) {
     .nav-toggle {
       display: none;
     }
   }
 
-  @media (max-width: 62rem) and (scripting: enabled) {
+  @media (max-width: 72rem) and (scripting: enabled) {
     .site-nav:not(.is-open) {
       display: none;
     }
