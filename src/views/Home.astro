@@ -215,11 +215,26 @@ const jsonLd = {
   description: t.description,
   foundingDate: SITE.foundingDate,
   vatID: `IT${SITE.vat}`,
+  taxID: SITE.vat,
   address: {
     '@type': 'PostalAddress',
-    addressLocality: 'Romagnano Sesia',
-    addressRegion: 'NO',
+    streetAddress: SITE.legalAddress.street,
+    postalCode: SITE.legalAddress.postalCode,
+    addressLocality: SITE.legalAddress.city,
+    addressRegion: SITE.legalAddress.province,
     addressCountry: 'IT',
+  },
+  location: {
+    '@type': 'Place',
+    name: lang === 'it' ? 'Sede operativa' : 'Operational site',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: SITE.operationalAddress.street,
+      postalCode: SITE.operationalAddress.postalCode,
+      addressLocality: SITE.operationalAddress.city,
+      addressRegion: SITE.operationalAddress.province,
+      addressCountry: 'IT',
+    },
   },
   sameAs: [SITE.linkedin],
 };

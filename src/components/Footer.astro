@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../config';
+import { formatAddress, SITE } from '../config';
 import { href, UI, type Lang, type RouteKey } from '../i18n';
 import LogoPlaceholder from './LogoPlaceholder.astro';
 
@@ -19,8 +19,8 @@ const year = new Date().getFullYear();
       <div class="site-footer__brand">
         <LogoPlaceholder label={t.logoPlaceholder} />
         <p class="muted">
-          {f.legalSeat}: {SITE.legalSeat}<br />
-          {f.operationalSeat}: {SITE.operationalSeat}
+          {f.legalSeat}: {formatAddress(SITE.legalAddress)}<br />
+          {f.operationalSeat}: {formatAddress(SITE.operationalAddress)}
         </p>
         <a href={SITE.linkedin} rel="noopener" target="_blank">{f.follow}</a>
       </div>
@@ -44,8 +44,8 @@ const year = new Date().getFullYear();
 
     <div class="site-footer__legal">
       <p>
-        © {year} {SITE.legalName} · {f.vat} {SITE.vat} · REA {SITE.rea} · {f.capital}
-        {SITE.shareCapital}
+        © {year} {SITE.legalName} · {f.taxVat} {SITE.vat} · {f.registry} {SITE.registry} · REA
+        {SITE.rea} · {f.capital} {SITE.shareCapital}{SITE.shareCapitalFullyPaid && ` ${f.paidUp}`}
       </p>
       <ul>
         <li><a href={href('privacy', lang)}>{f.privacy}</a></li>
