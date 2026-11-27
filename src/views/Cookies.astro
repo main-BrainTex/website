@@ -1,0 +1,127 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    title: 'Cookie Policy',
+    description: 'Quali cookie e strumenti di memorizzazione usa il sito braintex.it e come gestire il consenso.',
+    eyebrow: 'Cookie',
+    h1: 'Cookie Policy',
+    lead: 'Pochi strumenti, solo quelli che servono. Le statistiche partono solo se dai il consenso.',
+    updated: 'Ultimo aggiornamento: 27 novembre 2026.',
+    techTitle: 'Strumenti tecnici (sempre attivi)',
+    techText:
+      'Servono a far funzionare il sito e non richiedono consenso. Non tracciano la navigazione.',
+    statsTitle: 'Cookie statistici (solo con il tuo consenso)',
+    statsText:
+      'Usiamo Google Analytics 4 di Google Ireland Limited per capire come viene usato il sito (pagine visitate, invio del modulo di contatto). Non usiamo cookie di profilazione pubblicitaria e i segnali pubblicitari di Google restano disattivati. Senza consenso Google Analytics non viene caricato.',
+    name: 'Nome',
+    purpose: 'Finalità',
+    duration: 'Durata',
+    rows: {
+      consent: ['bt-consent-v1 (memoria locale)', 'Ricorda la tua scelta sui cookie', 'Fino a quando non la cancelli'],
+      ga: ['_ga', 'Distingue i visitatori in forma anonima (Google Analytics)', '2 anni'],
+      gaId: ['_ga_<ID>', 'Mantiene lo stato della sessione (Google Analytics)', '2 anni'],
+    },
+    manageTitle: 'Come gestire il consenso',
+    manageBefore: 'Puoi cambiare idea in qualsiasi momento con il pulsante “Preferenze cookie” in fondo a ogni pagina, oppure cancellare i cookie dalle impostazioni del browser. Per sapere come trattiamo i dati personali leggi la ',
+    privacy: 'Privacy Policy',
+  },
+  en: {
+    title: 'Cookie Policy',
+    description: 'Which cookies and storage tools the braintex.it website uses and how to manage your consent.',
+    eyebrow: 'Cookies',
+    h1: 'Cookie Policy',
+    lead: 'Few tools, only the ones we need. Analytics only start with your consent.',
+    updated: 'Last updated: 27 November 2026.',
+    techTitle: 'Technical tools (always active)',
+    techText: 'They make the site work and do not require consent. They do not track browsing.',
+    statsTitle: 'Analytics cookies (only with your consent)',
+    statsText:
+      'We use Google Analytics 4 by Google Ireland Limited to understand how the site is used (pages visited, contact form submissions). We do not use advertising profiling cookies and Google advertising signals stay disabled. Without consent, Google Analytics is not loaded.',
+    name: 'Name',
+    purpose: 'Purpose',
+    duration: 'Duration',
+    rows: {
+      consent: ['bt-consent-v1 (local storage)', 'Remembers your cookie choice', 'Until you delete it'],
+      ga: ['_ga', 'Distinguishes visitors anonymously (Google Analytics)', '2 years'],
+      gaId: ['_ga_<ID>', 'Keeps the session state (Google Analytics)', '2 years'],
+    },
+    manageTitle: 'How to manage consent',
+    manageBefore: 'You can change your mind at any time with the “Cookie preferences” button at the bottom of every page, or delete cookies from your browser settings. To learn how we process personal data, read the ',
+    privacy: 'Privacy Policy',
+  },
+}[lang];
+---
+
+<Base lang={lang} routeKey="cookies" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
+  <section class="section">
+    <div class="wrap prose">
+      <DraftNotice lang={lang} />
+      <p class="muted">{t.updated}</p>
+
+      <h2>{t.techTitle}</h2>
+      <p>{t.techText}</p>
+      <table class="cookies">
+        <thead><tr><th scope="col">{t.name}</th><th scope="col">{t.purpose}</th><th scope="col">{t.duration}</th></tr></thead>
+        <tbody>
+          <tr>{t.rows.consent.map((c, i) => (i === 0 ? <th scope="row">{c}</th> : <td>{c}</td>))}</tr>
+        </tbody>
+      </table>
+
+      <h2>{t.statsTitle}</h2>
+      <p>{t.statsText}</p>
+      <table class="cookies">
+        <thead><tr><th scope="col">{t.name}</th><th scope="col">{t.purpose}</th><th scope="col">{t.duration}</th></tr></thead>
+        <tbody>
+          {
+            [t.rows.ga, t.rows.gaId].map((row) => (
+              <tr>{row.map((c, i) => (i === 0 ? <th scope="row">{c}</th> : <td>{c}</td>))}</tr>
+            ))
+          }
+        </tbody>
+      </table>
+
+      <h2>{t.manageTitle}</h2>
+      <p>{t.manageBefore}<a href={href('privacy', lang)}>{t.privacy}</a>.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .cookies {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .cookies th,
+  .cookies td {
+    padding: 0.75rem 0.75rem 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .cookies thead th {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .cookies tbody th {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-weight: 400;
+  }
+</style>
