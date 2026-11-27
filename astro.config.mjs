@@ -14,4 +14,23 @@ export default defineConfig({
     inlineStylesheets: 'never',
   },
   compressHTML: true,
+  markdown: { syntaxHighlight: false },
+  // CSP generata da Astro (meta tag con hash degli script/stili inline).
+  // Niente attributi style="" nel markup: la policy non li consente.
+  security: {
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com",
+        "connect-src 'self' https://api.web3forms.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com",
+        "font-src 'self'",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+      ],
+      scriptDirective: {
+        resources: ["'self'", 'https://www.googletagmanager.com'],
+      },
+    },
+  },
 });

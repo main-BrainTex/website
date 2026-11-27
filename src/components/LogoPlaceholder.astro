@@ -1,0 +1,34 @@
+---
+// Segnaposto del logo finché non arriva il vettoriale ufficiale (il logo non va ricostruito).
+interface Props {
+  label: string;
+}
+const { label } = Astro.props;
+---
+
+<span class="logo-ph" title={label}>
+  <span class="logo-ph__mark" aria-hidden="true"></span>
+  <span class="logo-ph__name">BrainTex</span>
+</span>
+
+<style>
+  .logo-ph {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .logo-ph__mark {
+    width: 2rem;
+    height: 2rem;
+    border: 1.5px dashed var(--text-muted);
+    border-radius: 50%;
+  }
+
+  .logo-ph__name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>

@@ -1,0 +1,213 @@
+---
+import { href, UI, LANGS, type Lang, type RouteKey } from '../i18n';
+import LogoPlaceholder from './LogoPlaceholder.astro';
+
+interface Props {
+  lang: Lang;
+  routeKey?: RouteKey;
+}
+const { lang, routeKey } = Astro.props;
+const t = UI[lang];
+const other = LANGS.find((l) => l !== lang)!;
+const items: RouteKey[] = ['solution', 'about', 'careers', 'investors', 'press'];
+---
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="site-header__brand" href={href('home', lang)} aria-label="BrainTex – Home">
+      <LogoPlaceholder label={t.logoPlaceholder} />
+    </a>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="nav-toggle__bars" aria-hidden="true"></span>
+      <span class="visually-hidden">{t.menu}</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label={t.mainNav}>
+      <ul>
+        {
+          items.map((key) => (
+            <li>
+              <a href={href(key, lang)} aria-current={routeKey === key ? 'page' : undefined}>
+                {t.nav[key]}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn site-nav__cta" href={href('contact', lang)} aria-current={routeKey === 'contact' ? 'page' : undefined}>
+        {t.nav.contact}
+      </a>
+      <a
+        class="site-nav__lang"
+        href={href(routeKey ?? 'home', other)}
+        hreflang={other}
+        lang={other}
+        aria-label={t.langSwitchLabel}
+      >
+        {other.toUpperCase()}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(0 23 42 / 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 4.25rem;
+  }
+
+  .site-header__brand {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav ul a {
+    color: var(--text);
+    font-size: 0.95rem;
+    text-decoration: none;
+    padding-block: 0.4rem;
+    border-bottom: 2px solid transparent;
+  }
+
+  .site-nav ul a:hover,
+  .site-nav ul a[aria-current='page'] {
+    border-bottom-color: var(--accent);
+  }
+
+  .site-nav__cta {
+    min-height: 2.5rem;
+    padding: 0.55rem 1.15rem;
+    font-size: 0.95rem;
+  }
+
+  .site-nav__lang {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-decoration: none;
+  }
+
+  .nav-toggle {
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .nav-toggle__bars,
+  .nav-toggle__bars::before,
+  .nav-toggle__bars::after {
+    display: block;
+    width: 1.25rem;
+    height: 2px;
+    margin-inline: auto;
+    background: currentColor;
+    transition: transform 0.25s var(--ease);
+  }
+
+  .nav-toggle__bars {
+    position: relative;
+  }
+
+  .nav-toggle__bars::before,
+  .nav-toggle__bars::after {
+    content: '';
+    position: absolute;
+  }
+
+  .nav-toggle__bars::before {
+    top: -6px;
+  }
+
+  .nav-toggle__bars::after {
+    top: 6px;
+  }
+
+  @media (max-width: 62rem) {
+    .nav-toggle {
+      display: block;
+    }
+
+    .site-nav {
+      position: absolute;
+      inset: 100% 0 auto;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+      padding: 1.25rem var(--gutter) 1.75rem;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .site-nav ul {
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .site-nav ul a {
+      display: block;
+      padding-block: 0.8rem;
+      font-size: 1.1rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-toggle__bars {
+      background: transparent;
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-toggle__bars::before {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .nav-toggle[aria-expanded='true'] .nav-toggle__bars::after {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+  }
+
+  /* Senza JS il menu resta visibile e il pulsante sparisce; con JS si apre col pulsante */
+  @media (max-width: 62rem) and (scripting: none) {
+    .nav-toggle {
+      display: none;
+    }
+  }
+
+  @media (max-width: 62rem) and (scripting: enabled) {
+    .site-nav:not(.is-open) {
+      display: none;
+    }
+  }
+</style>

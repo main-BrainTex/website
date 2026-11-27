@@ -1,0 +1,97 @@
+// Rotte bilingui: italiano alla radice, inglese sotto /en.
+import { SITE } from './config';
+
+export type Lang = 'it' | 'en';
+export const LANGS: Lang[] = ['it', 'en'];
+
+export const ROUTES = {
+  home: { it: '/', en: '/en' },
+  solution: { it: '/soluzione', en: '/en/solution' },
+  about: { it: '/chi-siamo', en: '/en/about' },
+  careers: { it: '/lavora-con-noi', en: '/en/careers' },
+  investors: { it: '/investitori-e-partner', en: '/en/investors-partners' },
+  press: { it: '/parlano-di-noi', en: '/en/press' },
+  contact: { it: '/contatti', en: '/en/contact' },
+  privacy: { it: '/privacypolicy-braintex', en: '/en/privacy-policy' },
+  cookies: { it: '/cookie-policy', en: '/en/cookie-policy' },
+} as const satisfies Record<string, Record<Lang, string>>;
+
+export type RouteKey = keyof typeof ROUTES;
+
+/** Antepone il percorso base (es. /website in anteprima). */
+export function withBase(path: string): string {
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  if (path === '/') return base ? `${base}/` : '/';
+  return `${base}${path}`;
+}
+
+/** Link interno a una pagina nella lingua data. */
+export function href(key: RouteKey, lang: Lang): string {
+  return withBase(ROUTES[key][lang]);
+}
+
+/** URL canonico assoluto, sempre su www.braintex.it. */
+export function canonical(key: RouteKey, lang: Lang): string {
+  return `${SITE.origin}${ROUTES[key][lang]}`;
+}
+
+export const UI = {
+  it: {
+    skip: 'Vai al contenuto',
+    menu: 'Menu',
+    mainNav: 'Navigazione principale',
+    langSwitch: 'English',
+    langSwitchLabel: 'Read in English',
+    nav: {
+      solution: 'Soluzione',
+      about: 'Chi siamo',
+      careers: 'Lavora con noi',
+      investors: 'Investitori e partner',
+      press: 'Parlano di noi',
+      contact: 'Contatti',
+    },
+    logoPlaceholder: 'Segnaposto logo: in attesa del file vettoriale ufficiale',
+    footer: {
+      fse: 'Realizzato con il finanziamento del Fondo Sociale Europeo Plus',
+      ngeu: "Finanziato dall'Unione europea – NextGenerationEU",
+      funderLogos: 'Loghi dei finanziatori',
+      legalSeat: 'Sede legale',
+      operationalSeat: 'Sede operativa',
+      vat: 'P.IVA',
+      capital: 'Capitale sociale',
+      privacy: 'Privacy Policy',
+      cookies: 'Cookie Policy',
+      cookiePrefs: 'Preferenze cookie',
+      follow: 'Seguici su LinkedIn',
+    },
+  },
+  en: {
+    skip: 'Skip to content',
+    menu: 'Menu',
+    mainNav: 'Main navigation',
+    langSwitch: 'Italiano',
+    langSwitchLabel: 'Leggi in italiano',
+    nav: {
+      solution: 'Solution',
+      about: 'About us',
+      careers: 'Careers',
+      investors: 'Investors & partners',
+      press: 'Press',
+      contact: 'Contact',
+    },
+    logoPlaceholder: 'Logo placeholder: awaiting the official vector file',
+    footer: {
+      fse: 'Realizzato con il finanziamento del Fondo Sociale Europeo Plus',
+      ngeu: "Finanziato dall'Unione europea – NextGenerationEU",
+      funderLogos: 'Funders’ logos',
+      legalSeat: 'Registered office',
+      operationalSeat: 'Operational site',
+      vat: 'VAT no.',
+      capital: 'Share capital',
+      privacy: 'Privacy Policy',
+      cookies: 'Cookie Policy',
+      cookiePrefs: 'Cookie preferences',
+      follow: 'Follow us on LinkedIn',
+    },
+  },
+} as const;

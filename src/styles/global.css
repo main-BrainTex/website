@@ -397,8 +397,8 @@ a.card:hover {
 }
 
 /* Comparsa allo scroll: attiva solo con JS e senza "riduci movimento" */
-@media (prefers-reduced-motion: no-preference) {
-  .js [data-reveal] {
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  [data-reveal] {
     opacity: 0;
     transform: translateY(24px);
     transition:
@@ -407,7 +407,7 @@ a.card:hover {
     transition-delay: var(--reveal-delay, 0s);
   }
 
-  .js [data-reveal].is-visible {
+  [data-reveal].is-visible {
     opacity: 1;
     transform: none;
   }

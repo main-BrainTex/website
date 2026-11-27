@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import font400 from '../assets/fonts/metropolis-400.woff2?url';
+import font700 from '../assets/fonts/metropolis-700.woff2?url';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { IS_PRODUCTION, SITE } from '../config';
+import { canonical, LANGS, UI, withBase, type Lang, type RouteKey } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  /** Pagina corrente; assente per pagine fuori dalla sitemap (es. 404). */
+  routeKey?: RouteKey;
+  title: string;
+  description: string;
+  /** Dati strutturati JSON-LD aggiuntivi per la pagina. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const { lang, routeKey, title, description, jsonLd } = Astro.props;
+const fullTitle = routeKey === 'home' ? title : `${title} | BrainTex`;
+const url = routeKey ? canonical(routeKey, lang) : undefined;
+const noindex = !IS_PRODUCTION || !routeKey;
+const ogLocale = { it: 'it_IT', en: 'en_GB' }[lang];
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {url && <link rel="canonical" href={url} />}
+    {
+      routeKey &&
+        LANGS.map((l) => <link rel="alternate" hreflang={l} href={canonical(routeKey, l)} />)
+    }
+    {routeKey && <link rel="alternate" hreflang="x-default" href={canonical(routeKey, 'it')} />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={ogLocale} />
+    {url && <meta property="og:url" content={url} />}
+    <meta name="twitter:card" content="summary" />
+
+    <meta name="theme-color" content="#00213a" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preload" href={font400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={font700} as="font" type="font/woff2" crossorigin />
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{UI[lang].skip}</a>
+    <Header lang={lang} routeKey={routeKey} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>

@@ -78,7 +78,8 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 
 ## Sicurezza
 - Nessuna parte lato server, nessun CMS. Simulatori/contatori/3D girano solo nel browser con dati statici: mai collegarsi a sistemi interni, flotta o VPN.
-- Nessuno script di terze parti oltre a GA (dopo consenso). Header di sicurezza (CSP, HSTS, ecc.) quando l'hosting lo permette.
+- Nessuno script di terze parti oltre a GA (dopo consenso).
+- CSP restrittiva già attiva come meta tag generato da Astro (`security.csp` in `astro.config.mjs`): niente attributi `style=""` nel markup né script esterni non dichiarati lì. Header HTTP (HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) da configurare sull'hosting definitivo.
 
 ## Interventi di bt
 Per tutto ciò che non si può fare da qui (account, chiavi, impostazioni GitHub/Google/servizio email): fermarsi e spiegare passo per passo.
