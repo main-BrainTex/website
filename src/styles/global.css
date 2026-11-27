@@ -412,3 +412,20 @@ a.card:hover {
     transform: none;
   }
 }
+
+/* Ritardi a cascata per gli elementi in griglia (data-reveal="1".."4") */
+[data-reveal='1'] {
+  --reveal-delay: 0.08s;
+}
+
+[data-reveal='2'] {
+  --reveal-delay: 0.16s;
+}
+
+[data-reveal='3'] {
+  --reveal-delay: 0.24s;
+}
+
+[data-reveal='4'] {
+  --reveal-delay: 0.32s;
+}

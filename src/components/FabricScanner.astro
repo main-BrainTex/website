@@ -1,0 +1,320 @@
+---
+// Illustrazione interattiva: la pezza avanza (da sola e con lo scroll) sotto una linea di scansione;
+// i difetti che la attraversano si "accendono". Simulazione illustrativa, nessun dato reale.
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    label: 'Simulazione: un tessuto scorre sotto la linea di ispezione e i difetti vengono evidenziati',
+    meters: 'Metri ispezionati',
+    found: 'Difetti segnalati',
+    note: 'Simulazione illustrativa',
+    defects: ['Macchia', 'Filo tirato', 'Nodo', 'Trama mancante', 'Buco'],
+  },
+  en: {
+    label: 'Simulation: fabric moves under the inspection line and defects are highlighted',
+    meters: 'Metres inspected',
+    found: 'Defects flagged',
+    note: 'Illustrative simulation',
+    defects: ['Stain', 'Pulled thread', 'Knot', 'Missing weft', 'Hole'],
+  },
+}[lang];
+
+// Posizioni nel "modulo" di tessuto (percentuali) e forma di ciascun difetto.
+const defects = [
+  { kind: 'stain', x: 22, y: 18 },
+  { kind: 'pull', x: 62, y: 38 },
+  { kind: 'knot', x: 38, y: 58 },
+  { kind: 'weft', x: 8, y: 76 },
+  { kind: 'hole', x: 74, y: 92 },
+];
+---
+
+<figure class="scanner" aria-label={t.label} data-scanner data-lang={lang}>
+  <div class="scanner__window">
+    <div class="scanner__fabric" data-fabric></div>
+    {
+      defects.map((d, i) => (
+        <span
+          class={`defect defect--${d.kind} defect--x${d.x}`}
+          data-defect
+          data-y={d.y}
+          aria-hidden="true"
+        >
+          <span class="defect__mark" />
+          <span class="defect__label">{t.defects[i]}</span>
+        </span>
+      ))
+    }
+    <span class="scanner__line" aria-hidden="true"></span>
+  </div>
+  <figcaption class="scanner__hud">
+    <span><strong data-meters>0,0</strong> m <small>{t.meters}</small></span>
+    <span><strong data-found>0</strong> <small>{t.found}</small></span>
+    <span class="scanner__note">{t.note}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .scanner {
+    margin: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+    overflow: hidden;
+    box-shadow: 0 30px 80px -30px rgb(0 0 0 / 0.6);
+  }
+
+  .scanner__window {
+    position: relative;
+    height: clamp(18rem, 42vw, 26rem);
+    overflow: hidden;
+  }
+
+  /* Tessuto: ordito e trama disegnati con gradienti, nessuna immagine */
+  .scanner__fabric {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(90deg, rgb(53 210 243 / 0.14) 0 2px, transparent 2px 7px),
+      repeating-linear-gradient(0deg, rgb(19 115 168 / 0.35) 0 3px, transparent 3px 7px),
+      linear-gradient(180deg, #003359, #00284a);
+  }
+
+  .scanner__line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 55%;
+    height: 2px;
+    background: var(--cyan-200);
+    box-shadow:
+      0 0 12px 2px rgb(87 240 254 / 0.7),
+      0 0 60px 12px rgb(87 240 254 / 0.18);
+  }
+
+  .scanner__line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 2px;
+    height: 55%;
+    min-height: 6rem;
+    background: linear-gradient(0deg, rgb(87 240 254 / 0.08), transparent);
+    pointer-events: none;
+  }
+
+  .defect {
+    position: absolute;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    will-change: transform;
+  }
+
+  .defect--x8 { left: 8%; }
+  .defect--x22 { left: 22%; }
+  .defect--x38 { left: 38%; }
+  .defect--x62 { left: 62%; }
+  .defect--x74 { left: 74%; }
+
+  .defect__mark {
+    display: block;
+    outline: 1.5px solid transparent;
+    outline-offset: 6px;
+    border-radius: 3px;
+    transition:
+      outline-color 0.25s,
+      box-shadow 0.25s;
+  }
+
+  .defect--stain .defect__mark {
+    width: 26px;
+    height: 18px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(0 15 30 / 0.85), rgb(0 15 30 / 0.2));
+  }
+
+  .defect--pull .defect__mark {
+    width: 4px;
+    height: 46px;
+    background: linear-gradient(180deg, transparent, rgb(140 220 255 / 0.9), transparent);
+  }
+
+  .defect--knot .defect__mark {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgb(150 225 255 / 0.85);
+  }
+
+  .defect--weft .defect__mark {
+    width: 120px;
+    height: 5px;
+    background: rgb(0 15 30 / 0.9);
+  }
+
+  .defect--hole .defect__mark {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--bg-deep);
+    box-shadow: inset 0 0 0 2px rgb(0 0 0 / 0.5);
+  }
+
+  .defect__label {
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: var(--green-300);
+    color: var(--bg-deep);
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-4px);
+    transition:
+      opacity 0.25s,
+      transform 0.25s;
+  }
+
+  .defect.is-found .defect__mark {
+    outline-color: var(--green-300);
+    box-shadow: 0 0 18px rgb(156 237 64 / 0.45);
+  }
+
+  .defect.is-found .defect__label {
+    opacity: 1;
+    transform: none;
+  }
+
+  .scanner__hud {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+
+  .scanner__hud strong {
+    font-size: 1.15rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+
+  .scanner__hud small {
+    margin-left: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .scanner__note {
+    margin-left: auto;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-scanner]');
+  if (root) {
+    const win = root.querySelector<HTMLElement>('.scanner__window')!;
+    const fabric = root.querySelector<HTMLElement>('[data-fabric]')!;
+    const metersEl = root.querySelector<HTMLElement>('[data-meters]')!;
+    const foundEl = root.querySelector<HTMLElement>('[data-found]')!;
+    const items = [...root.querySelectorAll<HTMLElement>('[data-defect]')].map((el) => ({
+      el,
+      y: Number(el.dataset.y) / 100,
+      wasBelow: true,
+    }));
+    const locale = root.dataset.lang === 'en' ? 'en-GB' : 'it-IT';
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+    const PX_PER_METRE = 400; // scala della simulazione
+    const SPEED = 42; // px al secondo
+
+    let offset = 0;
+    let found = 0;
+    let visible = true;
+    let last = performance.now();
+    let lastScroll = scrollY;
+
+    // Posizione verticale di un difetto nella finestra (il tessuto si ripete a moduli).
+    const geometry = () => {
+      const h = win.clientHeight;
+      return { tile: h + 80, scanY: h * 0.55 };
+    };
+    const posOf = (d: (typeof items)[number], tile: number) =>
+      ((((d.y * tile - offset) % tile) + tile) % tile) - 40;
+
+    const render = () => {
+      const { tile, scanY } = geometry();
+      fabric.style.backgroundPosition = `0 ${-offset}px, 0 ${-offset}px, 0 0`;
+      for (const d of items) {
+        const y = posOf(d, tile);
+        d.el.style.transform = `translateY(${y}px)`;
+        const below = y > scanY;
+        if (d.wasBelow && !below) {
+          found += 1;
+          d.el.classList.add('is-found');
+        } else if (!d.wasBelow && below) {
+          d.el.classList.remove('is-found'); // rientra dal basso: nuovo tratto di pezza
+        }
+        d.wasBelow = below;
+      }
+      metersEl.textContent = (offset / PX_PER_METRE).toLocaleString(locale, {
+        minimumFractionDigits: 1,
+        maximumFractionDigits: 1,
+      });
+      foundEl.textContent = String(found);
+    };
+
+    const frame = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last = now;
+      if (visible && !document.hidden) {
+        offset += SPEED * dt;
+        render();
+      }
+      requestAnimationFrame(frame);
+    };
+
+    // Lo scroll fa avanzare la pezza: chi scorre la pagina "fa scorrere il tessuto".
+    addEventListener(
+      'scroll',
+      () => {
+        const delta = Math.abs(scrollY - lastScroll);
+        lastScroll = scrollY;
+        if (visible) {
+          offset += delta * 0.8;
+          if (reduced.matches) render();
+        }
+      },
+      { passive: true },
+    );
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    }).observe(root);
+
+    if (reduced.matches) {
+      // Nessuna animazione continua: mostra una pezza con alcuni difetti già rilevati.
+      offset = win.clientHeight * 0.6;
+      render();
+    } else {
+      // All'avvio i difetti già sopra la linea non contano: si parte da una pezza "nuova".
+      const { tile, scanY } = geometry();
+      for (const d of items) d.wasBelow = posOf(d, tile) > scanY;
+      render();
+      requestAnimationFrame(frame);
+    }
+  }
+</script>

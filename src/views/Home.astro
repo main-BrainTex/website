@@ -1,0 +1,480 @@
+---
+import Base from '../layouts/Base.astro';
+import FabricScanner from '../components/FabricScanner.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { SITE, STATS } from '../config';
+import { canonical, href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const millions = Math.floor(STATS.metersInspected / 1_000_000);
+
+const t = {
+  it: {
+    title: 'BrainTex – Controllo qualità tessile con visione artificiale e IA',
+    description:
+      'BrainTex controlla il 100% del tessuto in tempo reale con visione artificiale e intelligenza artificiale: si monta sui tuoi macchinari, localizza ogni difetto e lo segnala all’operatore.',
+    eyebrow: 'Il tuo controllo qualità è pronto per il futuro?',
+    h1: 'Ogni difetto, visto. Su ogni metro di tessuto.',
+    lead: 'BrainTex rivoluziona il controllo qualità con l’intelligenza artificiale: si monta sui macchinari che hai già, controlla il 100% del tessuto in tempo reale e segnala ogni difetto all’operatore.',
+    ctaPrimary: 'Scopri la soluzione',
+    ctaSecondary: 'Parliamone',
+    stats: [
+      { value: `${millions}+`, label: 'milioni di metri di tessuto ispezionati' },
+      { value: `< ${STATS.minutesToLearnFabric}`, label: 'minuti per imparare un nuovo tessuto' },
+      { value: `> ${STATS.wasteReductionPercent}%`, label: 'di scarti e rilavorazioni in meno' },
+    ],
+    problemEyebrow: 'Perché BrainTex',
+    problemTitle: 'Il controllo tradizionale fatica a stare al passo.',
+    problemText: [
+      'Il settore tessile si affida ancora a metodi di controllo tradizionali, che faticano a reggere standard di qualità sempre più alti.',
+      'Se la tua azienda vive questa difficoltà ogni giorno, BrainTex è la soluzione.',
+    ],
+    eyeEyebrow: 'L’occhio esperto, moltiplicato',
+    eyeTitle: 'BrainTex segnala. L’operatore decide.',
+    eyeText: [
+      'Nel distretto biellese le pezze si controllano a vista da generazioni. Quell’occhio esperto è un patrimonio: BrainTex non lo sostituisce, lo moltiplica.',
+      'Il sistema guarda ogni metro, senza pause e senza stanchezza. Quando trova qualcosa, avvisa chi lavora in linea: l’ultima parola resta sempre a chi conosce il tessuto.',
+    ],
+    howEyebrow: 'Come funziona',
+    howTitle: 'Dal tessuto al report, in tempo reale.',
+    how: [
+      {
+        title: 'Si monta sui tuoi macchinari',
+        text: 'L’unità di ispezione si integra sulle macchine esistenti lungo la filiera: niente linee nuove da comprare.',
+      },
+      {
+        title: 'Controlla il 100% del tessuto',
+        text: 'L’intelligenza artificiale analizza ogni metro in tempo reale e localizza il difetto con precisione, anche su disegni complessi.',
+      },
+      {
+        title: 'Avvisa l’operatore',
+        text: 'Il difetto viene segnalato subito, su tablet o con un segnale luminoso. Ogni pezza ha la sua mappa dei difetti e il suo report.',
+      },
+    ],
+    howCta: 'Scopri come funziona',
+    benefitsEyebrow: 'I vantaggi',
+    benefitsTitle: 'Un controllo completo, costante, misurabile.',
+    benefits: [
+      {
+        title: 'Integrabilità',
+        text: 'Un unico sistema per tutta la filiera produttiva: macchine interconnesse per un controllo completo e costante.',
+      },
+      {
+        title: 'Efficienza',
+        text: 'L’ispezione automatica sostituisce campionamenti costosi o controlli esterni: risultati più rapidi e precisi, con meno risorse.',
+      },
+      {
+        title: 'Tracciabilità',
+        text: 'Visibilità completa su ogni fase produttiva, con dati precisi e aggiornati per rispondere a richieste e contestazioni.',
+      },
+      {
+        title: 'Proattività',
+        text: 'Intervieni presto: fermi i difetti prima che si propaghino e previeni i malfunzionamenti.',
+      },
+    ],
+    claim: 'Il difetto diventa valore.',
+    claimText:
+      'BrainTex è una soluzione concreta per guidare il cambiamento verso un’industria più sostenibile: meno scarti, meno rilavorazioni, più valore da ogni metro prodotto.',
+    doorsEyebrow: 'Non sei un’azienda tessile?',
+    doorsTitle: 'C’è una porta anche per te.',
+    doors: [
+      {
+        key: 'careers',
+        title: 'Lavora con noi',
+        text: 'Ti piace trovare quello che gli altri non vedono? Mandaci la tua candidatura.',
+      },
+      {
+        key: 'investors',
+        title: 'Investitori e partner',
+        text: 'Visione, mercati e opportunità di collaborazione, anche per costruttori di macchine e integratori.',
+      },
+      {
+        key: 'about',
+        title: 'Università e istituzioni',
+        text: 'Chi siamo, da dove veniamo e i riconoscimenti ricevuti.',
+      },
+      {
+        key: 'press',
+        title: 'Stampa',
+        text: 'Articoli, interviste e premi: cosa dicono di BrainTex.',
+      },
+    ] as const,
+    more: 'Vai',
+    ctaTitle: 'Collabora con noi!',
+    ctaText:
+      'Scopri come BrainTex può migliorare il controllo qualità della tua azienda, con una collaborazione che continua nel tempo.',
+    ctaButton: 'Contattaci',
+  },
+  en: {
+    title: 'BrainTex – Textile quality control with machine vision and AI',
+    description:
+      'BrainTex inspects 100% of your fabric in real time with machine vision and artificial intelligence: it fits your existing machines, locates every defect and alerts the operator.',
+    eyebrow: 'Is your quality control ready for the future?',
+    h1: 'Every defect, seen. On every metre of fabric.',
+    lead: 'BrainTex transforms quality control with artificial intelligence: it fits the machines you already have, inspects 100% of the fabric in real time and flags every defect to the operator.',
+    ctaPrimary: 'Discover the solution',
+    ctaSecondary: 'Let’s talk',
+    stats: [
+      { value: `${millions}M+`, label: 'metres of fabric inspected' },
+      { value: `< ${STATS.minutesToLearnFabric}`, label: 'minutes to learn a new fabric' },
+      { value: `> ${STATS.wasteReductionPercent}%`, label: 'less waste and rework' },
+    ],
+    problemEyebrow: 'Why BrainTex',
+    problemTitle: 'Traditional inspection struggles to keep up.',
+    problemText: [
+      'The textile industry still relies on traditional inspection methods, which struggle to meet ever higher quality standards.',
+      'If your company faces this challenge every day, BrainTex is the answer.',
+    ],
+    eyeEyebrow: 'The expert eye, multiplied',
+    eyeTitle: 'BrainTex flags. The operator decides.',
+    eyeText: [
+      'In the Biella textile district, fabric has been inspected by eye for generations. That expert eye is an asset: BrainTex does not replace it, it multiplies it.',
+      'The system watches every metre, without breaks or fatigue. When it finds something, it alerts the people on the line: the final word always belongs to those who know the fabric.',
+    ],
+    howEyebrow: 'How it works',
+    howTitle: 'From fabric to report, in real time.',
+    how: [
+      {
+        title: 'Fits your machines',
+        text: 'The inspection unit integrates with existing machines along the supply chain: no new lines to buy.',
+      },
+      {
+        title: 'Inspects 100% of the fabric',
+        text: 'Artificial intelligence analyses every metre in real time and pinpoints each defect, even on complex patterns.',
+      },
+      {
+        title: 'Alerts the operator',
+        text: 'Defects are flagged immediately, on a tablet or with a light signal. Every piece gets its own defect map and report.',
+      },
+    ],
+    howCta: 'See how it works',
+    benefitsEyebrow: 'Benefits',
+    benefitsTitle: 'Complete, constant, measurable control.',
+    benefits: [
+      {
+        title: 'Integration',
+        text: 'One system for the whole production chain: connected machines for complete, constant control.',
+      },
+      {
+        title: 'Efficiency',
+        text: 'Automated inspection replaces costly sampling or outsourced checks: faster, more accurate results with fewer resources.',
+      },
+      {
+        title: 'Traceability',
+        text: 'Full visibility on every production stage, with precise, up-to-date data to answer requests and disputes.',
+      },
+      {
+        title: 'Proactivity',
+        text: 'Act early: stop defects before they spread and prevent malfunctions.',
+      },
+    ],
+    claim: 'Defects become value.',
+    claimText:
+      'BrainTex is a concrete way to lead the shift towards a more sustainable industry: less waste, less rework, more value from every metre produced.',
+    doorsEyebrow: 'Not a textile company?',
+    doorsTitle: 'There’s a door for you too.',
+    doors: [
+      {
+        key: 'careers',
+        title: 'Careers',
+        text: 'Do you enjoy finding what others miss? Send us your application.',
+      },
+      {
+        key: 'investors',
+        title: 'Investors & partners',
+        text: 'Vision, markets and partnership opportunities, including for machine builders and integrators.',
+      },
+      {
+        key: 'about',
+        title: 'Universities & institutions',
+        text: 'Who we are, where we come from and the awards we have received.',
+      },
+      {
+        key: 'press',
+        title: 'Press',
+        text: 'Articles, interviews and awards: what people say about BrainTex.',
+      },
+    ] as const,
+    more: 'Go',
+    ctaTitle: 'Let’s work together!',
+    ctaText:
+      'Find out how BrainTex can improve your company’s quality control, through a partnership that grows over time.',
+    ctaButton: 'Contact us',
+  },
+}[lang];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: SITE.name,
+  legalName: SITE.legalName,
+  url: canonical('home', lang),
+  description: t.description,
+  foundingDate: SITE.foundingDate,
+  vatID: `IT${SITE.vat}`,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Romagnano Sesia',
+    addressRegion: 'NO',
+    addressCountry: 'IT',
+  },
+  sameAs: [SITE.linkedin],
+};
+---
+
+<Base lang={lang} routeKey="home" title={t.title} description={t.description} jsonLd={jsonLd}>
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__text">
+        <p class="eyebrow">{t.eyebrow}</p>
+        <h1>{t.h1}</h1>
+        <p class="lead">{t.lead}</p>
+        <div class="actions">
+          <a class="btn" href={href('solution', lang)}>{t.ctaPrimary}</a>
+          <a class="btn btn--ghost" href={href('contact', lang)}>{t.ctaSecondary}</a>
+        </div>
+      </div>
+      <FabricScanner lang={lang} />
+    </div>
+  </section>
+
+  <section class="stats" aria-label={lang === 'it' ? 'BrainTex in numeri' : 'BrainTex in numbers'}>
+    <ul class="wrap stats__list">
+      {
+        t.stats.map((s, i) => (
+          <li data-reveal={String(i + 1)}>
+            <strong>{s.value}</strong>
+            <span>{s.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div data-reveal>
+        <p class="eyebrow">{t.problemEyebrow}</p>
+        <h2>{t.problemTitle}</h2>
+      </div>
+      <div data-reveal="1">
+        {t.problemText.map((p) => <p class="lead">{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface eye">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.eyeEyebrow}</p>
+        <h2>{t.eyeTitle}</h2>
+      </div>
+      <div class="grid grid--2">
+        {t.eyeText.map((p, i) => <p class="lead" data-reveal={String(i + 1)}>{p}</p>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.howEyebrow}</p>
+        <h2>{t.howTitle}</h2>
+      </div>
+      <ol class="steps">
+        {
+          t.how.map((step, i) => (
+            <li class="card" data-reveal={String(i + 1)}>
+              <span class="card__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="actions">
+        <a class="btn btn--ghost" href={href('solution', lang)}>{t.howCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.benefitsEyebrow}</p>
+        <h2>{t.benefitsTitle}</h2>
+      </div>
+      <ul class="grid grid--4 plain">
+        {
+          t.benefits.map((b, i) => (
+            <li class="card" data-reveal={String(i + 1)}>
+              <span class="card__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{b.title}</h3>
+              <p>{b.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section claim">
+    <div class="wrap" data-reveal>
+      <p class="claim__title">{t.claim}</p>
+      <p class="lead">{t.claimText}</p>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.doorsEyebrow}</p>
+        <h2>{t.doorsTitle}</h2>
+      </div>
+      <ul class="grid grid--4 plain">
+        {
+          t.doors.map((d, i) => (
+            <li data-reveal={String(i + 1)}>
+              <a class="card door" href={href(d.key, lang)}>
+                <h3>{d.title}</h3>
+                <p>{d.text}</p>
+                <span class="card__more" aria-hidden="true">
+                  {t.more} <span class="arrow" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title={t.ctaTitle} text={t.ctaText} button={t.ctaButton} link={href('contact', lang)} />
+</Base>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 8vw, 6rem) clamp(3rem, 7vw, 5rem);
+    background:
+      radial-gradient(50rem 30rem at 90% 10%, rgb(53 210 243 / 0.14), transparent 60%),
+      radial-gradient(40rem 30rem at 0% 100%, rgb(48 160 22 / 0.1), transparent 60%);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  @media (max-width: 56rem) {
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .stats {
+    border-block: 1px solid var(--line);
+    background: var(--bg-deep);
+  }
+
+  .stats__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1.5rem;
+    margin: 0 auto;
+    padding-block: 2.5rem;
+    list-style: none;
+  }
+
+  .stats__list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .stats__list strong {
+    font-size: clamp(2.4rem, 1.8rem + 2.5vw, 3.4rem);
+    line-height: 1;
+    color: var(--green-300);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stats__list span {
+    color: var(--text-muted);
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  @media (max-width: 48rem) {
+    .split {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .eye {
+    background:
+      linear-gradient(90deg, rgb(87 240 254 / 0.06) 1px, transparent 1px) 0 0 / 28px 28px,
+      var(--surface);
+  }
+
+  .eye .lead {
+    color: var(--text);
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .plain {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .claim {
+    text-align: center;
+  }
+
+  .claim__title {
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.2rem, 1.4rem + 4vw, 4.6rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--green-300), var(--cyan-200) 55%, var(--cyan-500));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .claim .lead {
+    margin-inline: auto;
+  }
+
+  .door {
+    height: 100%;
+  }
+
+  .arrow {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.55em;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    transform: rotate(45deg);
+  }
+</style>
