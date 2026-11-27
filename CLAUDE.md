@@ -82,3 +82,7 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 
 ## Interventi di bt
 Per tutto ciò che non si può fare da qui (account, chiavi, impostazioni GitHub/Google/servizio email): fermarsi e spiegare passo per passo.
+
+## Comandi
+- `npm ci` installa le dipendenze · `npm run dev` sviluppo locale · `npm run build` compila in `dist/` · `npm run preview` serve la build.
+- Variabili di build (vedi `.env.example`): `BASE_PATH`, `DEPLOY_TARGET` (`production` solo per il sito pubblico), `PUBLIC_WEB3FORMS_KEY`.

@@ -1,0 +1,17 @@
+# dipendenze e build
+node_modules/
+dist/
+.astro/
+
+# variabili d'ambiente e segreti: mai nel repository
+.env
+.env.*
+!.env.example
+
+# log e file di sistema
+npm-debug.log*
+*.log
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
