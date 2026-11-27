@@ -122,7 +122,7 @@ const t = {
         <p class="eyebrow">{t.teamEyebrow}</p>
         <h2>{t.teamTitle}</h2>
       </div>
-      <ul class="grid grid--3 plain">
+      <ul class="grid team plain">
         {
           team.map((m, i) => (
             <li class="member" data-reveal={String((i % 3) + 1)}>
@@ -162,6 +162,10 @@ const t = {
 </Base>
 
 <style>
+  .team {
+    grid-template-columns: repeat(auto-fill, minmax(min(45%, 13rem), 1fr));
+  }
+
   .member__photo {
     aspect-ratio: 1;
     margin-bottom: 1rem;
