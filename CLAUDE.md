@@ -47,15 +47,18 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 ## Google Analytics
 - GA4, ID di misurazione `G-MCRF25VPT6` (proprietà 227207275). Attivo solo su www.braintex.it / braintex.it, mai sull'anteprima github.io (controllo in build e a runtime sull'hostname).
 - GDPR: banner cookie leggero, Google Consent Mode v2 (default "denied"), GA caricato solo dopo il consenso. Scelta revocabile dal footer.
+- Banner conforme alle Linee guida cookie del Garante: Accetta e Rifiuta con pari evidenza, "X" che chiude senza consenso con l'avvertenza esplicita, scelta richiesta di nuovo dopo 6 mesi.
 - Eventi: invio del form contatti; click su telefono/email/WhatsApp se presenti (oggi solo form + LinkedIn).
 - Pagine Privacy Policy e Cookie Policy: testi base da far verificare.
 
 ## Form contatti
-- Destinatario: account@braintex.it, tramite servizio esterno gratuito senza server e senza branding (Web3Forms; piano free: 250 invii/mese, niente upload file).
-- Chiave di accesso fornita come variabile di build (`PUBLIC_WEB3FORMS_KEY`, variabile GitHub), mai scritta nel codice.
+- Destinatario: account@braintex.it, tramite servizio esterno senza server e senza branding.
+- Decisione (27/11/2026): servizio con dati trattati in UE (da scegliere). Web3Forms scartato: gestore in India, messaggi conservati fino a 3 anni, anti-spam negli USA. Il servizio scelto va documentato nella Privacy Policy (DPA, sub-fornitori, conservazione).
+- Chiave/endpoint forniti come variabile di build (`PUBLIC_WEB3FORMS_KEY` finché si usa Web3Forms, variabile GitHub), mai scritti nel codice.
 - Invio isolato in un solo modulo (`src/lib/form-submit.ts`): per cambiare servizio si cambia solo lì.
 - Anti-spam: honeypot + filtri del servizio. Niente captcha di terze parti (nessuno script esterno oltre a GA).
-- Validazione campi, messaggi chiari di conferma/errore, checkbox consenso privacy, campo "Chi sei?" che finisce nell'oggetto.
+- Validazione campi, messaggi chiari di conferma/errore, campo "Chi sei?" che finisce nell'oggetto.
+- GDPR: la base giuridica per rispondere non è il consenso. Casella obbligatoria di sola presa visione ("Ho letto l'informativa privacy"), informativa breve sotto il pulsante (titolare, finalità, conservazione, link) e avviso di non inserire dati sensibili. Raccogliere solo i dati necessari.
 
 ## Vincoli di contenuto (fatti da rispettare)
 - Nessun riferimento ai clienti: niente nomi, loghi o casi riconoscibili.
@@ -65,10 +68,14 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - Numeri pubblicabili: oltre 4 milioni di metri ispezionati (valore in configurazione, aggiornato a mano); meno di 2 minuti per imparare un nuovo tessuto; oltre il 50% di scarti e rilavorazioni in meno. Altri numeri solo se approvati.
 - Dati clienti: "i modelli sono addestrati per ogni singolo cliente e non vengono usati per altre aziende; il trattamento di immagini e dati è definito nel contratto".
 - Footer obbligatorio in tutte le lingue, con i loghi: "Realizzato con il finanziamento del Fondo Sociale Europeo Plus" e "Finanziato dall'Unione europea – NextGenerationEU".
-- Dati societari: BrainTex srl · P.IVA 02789950033 · REA NO-317837 · Capitale sociale 22.222,22 €. Sede legale Romagnano Sesia (NO), sede operativa Biella.
+- Dati societari (art. 2250 c.c., sempre nel footer): BrainTex srl · Sede legale Via Lamaccia 11, 28078 Romagnano Sesia (NO) · Sede operativa Via Pietro Micca 4, 13900 Biella (BI) · C.F. e P.IVA 02789950033 · Registro Imprese di Novara · REA NO-317837 · Capitale sociale 22.222,22 € i.v.
 - Nessuna posizione aperta: solo candidatura spontanea.
 - Contatti pubblici: solo form + LinkedIn (nessuna email in chiaro), salvo il recapito del titolare richiesto per legge nella Privacy Policy (account@braintex.it, da confermare con bt).
 - Non usare l'articolo di Industria Italiana sul Premio MICS.
+
+## Esperienza interattiva
+- Home leggera: racconto a scorrimento in 2D (CSS/SVG). La fabbrica 3D vive su una pagina dedicata e three.js si carica solo dopo "Entra in fabbrica", con alternativa 2D (mobile, niente WebGL, "riduci movimento"); i contenuti di ogni fase esistono anche come testo HTML.
+- Simulatore: valori iniziali neutri dichiarati come segnaposto, pannello ipotesi sempre visibile, risultati presentati come "stima con le tue ipotesi". Nessuna percentuale o costo presentato come dato BrainTex se non approvato.
 
 ## Brand
 - Font Metropolis (Regular, Bold, Italic), self-hosted woff2 in `src/assets/fonts` (pubblico dominio, Unlicense).
