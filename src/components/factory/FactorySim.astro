@@ -1,0 +1,852 @@
+---
+// Simulatore della fabbrica: mappa 2D sempre disponibile, vista 3D caricata solo su richiesta.
+// Gli stessi eventi alimentano entrambe le viste. Simulazione esemplificativa, nessun dato reale.
+import { EVENTS, INDICATORS, LENSES, NODES } from '../../data/factory';
+import type { Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    label: 'Simulatore della fabbrica',
+    without: 'Senza BrainTex',
+    with: 'Con BrainTex',
+    modeLabel: 'Mostra la giornata',
+    view3d: 'Entra in fabbrica 3D',
+    view2d: 'Torna alla mappa 2D',
+    demo: 'Esplora la simulazione completa',
+    close: 'Chiudi la simulazione completa',
+    disclaimer: 'Simulazione esemplificativa: eventi e risultati sono illustrativi.',
+    idle: 'Scegli un evento o scorri la pagina: vedrai cosa succede in fabbrica.',
+    counters: 'Contatori di esempio',
+    inspected: 'Metri controllati',
+    source: 'Difetti fermati alla fonte',
+    inspection: 'Difetti fermati al controllo',
+    customer: 'Difetti arrivati al cliente',
+    saved: 'Metri salvati',
+    lost: 'Metri persi',
+    indicators: 'Indicatori',
+    lowerBetter: 'più basso è meglio',
+    events: 'Fai accadere un evento',
+    lens: 'Guarda con gli occhi di',
+    allRoles: 'Tutti i ruoli',
+    play: 'Avvia un turno accelerato',
+    stop: 'Ferma il turno',
+    reset: 'Ricomincia la giornata',
+    scrap: 'Scarti',
+    returns: 'Resi',
+    queue: 'Coda',
+    loading3d: 'Carico la fabbrica 3D…',
+    failed3d: 'La vista 3D non è disponibile su questo dispositivo: resta la mappa 2D.',
+    mapLabel: 'Mappa della fabbrica: linea di produzione e reparti',
+  },
+  en: {
+    label: 'Factory simulator',
+    without: 'Without BrainTex',
+    with: 'With BrainTex',
+    modeLabel: 'Show the day',
+    view3d: 'Enter the 3D factory',
+    view2d: 'Back to the 2D map',
+    demo: 'Explore the full simulation',
+    close: 'Close the full simulation',
+    disclaimer: 'Illustrative simulation: events and results are examples.',
+    idle: 'Pick an event or scroll the page: you will see what happens in the mill.',
+    counters: 'Example counters',
+    inspected: 'Metres inspected',
+    source: 'Defects stopped at the source',
+    inspection: 'Defects stopped at inspection',
+    customer: 'Defects that reached the customer',
+    saved: 'Metres saved',
+    lost: 'Metres lost',
+    indicators: 'Indicators',
+    lowerBetter: 'lower is better',
+    events: 'Make something happen',
+    lens: 'See it through the eyes of',
+    allRoles: 'All roles',
+    play: 'Run an accelerated shift',
+    stop: 'Stop the shift',
+    reset: 'Restart the day',
+    scrap: 'Scrap',
+    returns: 'Returns',
+    queue: 'Queue',
+    loading3d: 'Loading the 3D factory…',
+    failed3d: 'The 3D view is not available on this device: the 2D map stays.',
+    mapLabel: 'Factory map: production line and departments',
+  },
+}[lang];
+
+// Testi per lo script, passati come attributo data (niente script inline: CSP).
+const ui = JSON.stringify({
+  without: t.without,
+  with: t.with,
+  idle: t.idle,
+  saved: t.saved,
+  lost: t.lost,
+  play: t.play,
+  stop: t.stop,
+  view3d: t.view3d,
+  view2d: t.view2d,
+  loading3d: t.loading3d,
+  failed3d: t.failed3d,
+});
+
+const S = 10; // da pianta 0–100 a unità SVG 0–1000
+const stations = NODES.filter((n) => n.kind === 'station');
+const departments = NODES.filter((n) => n.kind === 'department');
+const lineStart = stations[0].x * S - 70;
+const lineEnd = stations[stations.length - 1].x * S + 70;
+const lineY = stations[0].y * S;
+const node = (key: string) => NODES.find((n) => n.key === key)!;
+---
+
+<section class="sim" aria-label={t.label} data-sim data-lang={lang} data-ui={ui} data-mode="with">
+  <div class="sim__bar">
+    <div class="sim__mode" role="group" aria-label={t.modeLabel}>
+      <button type="button" data-mode-btn="without" aria-pressed="false">{t.without}</button>
+      <button type="button" data-mode-btn="with" aria-pressed="true">{t.with}</button>
+    </div>
+    <div class="sim__bar-actions">
+      <button type="button" class="sim__link" data-view3d hidden>{t.view3d}</button>
+      <button type="button" class="btn btn--ghost sim__demo-open" data-demo-open>{t.demo}</button>
+      <button type="button" class="sim__close" data-demo-close aria-label={t.close}><span aria-hidden="true"></span></button>
+    </div>
+  </div>
+
+  <div class="sim__stage" data-stage>
+    <svg class="map" viewBox="0 0 1000 600" role="img" aria-label={t.mapLabel} data-map>
+      <rect class="map__floor" x="20" y="300" width="760" height="190" rx="18" />
+      <line class="map__fabric" x1={lineStart} y1={lineY} x2={lineEnd} y2={lineY} />
+      <line class="map__fabric-weft" x1={lineStart} y1={lineY} x2={lineEnd} y2={lineY} />
+      <line class="map__exit" x1={lineEnd} y1={lineY} x2={node('cliente').x * S - 70} y2={lineY} />
+
+      {
+        departments.map((n) => (
+          <g class="map__node map__node--dept" data-node={n.key} transform={`translate(${n.x * S} ${n.y * S})`}>
+            <rect x="-100" y="-45" width="200" height="90" rx="14" />
+            <text y="6">{n.name[lang]}</text>
+          </g>
+        ))
+      }
+      {
+        stations.map((n) => (
+          <g class="map__node map__node--station" data-node={n.key} transform={`translate(${n.x * S} ${n.y * S})`}>
+            <rect x="-75" y="-45" width="150" height="90" rx="10" />
+            <path class="map__unit" d="M-55 -45 V-70 H55 V-45" />
+            <text y="78">{n.name[lang]}</text>
+          </g>
+        ))
+      }
+
+      <g class="map__bin" transform="translate(800 520)">
+        <rect class="map__bin-box" x="-40" y="-40" width="80" height="60" rx="6" />
+        <rect class="map__bin-fill" data-bin-fill x="-36" y="16" width="72" height="0" />
+        <text y="45">{t.scrap}</text>
+      </g>
+      <text class="map__badge" x={node('cliente').x * S} y={node('cliente').y * S + 75} data-returns-badge></text>
+      <text class="map__badge" x={node('controllo').x * S} y={node('controllo').y * S - 85} data-queue-badge></text>
+      <g data-pulses></g>
+    </svg>
+    <div class="sim__three" data-three hidden></div>
+    <p class="sim__status" data-status role="status"></p>
+  </div>
+
+  <div class="sim__chain" aria-live="polite" data-chain>
+    <p class="sim__chain-idle">{t.idle}</p>
+  </div>
+
+  <div class="sim__panels">
+    <section class="sim__counters" aria-label={t.counters}>
+      <h3 class="sim__h">{t.counters}</h3>
+      <dl>
+        <div><dt>{t.inspected}</dt><dd data-counter="inspected">0</dd></div>
+        <div><dt>{t.source}</dt><dd data-counter="stoppedAtSource">0</dd></div>
+        <div><dt>{t.inspection}</dt><dd data-counter="stoppedAtInspection">0</dd></div>
+        <div><dt>{t.customer}</dt><dd data-counter="reachedCustomer">0</dd></div>
+        <div><dt data-meters-label>{t.saved}</dt><dd data-counter="meters">0</dd></div>
+      </dl>
+    </section>
+
+    <section class="sim__indicators" aria-label={t.indicators}>
+      <h3 class="sim__h">{t.indicators}</h3>
+      <ul class="plain">
+        {
+          INDICATORS.map((i) => (
+            <li class="ind" data-indicator={i.key} title={i.hint[lang]}>
+              <span class="ind__name">
+                {i.name[lang]}
+                {i.lowerIsBetter && <small> ({t.lowerBetter})</small>}
+              </span>
+              <span class="ind__bar" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+                <span />
+              </span>
+              <span class="ind__word" data-level-word />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+
+  <div class="sim__controls">
+    <div class="sim__control-row">
+      <label for={`lens-${lang}`}>{t.lens}</label>
+      <select id={`lens-${lang}`} data-lens>
+        <option value="">{t.allRoles}</option>
+        {LENSES.map((l) => <option value={l.key}>{l.name[lang]}</option>)}
+      </select>
+      <button type="button" class="btn" data-play>{t.play}</button>
+      <button type="button" class="btn btn--ghost" data-reset>{t.reset}</button>
+    </div>
+    <h3 class="sim__h">{t.events}</h3>
+    <ul class="sim__events plain">
+      {
+        EVENTS.map((e) => (
+          <li>
+            <button type="button" class="sim__event" data-event={e.key}>
+              <span class="sim__event-phase">{e.phase[lang]}</span>
+              {e.action[lang]}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <p class="sim__disclaimer">{t.disclaimer}</p>
+</section>
+
+<style>
+  .sim {
+    --bad: #ffb3b3;
+    display: grid;
+    gap: 1rem;
+    padding: clamp(0.9rem, 2vw, 1.25rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+  }
+
+  .sim__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .sim__bar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .sim__mode {
+    display: inline-flex;
+    padding: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+  }
+
+  .sim__mode button {
+    min-height: 2.5rem;
+    padding: 0.4rem 1rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .sim__mode button[aria-pressed='true'] {
+    background: var(--text);
+    color: var(--bg-deep);
+  }
+
+  .sim__mode button[data-mode-btn='with'][aria-pressed='true'] {
+    background: var(--green-300);
+  }
+
+  .sim__link {
+    padding: 0.4rem 0;
+    border: 0;
+    border-bottom: 2px solid var(--accent);
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .sim__demo-open {
+    min-height: 2.5rem;
+    padding: 0.5rem 1.1rem;
+    font-size: 0.9rem;
+  }
+
+  .sim__close {
+    display: none;
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .sim__close span,
+  .sim__close span::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1rem;
+    height: 2px;
+    background: currentColor;
+  }
+
+  .sim__close span {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .sim__close span::after {
+    content: '';
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  /* La simulazione è interattiva: senza JavaScript resta il testo della pagina */
+  @media (scripting: none) {
+    .sim {
+      display: none;
+    }
+  }
+
+  .sim__stage {
+    position: relative;
+    border-radius: var(--radius-sm);
+    background:
+      linear-gradient(rgb(87 240 254 / 0.04) 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(90deg, rgb(87 240 254 / 0.04) 1px, transparent 1px) 0 0 / 40px 40px,
+      var(--bg);
+    overflow: hidden;
+  }
+
+  .map {
+    width: 100%;
+    height: auto;
+  }
+
+  .map__floor {
+    fill: rgb(0 53 93 / 0.5);
+    stroke: var(--line);
+  }
+
+  .map__fabric {
+    stroke: #0a4f7a;
+    stroke-width: 34;
+    stroke-linecap: round;
+  }
+
+  .map__fabric-weft {
+    stroke: rgb(87 240 254 / 0.35);
+    stroke-width: 30;
+    stroke-dasharray: 2 9;
+    animation: weft 1.2s linear infinite;
+  }
+
+  .map__exit {
+    stroke: var(--line);
+    stroke-width: 3;
+    stroke-dasharray: 6 8;
+  }
+
+  @keyframes weft {
+    to {
+      stroke-dashoffset: -11;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .map__fabric-weft {
+      animation: none;
+    }
+  }
+
+  .map__node rect {
+    fill: var(--bg-deep);
+    stroke: rgb(169 196 214 / 0.35);
+    stroke-width: 2;
+    transition:
+      stroke 0.3s,
+      fill 0.3s;
+  }
+
+  .map__node--dept rect {
+    stroke-dasharray: 6 5;
+  }
+
+  .map__node--dept text {
+    font-size: 15px;
+  }
+
+  .map__node text {
+    fill: var(--text-muted);
+    font: 700 17px var(--font);
+    text-anchor: middle;
+  }
+
+  .map__unit {
+    fill: none;
+    stroke: var(--cyan-300);
+    stroke-width: 4;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  [data-mode='with'] .map__unit {
+    opacity: 1;
+  }
+
+  .map__node.is-focus rect {
+    stroke: var(--cyan-200);
+    stroke-width: 3;
+  }
+
+  .map__node.is-focus text {
+    fill: var(--text);
+  }
+
+  .map__node.is-origin rect {
+    fill: var(--surface);
+    stroke: var(--cyan-200);
+    stroke-width: 3;
+  }
+
+  .map__node.is-hit rect {
+    stroke-width: 3;
+  }
+
+  [data-mode='with'] .map__node.is-hit rect {
+    stroke: var(--green-300);
+    fill: rgb(156 237 64 / 0.12);
+  }
+
+  [data-mode='without'] .map__node.is-hit rect {
+    stroke: var(--bad);
+    fill: rgb(255 179 179 / 0.1);
+  }
+
+  .map__node.is-hit text {
+    fill: var(--text);
+  }
+
+  .map__bin-box {
+    fill: none;
+    stroke: rgb(169 196 214 / 0.5);
+    stroke-width: 2;
+  }
+
+  .map__bin-fill {
+    fill: var(--bad);
+    opacity: 0.7;
+    transition:
+      height 0.6s,
+      y 0.6s;
+  }
+
+  [data-mode='with'] .map__bin-fill {
+    fill: var(--green-300);
+  }
+
+  .map__bin text,
+  .map__badge {
+    fill: var(--text-muted);
+    font: 700 18px var(--font);
+    text-anchor: middle;
+  }
+
+  .map__badge {
+    fill: var(--bad);
+  }
+
+  /* Gli impulsi sono creati dallo script: servono selettori globali */
+  .sim :global(.pulse) {
+    fill: var(--cyan-200);
+  }
+
+  .sim[data-mode='with'] :global(.pulse) {
+    fill: var(--green-300);
+  }
+
+  .sim[data-mode='without'] :global(.pulse) {
+    fill: var(--bad);
+  }
+
+  .map.is-hidden {
+    display: none;
+  }
+
+  .sim__three {
+    position: relative;
+    aspect-ratio: 5 / 3;
+  }
+
+  .sim__three :global(canvas) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .sim__three :global(.label3d) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    background: rgb(0 23 42 / 0.75);
+    color: var(--text);
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+  }
+
+  .sim__three :global(.label3d.is-hit) {
+    outline: 2px solid currentColor;
+  }
+
+  .sim__status {
+    position: absolute;
+    left: 0.75rem;
+    bottom: 0.5rem;
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .sim__chain {
+    min-height: 6.5rem;
+  }
+
+  .sim__chain-idle {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .sim__chain :global(.chain-title) {
+    margin: 0 0 0.25rem;
+    font-weight: 700;
+  }
+
+  .sim__chain :global(.chain-mode) {
+    margin: 0 0 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  [data-mode='with'] .sim__chain :global(.chain-mode) {
+    color: var(--green-300);
+  }
+
+  [data-mode='without'] .sim__chain :global(.chain-mode) {
+    color: var(--bad);
+  }
+
+  .sim__chain :global(ol) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sim__chain :global(li) {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    animation: step-in 0.4s var(--ease) both;
+  }
+
+  .sim__chain :global(li:nth-child(2)) {
+    animation-delay: 0.35s;
+  }
+
+  .sim__chain :global(li:nth-child(3)) {
+    animation-delay: 0.7s;
+  }
+
+  .sim__chain :global(li:nth-child(4)) {
+    animation-delay: 1.05s;
+  }
+
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sim__chain :global(li) {
+      animation: none;
+    }
+  }
+
+  .sim__panels {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 40rem) {
+    .sim__panels {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .sim__h {
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .sim__counters dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6.25rem, 1fr));
+    gap: 0.6rem;
+    margin: 0;
+  }
+
+  .sim__counters dl div {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    gap: 0.15rem;
+  }
+
+  .sim__counters dt {
+    font-size: 0.72rem;
+    line-height: 1.3;
+    color: var(--text-muted);
+  }
+
+  .sim__counters dd {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ind {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.2rem 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    transition: opacity 0.3s;
+  }
+
+  .ind__name small {
+    color: var(--text-muted);
+  }
+
+  .ind__bar {
+    display: flex;
+    gap: 3px;
+    grid-column: 1;
+  }
+
+  .ind__bar span {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: rgb(169 196 214 / 0.2);
+    transition: background 0.4s;
+  }
+
+  .ind__bar span.is-on {
+    background: var(--cyan-300);
+  }
+
+  .ind__word {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    font-weight: 700;
+  }
+
+  .ind.is-up .ind__word {
+    color: var(--green-300);
+  }
+
+  .ind.is-down .ind__word {
+    color: var(--bad);
+  }
+
+  .ind.is-dim,
+  .sim__event.is-dim {
+    opacity: 0.4;
+  }
+
+  .sim__control-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .sim__control-row label {
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .sim__control-row select {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgb(169 196 214 / 0.45);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+  }
+
+  .sim__events {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.5rem;
+  }
+
+  .sim__event {
+    width: 100%;
+    height: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      opacity 0.3s;
+  }
+
+  .sim__event:hover,
+  .sim__event.is-current {
+    border-color: var(--cyan-200);
+  }
+
+  .sim__event-phase {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  .sim__disclaimer {
+    margin: 0;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  /* Nella pagina, su schermi larghi, il simulatore resta compatto: indicatori e comandi
+     completi stanno nella modalità demo. */
+  @media (min-width: 56rem) {
+    .sim:not(.is-demo) .sim__indicators,
+    .sim:not(.is-demo) .sim__controls {
+      display: none;
+    }
+
+    .sim:not(.is-demo) .sim__panels {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Modalità demo: a tutto schermo, per presentazioni e fiere */
+  .sim.is-demo {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    grid-template-columns: minmax(0, 1.7fr) minmax(17rem, 1fr);
+    grid-template-areas:
+      'bar bar'
+      'stage side'
+      'chain side'
+      'controls controls'
+      'note note';
+    align-content: start;
+    gap: 1rem 1.5rem;
+    border-radius: 0;
+    overflow: auto;
+  }
+
+  .sim.is-demo .sim__bar {
+    grid-area: bar;
+  }
+
+  .sim.is-demo .sim__stage {
+    grid-area: stage;
+  }
+
+  .sim.is-demo .sim__chain {
+    grid-area: chain;
+  }
+
+  .sim.is-demo .sim__panels {
+    grid-area: side;
+    grid-template-columns: 1fr;
+    align-content: start;
+  }
+
+  .sim.is-demo .sim__controls {
+    grid-area: controls;
+  }
+
+  .sim.is-demo .sim__disclaimer {
+    grid-area: note;
+  }
+
+  .sim.is-demo .sim__close {
+    display: inline-block;
+  }
+
+  .sim.is-demo .sim__demo-open {
+    display: none;
+  }
+
+  @media (max-width: 56rem) {
+    .sim.is-demo {
+      grid-template-columns: 1fr;
+      grid-template-areas: 'bar' 'stage' 'chain' 'side' 'controls' 'note';
+    }
+  }
+</style>
+
+<script>
+  import { initFactorySim } from '../../lib/factory/ui';
+
+  document.querySelectorAll<HTMLElement>('[data-sim]').forEach((root) => initFactorySim(root));
+</script>
