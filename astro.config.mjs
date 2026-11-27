@@ -14,6 +14,8 @@ export default defineConfig({
     inlineStylesheets: 'never',
   },
   compressHTML: true,
+  // three.js (vista 3D della fabbrica) è un pezzo unico da ~550 kB, caricato solo su richiesta.
+  vite: { build: { chunkSizeWarningLimit: 600 } },
   markdown: { syntaxHighlight: false },
   // CSP generata da Astro (meta tag con hash degli script/stili inline).
   // Niente attributi style="" nel markup: la policy non li consente.
