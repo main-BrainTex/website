@@ -224,6 +224,13 @@ a:hover {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
 }
 
+/* Lista senza puntini (griglie di card) */
+.plain {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 /* Card */
 .card {
   position: relative;
