@@ -1,0 +1,295 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import FactorySim from '../components/factory/FactorySim.astro';
+import { EVENTS, TOUR } from '../data/factory';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    title: 'La fabbrica: simulazione senza e con BrainTex',
+    description:
+      'Entra in una fabbrica tessile simulata: dalla tessitura al cliente, guarda come cambiano le conseguenze dei difetti senza e con BrainTex. Simulazione esemplificativa.',
+    eyebrow: 'La fabbrica',
+    h1: 'Entra in fabbrica: la stessa giornata, senza e con BrainTex.',
+    lead: 'Un’azienda tessile intera, dalla tessitura al cliente. Scorri le tappe o fai accadere tu gli eventi e guarda come cambiano le conseguenze nei reparti.',
+    note: 'Simulazione esemplificativa: eventi e risultati sono illustrativi.',
+    tourLabel: 'Tappe della visita',
+    allEyebrow: 'Tutti gli eventi',
+    allTitle: 'Venti momenti di una giornata in fabbrica.',
+    allLead: 'Ogni evento ha due finali. La differenza non sta solo nel difetto fermato, ma in tutto ciò che succede dopo.',
+    without: 'Senza BrainTex',
+    with: 'Con BrainTex',
+    ctaTitle: 'Vuoi vederla sulla tua produzione?',
+    ctaText: 'La simulazione è un esempio. Dal vivo, sui tuoi tessuti, è un’altra cosa: parliamone.',
+    ctaButton: 'Richiedi una demo',
+  },
+  en: {
+    title: 'The factory: a simulation without and with BrainTex',
+    description:
+      'Step into a simulated textile mill: from weaving to the customer, see how the consequences of defects change without and with BrainTex. Illustrative simulation.',
+    eyebrow: 'The factory',
+    h1: 'Step into the mill: the same day, without and with BrainTex.',
+    lead: 'A whole textile company, from weaving to the customer. Scroll through the stops or trigger events yourself and see how the consequences change across departments.',
+    note: 'Illustrative simulation: events and results are examples.',
+    tourLabel: 'Tour stops',
+    allEyebrow: 'All events',
+    allTitle: 'Twenty moments in a day at the mill.',
+    allLead: 'Every event has two endings. The difference is not just the defect that gets stopped, but everything that happens next.',
+    without: 'Without BrainTex',
+    with: 'With BrainTex',
+    ctaTitle: 'Want to see it on your production?',
+    ctaText: 'The simulation is an example. Live, on your own fabrics, it is another story: let’s talk.',
+    ctaButton: 'Request a demo',
+  },
+}[lang];
+
+// Dati delle tappe per lo script (niente script inline: CSP).
+const tour = JSON.stringify(TOUR.map((s) => ({ focus: s.focus, events: s.events })));
+---
+
+<Base lang={lang} routeKey="factory" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead}>
+    <p class="factory-note">{t.note}</p>
+  </PageHero>
+
+  <section class="section tour" data-tour={tour}>
+    <div class="wrap tour__grid">
+      <ol class="tour__steps plain" aria-label={t.tourLabel}>
+        {
+          TOUR.map((s, i) => (
+            <li class="tour__step" data-tour-step={i}>
+              <p class="eyebrow">{String(i + 1).padStart(2, '0')}</p>
+              <h2>{s.title[lang]}</h2>
+              <p class="lead">{s.text[lang]}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="tour__sim">
+        <FactorySim lang={lang} />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.allEyebrow}</p>
+        <h2>{t.allTitle}</h2>
+        <p class="lead">{t.allLead}</p>
+      </div>
+      <ul class="events plain">
+        {
+          EVENTS.map((e) => (
+            <li>
+              <details class="event">
+                <summary>
+                  <span class="event__phase">{e.phase[lang]}</span>
+                  <span class="event__title">{e.title[lang]}</span>
+                </summary>
+                <div class="event__chains">
+                  <div>
+                    <h3>{t.without}</h3>
+                    <ol>
+                      {e.without[lang].map((s) => (
+                        <li>{s}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="event__with">
+                    <h3>{t.with}</h3>
+                    <ol>
+                      {e.with[lang].map((s) => (
+                        <li>{s}</li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+              </details>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand title={t.ctaTitle} text={t.ctaText} button={t.ctaButton} link={href('contact', lang)} />
+</Base>
+
+<style>
+  .factory-note {
+    margin-top: 1rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .tour__grid {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.7fr) minmax(0, 1.3fr);
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .tour__steps {
+    display: grid;
+    gap: 40vh;
+    padding-block: 10vh 45vh;
+  }
+
+  .tour__steps h2 {
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  }
+
+  .tour__step {
+    opacity: 0.4;
+    transition: opacity 0.4s;
+  }
+
+  .tour__step.is-active {
+    opacity: 1;
+  }
+
+  .tour__sim {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    max-height: calc(100vh - 6.5rem);
+    overflow: auto;
+  }
+
+  /* Su schermi stretti: prima le tappe come testo, poi il simulatore (non fisso) */
+  @media (max-width: 56rem) {
+    .tour__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .tour__steps {
+      gap: 2.5rem;
+      padding-block: 0;
+    }
+
+    .tour__step {
+      opacity: 1;
+    }
+
+    .tour__sim {
+      position: static;
+    }
+  }
+
+  @media (scripting: none) {
+    .tour__steps {
+      gap: 2.5rem;
+      padding-block: 0;
+    }
+
+    .tour__step {
+      opacity: 1;
+    }
+  }
+
+  .events {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .event {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg-deep);
+  }
+
+  .event summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 1rem;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+  }
+
+  .event__phase {
+    min-width: 11rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--cyan-300);
+  }
+
+  .event__title {
+    font-weight: 700;
+  }
+
+  .event__chains {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+    padding: 0 1.25rem 1.25rem;
+  }
+
+  @media (max-width: 40rem) {
+    .event__chains {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .event__chains h3 {
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .event__with h3 {
+    color: var(--green-300);
+  }
+
+  .event__chains ol {
+    margin: 0;
+    padding-left: 1.2em;
+  }
+</style>
+
+<script>
+  import { initFactorySim } from '../lib/factory/ui';
+  import type { NodeKey } from '../data/factory';
+
+  const tourEl = document.querySelector<HTMLElement>('[data-tour]');
+  const simEl = tourEl?.querySelector<HTMLElement>('[data-sim]');
+  if (tourEl && simEl) {
+    const controller = initFactorySim(simEl);
+    const tour = JSON.parse(tourEl.dataset.tour ?? '[]') as { focus: NodeKey | null; events: string[] }[];
+    const steps = [...tourEl.querySelectorAll<HTMLElement>('[data-tour-step]')];
+    const wide = matchMedia('(min-width: 56rem)');
+    let current = -1;
+    let second = 0;
+
+    // Ogni tappa mette a fuoco una fase e fa accadere i suoi eventi (solo dove il simulatore è fisso).
+    const activate = (i: number) => {
+      if (i === current) return;
+      current = i;
+      steps.forEach((s, j) => s.classList.toggle('is-active', j === i));
+      window.clearTimeout(second);
+      const stop = tour[i];
+      controller.focus(stop.focus);
+      if (stop.events[0]) controller.play(stop.events[0]);
+      if (stop.events[1]) second = window.setTimeout(() => controller.play(stop.events[1]), 3500);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!wide.matches) return;
+        for (const e of entries) if (e.isIntersecting) activate(Number((e.target as HTMLElement).dataset.tourStep));
+      },
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    steps.forEach((s) => io.observe(s));
+  }
+</script>

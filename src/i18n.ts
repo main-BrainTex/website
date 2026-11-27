@@ -7,6 +7,7 @@ export const LANGS: Lang[] = ['it', 'en'];
 export const ROUTES = {
   home: { it: '/', en: '/en' },
   solution: { it: '/soluzione', en: '/en/solution' },
+  factory: { it: '/fabbrica', en: '/en/factory' },
   benefits: { it: '/benefici', en: '/en/benefits' },
   about: { it: '/chi-siamo', en: '/en/about' },
   careers: { it: '/lavora-con-noi', en: '/en/careers' },
@@ -45,6 +46,7 @@ export const UI = {
     langSwitchLabel: 'Read in English',
     nav: {
       solution: 'Soluzione',
+      factory: 'La fabbrica',
       benefits: 'Benefici',
       about: 'Chi siamo',
       careers: 'Lavora con noi',
@@ -77,6 +79,7 @@ export const UI = {
     langSwitchLabel: 'Leggi in italiano',
     nav: {
       solution: 'Solution',
+      factory: 'The factory',
       benefits: 'Benefits',
       about: 'About us',
       careers: 'Careers',
