@@ -6,7 +6,7 @@ Regole permanenti del progetto. Valgono in ogni sessione, anche se non vengono r
 ## Obiettivo
 Nuovo sito statico di BrainTex srl (oggi su Wix, www.braintex.it): veloce, statico, semplice da mantenere.
 Punto di partenza: contenuti del sito attuale. Decisione (27/11/2026): struttura multipagina nuova
-(Home, Soluzione, Chi siamo, Lavora con noi, Investitori e partner, Parlano di noi, Contatti, Privacy, Cookie),
+(Home, Soluzione, Benefici, Chi siamo, Lavora con noi, Investitori e partner, Parlano di noi, Contatti, Privacy, Cookie, più la pagina della fabbrica 3D),
 mantenendo gli URL esistenti `/` e `/privacypolicy-braintex`. Italiano (default, alla radice) e inglese (`/en/`);
 i testi inglesi sono bozze da far approvare. I testi li approva solo bt.
 
@@ -64,9 +64,13 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 ## Vincoli di contenuto (fatti da rispettare)
 - Nessun riferimento ai clienti: niente nomi, loghi o casi riconoscibili.
 - Nessun dettaglio tecnico riservato: niente numero o tipo di telecamere, LED e angoli, fornitori, schemi hardware. Hardware sempre stilizzato e generico ("unità di ispezione").
-- Stato macchine: specola e controllo finito "validato in produzione"; telaio "in validazione tecnologica"; altre macchine "su richiesta / da valutare".
+- Fasi in cui si applica BrainTex: tessitura (maglieria e telai), finissaggio (rameuse, lavaggio), controllo del greggio, controllo finito (specola). Decisione (27/11/2026): NON indicare cosa è pronto e cosa è in sviluppo; i dettagli si discutono con il cliente.
 - Brevetto: solo "domanda di brevetto depositata".
-- Numeri pubblicabili: oltre 4 milioni di metri ispezionati (valore in configurazione, aggiornato a mano); meno di 2 minuti per imparare un nuovo tessuto; oltre il 50% di scarti e rilavorazioni in meno. Altri numeri solo se approvati.
+- Numeri pubblicabili: oltre 4 milioni di metri ispezionati (valore in configurazione, aggiornato a mano); meno di 2 minuti per imparare un nuovo articolo; oltre il 50% di scarti e rilavorazioni in meno; velocità di ispezione circa 2,5 volte quella manuale, fino a 1 m/s; assorbimento di circa 300 W. Altri numeri solo se approvati.
+- Statistiche di settore solo con la fonte originale verificata e linkata accanto al dato.
+- Nessuna prestazione economica: niente risparmi in euro, ROI, payback, prezzi, modello di business, casi reali con numeri (permetterebbero di dedurre il prezzo). Niente percentuali di accuratezza non approvate. Niente nomi delle linee di prodotto.
+- Norme ambientali: citare il passaporto digitale di prodotto (ESPR) e le PEFCR con formula prudente ("dati utili per…", non "pronti per…"). Non citare la Green Claims Directive (proposta che la Commissione ha annunciato di ritirare).
+- Questo file è nel repository: se il repository diventa pubblico è leggibile da tutti, quindi qui non vanno scritte informazioni riservate.
 - Dati clienti: "i modelli sono addestrati per ogni singolo cliente e non vengono usati per altre aziende; il trattamento di immagini e dati è definito nel contratto".
 - Footer obbligatorio in tutte le lingue, con i loghi: "Realizzato con il finanziamento del Fondo Sociale Europeo Plus" e "Finanziato dall'Unione europea – NextGenerationEU".
 - Dati societari (art. 2250 c.c., sempre nel footer): BrainTex srl · Sede legale Via Lamaccia 11, 28078 Romagnano Sesia (NO) · Sede operativa Via Pietro Micca 4, 13900 Biella (BI) · C.F. e P.IVA 02789950033 · Registro Imprese di Novara · REA NO-317837 · Capitale sociale 22.222,22 € i.v.
@@ -76,7 +80,11 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 
 ## Esperienza interattiva
 - Home leggera: racconto a scorrimento in 2D (CSS/SVG). La fabbrica 3D vive su una pagina dedicata e three.js si carica solo dopo "Entra in fabbrica", con alternativa 2D (mobile, niente WebGL, "riduci movimento"); i contenuti di ogni fase esistono anche come testo HTML.
-- Simulatore: valori iniziali neutri dichiarati come segnaposto, pannello ipotesi sempre visibile, risultati presentati come "stima con le tue ipotesi". Nessuna percentuale o costo presentato come dato BrainTex se non approvato.
+- Simulatore = la fabbrica 3D stessa: azienda intera (linea + manutenzione, qualità, commerciale e direzione, magazzino e spedizioni, cliente, ambiente), interruttore sempre visibile "senza / con BrainTex", eventi per fase con catene di conseguenze verso i reparti. Modalità demo pubblica a schermo intero ("Esplora la simulazione completa"): turno accelerato, eventi a scelta, lente per ruolo, pannello indicatori. Versione 2D per mobile, dispositivi lenti e "riduci movimento". Solo online.
+- Simulatore concettuale ed esemplificativo: niente euro. Contatori in metri e difetti (dichiarati come esempio) e indicatori qualitativi a livelli (qualità consegnata, affidabilità delle consegne, salute delle macchine, conoscenza del processo, serenità del lavoro, fiducia di cliente e filiera, impronta ambientale, prontezza normativa). Stima ambientale (acqua, energia, CO2) solo come ordine di grandezza da metri salvati × fattori medi con fonti citate. Dicitura sempre presente: "Simulazione esemplificativa: eventi e risultati sono illustrativi". Il calcolatore "quanto ti costa un difetto" è escluso.
+- Racconto in home (2D): un evento per fase — guasto con difetto continuo (tessitura), pezza difettosa fermata prima della tintoria (greggio e finissaggio), fine turno (controllo finito), contestazione del cliente risolta con il report. Gli altri eventi stanno nella modalità demo.
+- Pagina "Benefici" con il catalogo dei benefici, filtrabile per area e per ruolo; non distingue benefici attuali e futuri.
+- Concetti di prodotto da far emergere: personalizzazione sul capitolato del cliente, uso dei feedback degli operatori, capacità di discernimento (difetto vs variazione voluta del disegno), adattamento rapido ai nuovi articoli, dialogo con la macchina (alert o fermo), il sapere resta in azienda.
 
 ## Brand
 - Font Metropolis (Regular, Bold, Italic), self-hosted woff2 in `src/assets/fonts` (pubblico dominio, Unlicense).
