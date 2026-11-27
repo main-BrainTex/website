@@ -24,6 +24,9 @@ export const STATS = {
   metersInspected: 4_000_000,
   minutesToLearnFabric: 2,
   wasteReductionPercent: 50,
+  speedVsManual: 2.5,
+  maxSpeedMps: 1,
+  powerWatts: 300,
 } as const;
 
 export type Address = { street: string; postalCode: string; city: string; province: string };

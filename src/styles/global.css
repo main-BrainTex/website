@@ -348,29 +348,6 @@ a.card:hover {
   margin-top: 2rem;
 }
 
-/* Etichette di stato */
-.tag {
-  display: inline-block;
-  padding: 0.25em 0.7em;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  border: 1px solid currentColor;
-}
-
-.tag--ok {
-  color: var(--green-300);
-}
-
-.tag--progress {
-  color: var(--cyan-300);
-}
-
-.tag--eval {
-  color: var(--text-muted);
-}
-
 /* Segnaposto per immagini e loghi ancora da fornire */
 .placeholder {
   display: grid;

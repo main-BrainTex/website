@@ -64,24 +64,51 @@ const t = {
         text: 'Un documento chiaro per la qualità interna e per rispondere a richieste o contestazioni.',
       },
     ],
-    machEyebrow: 'Dove si installa',
-    machTitle: 'Sui macchinari che hai già.',
-    machText:
-      'BrainTex si monta sulle macchine esistenti. Ecco a che punto siamo per ciascun tipo di macchina.',
-    machines: [
-      { name: 'Specola', status: 'ok' },
-      { name: 'Controllo finito', status: 'ok' },
-      { name: 'Telaio', status: 'progress' },
-      { name: 'Finissaggio, rameuse, taglio e altre macchine', status: 'eval' },
+    numbers: [
+      { value: `${STATS.speedVsManual.toLocaleString('it-IT')}×`, label: 'più veloce del controllo manuale' },
+      { value: `${STATS.maxSpeedMps} m/s`, label: 'velocità massima di ispezione' },
+      { value: `< ${STATS.minutesToLearnFabric} min`, label: 'per imparare un nuovo articolo' },
+      { value: `~${STATS.powerWatts} W`, label: 'di assorbimento, un consumo contenuto' },
     ],
-    status: {
-      ok: 'Validato in produzione',
-      progress: 'In validazione tecnologica',
-      eval: 'Su richiesta / da valutare',
-    },
-    machinesCaption: 'Stato di BrainTex per tipo di macchina',
-    machineCol: 'Macchina',
-    statusCol: 'Stato',
+    numbersLabel: 'BrainTex in numeri',
+    howEyebrow: 'Come ragiona',
+    howTitle: 'Non conta difetti: impara, distingue, si adatta.',
+    concepts: [
+      {
+        title: 'Su misura per te',
+        text: 'Modelli specifici per la tua azienda e per ogni articolo: difetti, classi e soglie seguono il tuo capitolato.',
+      },
+      {
+        title: 'Impara dai tuoi operatori',
+        text: 'Chi lavora conferma o scarta ogni segnalazione, e il sistema impara da quelle scelte.',
+      },
+      {
+        title: 'Sa distinguere',
+        text: 'Riconosce un difetto da una variazione voluta del disegno o della struttura, ne indica classe e gravità ed evita allarmi inutili.',
+      },
+      {
+        title: 'Si adatta in fretta',
+        text: `Impara un nuovo articolo in meno di ${STATS.minutesToLearnFabric} minuti, senza raccogliere dataset: perfetto per lotti piccoli e sempre diversi.`,
+      },
+      {
+        title: 'Dialoga con la macchina',
+        text: 'Si sincronizza con l’avanzamento del tessuto e, quando serve, invia un avviso o ferma la macchina.',
+      },
+      {
+        title: 'Il sapere resta in azienda',
+        text: 'L’esperienza di chi controlla da anni diventa conoscenza del sistema, a disposizione anche di chi arriva dopo.',
+      },
+    ],
+    phasesEyebrow: 'Dove si installa',
+    phasesTitle: 'Sui macchinari che hai già, lungo tutta la filiera.',
+    phasesText:
+      'BrainTex si monta sulle macchine esistenti. Raccontaci la tua produzione: valutiamo insieme dove porta più valore.',
+    phases: [
+      { title: 'Tessitura', text: 'Maglieria e telai: il difetto si vede dove nasce, prima che si ripeta per metri.' },
+      { title: 'Finissaggio', text: 'Rameuse e lavaggio: niente lavorazioni su un tessuto già difettoso.' },
+      { title: 'Controllo del greggio', text: 'Il controllo integrato in macchina: un passaggio in meno, consegne più rapide.' },
+      { title: 'Controllo finito', text: 'In specola, il 100% del tessuto prima della consegna, con mappa e report.' },
+    ],
     trustEyebrow: 'Dati e proprietà intellettuale',
     trustTitle: 'I tuoi dati restano tuoi.',
     trust: [
@@ -142,24 +169,51 @@ const t = {
         text: 'A clear document for internal quality and for answering requests or disputes.',
       },
     ],
-    machEyebrow: 'Where it fits',
-    machTitle: 'On the machines you already have.',
-    machText:
-      'BrainTex is mounted on existing machines. Here is where we stand for each type of machine.',
-    machines: [
-      { name: 'Inspection table (specola)', status: 'ok' },
-      { name: 'Final inspection', status: 'ok' },
-      { name: 'Loom', status: 'progress' },
-      { name: 'Finishing, stenter, cutting and other machines', status: 'eval' },
+    numbers: [
+      { value: `${STATS.speedVsManual.toLocaleString('en-GB')}×`, label: 'faster than manual inspection' },
+      { value: `${STATS.maxSpeedMps} m/s`, label: 'maximum inspection speed' },
+      { value: `< ${STATS.minutesToLearnFabric} min`, label: 'to learn a new article' },
+      { value: `~${STATS.powerWatts} W`, label: 'power draw, a low consumption' },
     ],
-    status: {
-      ok: 'Validated in production',
-      progress: 'In technology validation',
-      eval: 'On request / to be assessed',
-    },
-    machinesCaption: 'BrainTex status by machine type',
-    machineCol: 'Machine',
-    statusCol: 'Status',
+    numbersLabel: 'BrainTex in numbers',
+    howEyebrow: 'How it thinks',
+    howTitle: 'It doesn’t just count defects: it learns, distinguishes, adapts.',
+    concepts: [
+      {
+        title: 'Tailored to you',
+        text: 'Models specific to your company and to each article: defects, classes and thresholds follow your specifications.',
+      },
+      {
+        title: 'Learns from your operators',
+        text: 'Operators confirm or dismiss every alert, and the system learns from their choices.',
+      },
+      {
+        title: 'Knows the difference',
+        text: 'It tells a defect from an intended variation in the pattern or structure, assigns class and severity and avoids needless alarms.',
+      },
+      {
+        title: 'Adapts fast',
+        text: `It learns a new article in less than ${STATS.minutesToLearnFabric} minutes, without collecting datasets: ideal for small, ever-changing batches.`,
+      },
+      {
+        title: 'Talks to the machine',
+        text: 'It syncs with the movement of the fabric and, when needed, sends an alert or stops the machine.',
+      },
+      {
+        title: 'Know-how stays in-house',
+        text: 'The experience of your best inspectors becomes knowledge of the system, available to those who come after.',
+      },
+    ],
+    phasesEyebrow: 'Where it fits',
+    phasesTitle: 'On the machines you already have, along the whole chain.',
+    phasesText:
+      'BrainTex is mounted on existing machines. Tell us about your production: together we will assess where it adds the most value.',
+    phases: [
+      { title: 'Weaving and knitting', text: 'Looms and knitting machines: the defect is seen where it starts, before it repeats for metres.' },
+      { title: 'Finishing', text: 'Stenters and washing: no processing of fabric that is already defective.' },
+      { title: 'Greige inspection', text: 'Inspection built into the machine: one step less, faster deliveries.' },
+      { title: 'Final inspection', text: 'On the inspection table, 100% of the fabric before delivery, with defect map and report.' },
+    ],
     trustEyebrow: 'Data and intellectual property',
     trustTitle: 'Your data stays yours.',
     trust: [
@@ -172,7 +226,6 @@ const t = {
   },
 }[lang];
 
-const tagClass = { ok: 'tag--ok', progress: 'tag--progress', eval: 'tag--eval' } as const;
 ---
 
 <Base lang={lang} routeKey="solution" title={t.title} description={t.description}>
@@ -241,34 +294,54 @@ const tagClass = { ok: 'tag--ok', progress: 'tag--progress', eval: 'tag--eval' }
   <section class="section section--surface">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow">{t.machEyebrow}</p>
-        <h2>{t.machTitle}</h2>
-        <p class="lead">{t.machText}</p>
+        <p class="eyebrow">{t.howEyebrow}</p>
+        <h2>{t.howTitle}</h2>
       </div>
-      <table class="machines" data-reveal="1">
-        <caption class="visually-hidden">{t.machinesCaption}</caption>
-        <thead>
-          <tr>
-            <th scope="col">{t.machineCol}</th>
-            <th scope="col">{t.statusCol}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            t.machines.map((m) => (
-              <tr>
-                <th scope="row">{m.name}</th>
-                <td>
-                  <span class={`tag ${tagClass[m.status as keyof typeof tagClass]}`}>
-                    {t.status[m.status as keyof typeof t.status]}
-                  </span>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
+      <ul class="grid grid--3 plain">
+        {
+          t.concepts.map((k, i) => (
+            <li class="card" data-reveal={String((i % 3) + 1)}>
+              <h3>{k.title}</h3>
+              <p>{k.text}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.phasesEyebrow}</p>
+        <h2>{t.phasesTitle}</h2>
+        <p class="lead">{t.phasesText}</p>
+      </div>
+      <ol class="grid grid--4 plain">
+        {
+          t.phases.map((ph, i) => (
+            <li class="card" data-reveal={String(i + 1)}>
+              <span class="card__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{ph.title}</h3>
+              <p>{ph.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="numbers" aria-label={t.numbersLabel}>
+    <ul class="wrap numbers__list plain">
+      {
+        t.numbers.map((n, i) => (
+          <li data-reveal={String(i + 1)}>
+            <strong>{n.value}</strong>
+            <span>{n.label}</span>
+          </li>
+        ))
+      }
+    </ul>
   </section>
 
   <section class="section">
@@ -298,32 +371,32 @@ const tagClass = { ok: 'tag--ok', progress: 'tag--progress', eval: 'tag--eval' }
     margin-bottom: 1.25rem;
   }
 
-  .machines {
-    width: 100%;
-    max-width: 46rem;
-    border-collapse: collapse;
+  .numbers {
+    border-block: 1px solid var(--line);
+    background: var(--bg-deep);
   }
 
-  .machines th,
-  .machines td {
-    padding: 1rem 0.75rem 1rem 0;
-    border-bottom: 1px solid var(--line);
-    text-align: left;
-    vertical-align: middle;
+  .numbers__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 1.5rem;
+    padding-block: 2.5rem;
   }
 
-  .machines thead th {
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+  .numbers__list li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .numbers__list strong {
+    font-size: clamp(2rem, 1.6rem + 1.8vw, 2.8rem);
+    line-height: 1;
+    color: var(--green-300);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .numbers__list span {
     color: var(--text-muted);
-  }
-
-  .machines tbody th {
-    font-weight: 700;
-  }
-
-  .machines td {
-    text-align: right;
   }
 </style>
