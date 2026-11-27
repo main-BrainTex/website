@@ -26,9 +26,12 @@ const t = {
     linkHint: 'Utile soprattutto per le candidature.',
     message: 'Messaggio',
     optional: 'facoltativo',
-    privacyBefore: 'Ho letto la ',
-    privacyLink: 'Privacy Policy',
-    privacyAfter: ' e acconsento al trattamento dei miei dati per ricevere una risposta.',
+    privacyBefore: 'Ho letto l’',
+    privacyLink: 'informativa privacy',
+    privacyAfter: '.',
+    notice:
+      'Titolare del trattamento è BrainTex srl. Usiamo i dati che ci invii solo per rispondere alla tua richiesta e, se ti candidi, per valutare la candidatura; li conserviamo al massimo 24 mesi. Trovi i dettagli e i tuoi diritti nella ',
+    noticeLink: 'Privacy Policy',
     send: 'Invia il messaggio',
     sending: 'Invio in corso…',
     errors: {
@@ -37,7 +40,7 @@ const t = {
       audience: 'Scegli una voce.',
       link: 'Inserisci un indirizzo web completo (https://…).',
       message: 'Scrivi un messaggio di almeno 10 caratteri.',
-      privacy: 'Per inviare il messaggio serve il consenso.',
+      privacy: 'Conferma di aver letto l’informativa privacy.',
     },
     ok: 'Grazie! Il messaggio è arrivato: ti risponderemo il prima possibile.',
     failed: 'Non siamo riusciti a inviare il messaggio. Riprova tra qualche minuto o scrivici su LinkedIn.',
@@ -65,8 +68,11 @@ const t = {
     message: 'Message',
     optional: 'optional',
     privacyBefore: 'I have read the ',
-    privacyLink: 'Privacy Policy',
-    privacyAfter: ' and agree to the processing of my data in order to receive a reply.',
+    privacyLink: 'privacy notice',
+    privacyAfter: '.',
+    notice:
+      'The data controller is BrainTex srl. We use the data you send only to reply to your request and, if you apply, to assess your application; we keep it for no longer than 24 months. Details and your rights are in the ',
+    noticeLink: 'Privacy Policy',
     send: 'Send message',
     sending: 'Sending…',
     errors: {
@@ -75,7 +81,7 @@ const t = {
       audience: 'Please choose an option.',
       link: 'Please enter a full web address (https://…).',
       message: 'Please write a message of at least 10 characters.',
-      privacy: 'Your consent is required to send the message.',
+      privacy: 'Please confirm you have read the privacy notice.',
     },
     ok: 'Thank you! Your message has arrived: we will reply as soon as possible.',
     failed: 'We could not send your message. Please try again in a few minutes or write to us on LinkedIn.',
@@ -157,6 +163,10 @@ const messages = JSON.stringify({
     <button class="btn" type="submit">{t.send}</button>
     <p class="form-status" role="status" aria-live="polite" data-status></p>
   </div>
+
+  <p class="field--wide form-notice">
+    {t.notice}<a href={href('privacy', lang)}>{t.noticeLink}</a>.
+  </p>
 </form>
 
 <style>
@@ -266,6 +276,12 @@ const messages = JSON.stringify({
 
   .hp {
     display: none;
+  }
+
+  .form-notice {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
   }
 
   .contact-form__footer {
