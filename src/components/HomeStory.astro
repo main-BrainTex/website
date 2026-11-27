@@ -1,0 +1,504 @@
+---
+// Racconto a scorrimento della home: quattro eventi lungo la filiera, ciascuno con il finale
+// "senza" e "con BrainTex". Esempio illustrativo, nessun dato reale. Solo CSS/SVG e poco JS.
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    eyebrow: 'Una giornata in fabbrica',
+    title: 'Lo stesso difetto, due finali diversi.',
+    lead: 'Senza controllo, un difetto viaggia verso valle e costa di più a ogni fase. Scorri la giornata e confronta.',
+    note: 'Esempio illustrativo: eventi e conseguenze sono semplificati.',
+    modeLabel: 'Mostra il finale',
+    without: 'Senza BrainTex',
+    with: 'Con BrainTex',
+    mapLabel: 'Mappa della filiera: fase evidenziata e percorso del difetto',
+    stations: ['Tessitura', 'Greggio e finissaggio', 'Controllo finito', 'Cliente'],
+    events: [
+      {
+        phase: 'Tessitura',
+        title: 'Un ago si rompe e il difetto si ripete.',
+        without: [
+          'Il difetto continua per decine di metri',
+          'Se ne accorge il controllo a valle',
+          'La pezza viene scartata o declassata',
+          'Intanto la macchina si usura',
+        ],
+        with: [
+          'Avviso dopo pochi centimetri',
+          'Fermo o intervento immediato',
+          'Metri salvati',
+          'L’evento resta registrato per la manutenzione',
+        ],
+      },
+      {
+        phase: 'Greggio e finissaggio',
+        title: 'Una pezza difettosa sta per entrare in tintoria.',
+        without: [
+          'Viene tinta e finita',
+          'Acqua, energia e prodotti chimici consumati',
+          'Poi viene scartata',
+        ],
+        with: ['Fermata prima della tintoria', 'Rammendata o deviata', 'Nessuna lavorazione sprecata'],
+      },
+      {
+        phase: 'Controllo finito',
+        title: 'Fine turno, dopo ore davanti al tessuto.',
+        without: [
+          'L’attenzione cala, per chiunque',
+          'Qualche difetto sfugge',
+          'L’operatore è stanco e sotto pressione',
+        ],
+        with: [
+          'Attenzione costante su ogni metro',
+          'L’operatore conferma o scarta le segnalazioni',
+          'Decide sempre lui',
+        ],
+      },
+      {
+        phase: 'Cliente',
+        title: 'Settimane dopo, il cliente contesta una pezza.',
+        without: ['Nessun dato da mostrare', 'Parola contro parola', 'Sconto o reso'],
+        with: [
+          'Il report ha metro, tipo e immagine di ogni difetto',
+          'Risposta in pochi minuti',
+          'La fiducia del cliente cresce',
+        ],
+      },
+    ],
+  },
+  en: {
+    eyebrow: 'A day at the mill',
+    title: 'The same defect, two different endings.',
+    lead: 'Without inspection, a defect travels downstream and costs more at every stage. Scroll through the day and compare.',
+    note: 'Illustrative example: events and consequences are simplified.',
+    modeLabel: 'Show the ending',
+    without: 'Without BrainTex',
+    with: 'With BrainTex',
+    mapLabel: 'Supply chain map: highlighted stage and path of the defect',
+    stations: ['Weaving', 'Greige and finishing', 'Final inspection', 'Customer'],
+    events: [
+      {
+        phase: 'Weaving',
+        title: 'A needle breaks and the defect repeats.',
+        without: [
+          'The defect runs on for dozens of metres',
+          'Inspection downstream finally notices',
+          'The piece is scrapped or downgraded',
+          'Meanwhile the machine wears out',
+        ],
+        with: [
+          'An alert after a few centimetres',
+          'Stop or immediate intervention',
+          'Metres saved',
+          'The event is logged for maintenance',
+        ],
+      },
+      {
+        phase: 'Greige and finishing',
+        title: 'A defective piece is about to enter the dye house.',
+        without: ['It gets dyed and finished', 'Water, energy and chemicals are used', 'Then it is scrapped'],
+        with: ['Stopped before dyeing', 'Mended or rerouted', 'No processing wasted'],
+      },
+      {
+        phase: 'Final inspection',
+        title: 'End of shift, after hours in front of the fabric.',
+        without: ['Attention drops, for anyone', 'Some defects slip through', 'The operator is tired and under pressure'],
+        with: [
+          'Constant attention on every metre',
+          'The operator confirms or dismisses each alert',
+          'The decision is always theirs',
+        ],
+      },
+      {
+        phase: 'Customer',
+        title: 'Weeks later, the customer disputes a piece.',
+        without: ['No data to show', 'Your word against theirs', 'Discount or return'],
+        with: [
+          'The report shows metre, type and image of each defect',
+          'An answer within minutes',
+          'Customer trust grows',
+        ],
+      },
+    ],
+  },
+}[lang];
+---
+
+<section class="section story" data-story data-mode="with" aria-labelledby="story-title">
+  <div class="wrap">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 id="story-title">{t.title}</h2>
+      <p class="lead">{t.lead}</p>
+    </div>
+
+    <div class="story__grid">
+      <div class="story__aside">
+        <div class="story__sticky">
+          <div class="mode" role="group" aria-label={t.modeLabel}>
+            <button type="button" class="mode__btn" data-mode-btn="without" aria-pressed="false">{t.without}</button>
+            <button type="button" class="mode__btn" data-mode-btn="with" aria-pressed="true">{t.with}</button>
+          </div>
+
+          <svg class="map" viewBox="0 0 320 440" role="img" aria-label={t.mapLabel}>
+            <path class="map__thread" d="M60 50 C 150 80, 150 140, 60 170 S -30 260, 60 290 S 150 380, 60 410" />
+            {
+              t.stations.map((name, i) => (
+                <g class="map__node" data-node={i} transform={`translate(60 ${50 + i * 120})`}>
+                  <circle r="16" />
+                  <text x="34" y="6">{name}</text>
+                </g>
+              ))
+            }
+            <g class="map__defect" data-defect-dot>
+              <circle r="7" />
+            </g>
+          </svg>
+          <p class="story__note">{t.note}</p>
+        </div>
+      </div>
+
+      <ol class="story__steps plain">
+        {
+          t.events.map((ev, i) => (
+            <li class="story__step" data-step={i}>
+              <p class="eyebrow">{ev.phase}</p>
+              <h3>{ev.title}</h3>
+              <div class="chains">
+                <div class="chain chain--without">
+                  <p class="chain__label">{t.without}</p>
+                  <ol>
+                    {ev.without.map((s) => (
+                      <li>{s}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="chain chain--with">
+                  <p class="chain__label">{t.with}</p>
+                  <ol>
+                    {ev.with.map((s) => (
+                      <li>{s}</li>
+                    ))}
+                  </ol>
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .story__grid {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.8fr) 1.2fr;
+    gap: clamp(2rem, 5vw, 4rem);
+  }
+
+  .story__sticky {
+    position: sticky;
+    top: 6rem;
+  }
+
+  @media (max-width: 56rem) {
+    .story__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .story__sticky {
+      top: 4.75rem;
+      z-index: 5;
+      padding-block: 0.75rem;
+      background: var(--bg);
+    }
+
+    /* Su schermi stretti la mappa non serve: ogni passo ha già la sua fase */
+    .map,
+    .story__note {
+      display: none;
+    }
+  }
+
+  /* Interruttore senza / con: utile solo con JavaScript */
+  .mode {
+    display: inline-flex;
+    padding: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg-deep);
+  }
+
+  @media (scripting: none) {
+    .mode {
+      display: none;
+    }
+  }
+
+  .mode__btn {
+    min-height: 2.5rem;
+    padding: 0.4rem 1rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .mode__btn[aria-pressed='true'] {
+    background: var(--text);
+    color: var(--bg-deep);
+  }
+
+  [data-mode='with'] .mode__btn[data-mode-btn='with'][aria-pressed='true'] {
+    background: var(--green-300);
+  }
+
+  .map {
+    width: 100%;
+    max-width: 22rem;
+    margin-top: 1.5rem;
+    overflow: visible;
+  }
+
+  .map__thread {
+    fill: none;
+    stroke: var(--cyan-500);
+    stroke-width: 2;
+    stroke-dasharray: 4 6;
+    opacity: 0.6;
+  }
+
+  .map__node circle {
+    fill: var(--bg-deep);
+    stroke: var(--line);
+    stroke-width: 2;
+    transition:
+      stroke 0.3s,
+      fill 0.3s;
+  }
+
+  .map__node text {
+    fill: var(--text-muted);
+    font: 700 15px var(--font);
+    transition: fill 0.3s;
+  }
+
+  .map__node.is-active circle {
+    stroke: var(--cyan-200);
+    fill: var(--surface);
+  }
+
+  .map__node.is-active text {
+    fill: var(--text);
+  }
+
+  .map__node.is-hit circle {
+    stroke: var(--text-muted);
+    fill: rgb(169 196 214 / 0.25);
+  }
+
+  .map__defect circle {
+    fill: var(--text);
+    stroke: var(--bg-deep);
+    stroke-width: 3;
+    transition: fill 0.3s;
+  }
+
+  .map__defect {
+    transition: transform 0.9s var(--ease);
+  }
+
+  @media (scripting: none) {
+    .map__defect {
+      display: none;
+    }
+  }
+
+  [data-mode='with'] .map__defect circle {
+    fill: var(--green-300);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .map__defect {
+      transition: none;
+    }
+  }
+
+  .story__note {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .story__steps {
+    display: grid;
+    gap: clamp(3rem, 12vh, 8rem);
+    padding-block: 1rem 30vh;
+  }
+
+  @media (max-width: 56rem) {
+    .story__steps {
+      padding-bottom: 0;
+    }
+  }
+
+  .story__step {
+    opacity: 0.45;
+    transition: opacity 0.4s;
+  }
+
+  .story__step.is-active,
+  .story__step:focus-within {
+    opacity: 1;
+  }
+
+  @media (scripting: none) {
+    .story__step {
+      opacity: 1;
+    }
+  }
+
+  .chains {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  @media (max-width: 36rem) {
+    .chains {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .chain {
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    transition:
+      opacity 0.3s,
+      border-color 0.3s;
+  }
+
+  .chain--with {
+    border-color: rgb(156 237 64 / 0.45);
+    background: rgb(156 237 64 / 0.06);
+  }
+
+  .chain--without {
+    border-style: dashed;
+  }
+
+  /* L'interruttore mette in primo piano un finale e attenua l'altro */
+  [data-mode='with'] .chain--without,
+  [data-mode='without'] .chain--with {
+    opacity: 0.45;
+  }
+
+  .chain__label {
+    margin-bottom: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .chain--with .chain__label {
+    color: var(--green-300);
+  }
+
+  .chain ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: chain;
+  }
+
+  .chain li {
+    position: relative;
+    padding: 0 0 0.6rem 1.4rem;
+    font-size: 0.95rem;
+  }
+
+  .chain li::before {
+    content: '';
+    position: absolute;
+    left: 0.3rem;
+    top: 0.55em;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .chain li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 0.5rem;
+    top: 1.15em;
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .chain--with li::before {
+    background: var(--green-300);
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-story]');
+  if (root) {
+    const steps = [...root.querySelectorAll<HTMLElement>('[data-step]')];
+    const nodes = [...root.querySelectorAll<SVGGElement>('[data-node]')];
+    const dot = root.querySelector<SVGGElement>('[data-defect-dot]');
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-mode-btn]')];
+    const last = nodes.length - 1;
+    let active = 0;
+
+    // Senza BrainTex il difetto prosegue fino al cliente; con BrainTex si ferma dove nasce.
+    const render = () => {
+      const without = root.dataset.mode === 'without';
+      const stop = without ? last : active;
+      steps.forEach((s, i) => s.classList.toggle('is-active', i === active));
+      nodes.forEach((n, i) => {
+        n.classList.toggle('is-active', i === active);
+        n.classList.toggle('is-hit', without && i > active);
+      });
+      if (dot) dot.style.transform = `translate(60px, ${50 + stop * 120}px)`;
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        root.dataset.mode = b.dataset.modeBtn;
+        buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+        render();
+      }),
+    );
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) active = Number((e.target as HTMLElement).dataset.step);
+        }
+        render();
+      },
+      { rootMargin: '-45% 0px -45% 0px' },
+    );
+    steps.forEach((s) => io.observe(s));
+    render();
+  }
+</script>

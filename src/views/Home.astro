@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import FabricScanner from '../components/FabricScanner.astro';
 import CtaBand from '../components/CtaBand.astro';
+import HomeStory from '../components/HomeStory.astro';
 import { SITE, STATS } from '../config';
 import { canonical, href, type Lang } from '../i18n';
 
@@ -317,6 +318,8 @@ const jsonLd = {
       </div>
     </div>
   </section>
+
+  <HomeStory lang={lang} />
 
   <section class="section section--raised">
     <div class="wrap">
