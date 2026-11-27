@@ -25,6 +25,7 @@ const t = {
     link: 'Profilo LinkedIn o portfolio',
     linkHint: 'Utile soprattutto per le candidature.',
     message: 'Messaggio',
+    messageHint: 'Non inserire dati sensibili, ad esempio sulla salute.',
     optional: 'facoltativo',
     privacyBefore: 'Ho letto l’',
     privacyLink: 'informativa privacy',
@@ -66,6 +67,7 @@ const t = {
     link: 'LinkedIn profile or portfolio',
     linkHint: 'Especially useful for applications.',
     message: 'Message',
+    messageHint: 'Please do not include sensitive data, for example about health.',
     optional: 'optional',
     privacyBefore: 'I have read the ',
     privacyLink: 'privacy notice',
@@ -140,7 +142,8 @@ const messages = JSON.stringify({
 
   <div class="field field--wide">
     <label for="cf-message">{t.message} <span class="req" aria-hidden="true">*</span></label>
-    <textarea id="cf-message" name="message" rows="6" required minlength="10" maxlength="5000" aria-describedby="cf-message-err"></textarea>
+    <textarea id="cf-message" name="message" rows="6" required minlength="10" maxlength="5000" aria-describedby="cf-message-hint cf-message-err"></textarea>
+    <p class="field__hint" id="cf-message-hint">{t.messageHint}</p>
     <p class="field__error" id="cf-message-err" data-error={t.errors.message}></p>
   </div>
 
