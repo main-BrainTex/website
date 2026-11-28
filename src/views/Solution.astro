@@ -2,7 +2,10 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
-import FabricView from '../components/FabricView.astro';
+import { Image } from 'astro:assets';
+import imgTessuto from '../assets/fabric/tessuto.png';
+import imgMappa from '../assets/fabric/mappa-di-calore.png';
+import imgDifetti from '../assets/fabric/difetti-riconosciuti.png';
 import SampleDashboard from '../components/samples/SampleDashboard.astro';
 import SampleReport from '../components/samples/SampleReport.astro';
 import SampleTwin from '../components/samples/SampleTwin.astro';
@@ -27,10 +30,23 @@ const t = {
     techText:
       'BrainTex guarda il tessuto mentre avanza, centimetro per centimetro, senza mai distrarsi. Riconosce il difetto, ne segna posizione e contorno e ti avvisa solo quando serve: l’ultima parola resta a te.',
     views: [
-      { title: 'Cosa vedi tu', text: 'Un tratto di pezza, come appare a occhio nudo.' },
-      { title: 'Cosa vede il sistema', text: 'Lo stesso tratto, guardato da vicino mentre scorre.' },
-      { title: 'Cosa capisce il sistema', text: 'Il difetto riconosciuto, localizzato e contornato.' },
+      {
+        title: 'Cosa vedi tu',
+        text: 'Un tratto di pezza come appare a occhio nudo: nel disegno i difetti si confondono.',
+        alt: 'Tessuto pied-de-poule bianco e nero visto da vicino.',
+      },
+      {
+        title: 'Cosa vede il sistema',
+        text: 'Lo stesso tratto guardato da BrainTex: le zone che non tornano si accendono come una mappa di calore.',
+        alt: 'Mappa di calore dello stesso tratto: alcune zone accese in arancio e viola su fondo scuro.',
+      },
+      {
+        title: 'Cosa capisce il sistema',
+        text: 'I difetti riconosciuti, localizzati e contornati, pronti per la mappa della pezza.',
+        alt: 'Lo stesso tessuto con i difetti contornati da riquadri colorati.',
+      },
     ],
+    viewsNote: 'Immagini reali di una pezza ispezionata da BrainTex.',
     featEyebrow: 'Le caratteristiche',
     featTitle: 'Pensato per la produzione vera.',
     features: [
@@ -173,10 +189,23 @@ const t = {
     techText:
       'BrainTex watches the fabric as it moves, centimetre by centimetre, without ever getting distracted. It recognises the defect, marks its position and outline and alerts you only when needed: the final word stays with you.',
     views: [
-      { title: 'What you see', text: 'A stretch of fabric, as it looks to the naked eye.' },
-      { title: 'What the system sees', text: 'The same stretch, looked at closely as it moves.' },
-      { title: 'What the system understands', text: 'The defect recognised, located and outlined.' },
+      {
+        title: 'What you see',
+        text: 'A stretch of fabric as it looks to the naked eye: the defects blend into the pattern.',
+        alt: 'Close-up of black and white houndstooth fabric.',
+      },
+      {
+        title: 'What the system sees',
+        text: 'The same stretch as BrainTex sees it: the areas that do not add up light up like a heat map.',
+        alt: 'Heat map of the same stretch: some areas glow orange and purple on a dark background.',
+      },
+      {
+        title: 'What the system understands',
+        text: 'The defects recognised, located and outlined, ready for the fabric map.',
+        alt: 'The same fabric with the defects outlined by coloured boxes.',
+      },
     ],
+    viewsNote: 'Real images of a fabric roll inspected by BrainTex.',
     featEyebrow: 'Features',
     featTitle: 'Built for real production.',
     features: [
@@ -322,13 +351,21 @@ const t = {
         {
           t.views.map((v, i) => (
             <li data-reveal={String(i + 1)}>
-              <FabricView lang={lang} kind={(['human', 'system', 'understood'] as const)[i]} />
+              <Image
+                class="views__img"
+                src={[imgTessuto, imgMappa, imgDifetti][i]}
+                alt={v.alt}
+                widths={[320, 512]}
+                sizes="(max-width: 48rem) 100vw, 22rem"
+                format="webp"
+              />
               <h3>{v.title}</h3>
               <p class="muted">{v.text}</p>
             </li>
           ))
         }
       </ol>
+      <p class="views__note muted">{t.viewsNote}</p>
     </div>
   </section>
 
@@ -558,5 +595,20 @@ const t = {
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  .views__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 512 / 592;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border-radius: var(--radius);
+  }
+
+  .views__note {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
   }
 </style>
