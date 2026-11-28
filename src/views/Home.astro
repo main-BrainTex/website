@@ -28,6 +28,40 @@ const t = {
       { value: `> ${STATS.wasteReductionPercent}%`, label: 'di scarti e rilavorazioni in meno' },
       { value: `${STATS.speedVsManual.toLocaleString('it-IT')}×`, label: 'più veloce del controllo manuale, fino a 1 m/s' },
     ],
+    forEyebrow: 'Per chi è',
+    forTitle: 'Dalla tessitura alla confezione, e oltre.',
+    audiences: [
+      {
+        key: 'solution', hash: '',
+        title: 'Tessiture e maglifici',
+        text: 'BrainTex guarda il tessuto direttamente sul telaio e sulla macchina: un guasto si vede dopo pochi centimetri, non dopo decine di metri.',
+      },
+      {
+        key: 'factory', hash: '',
+        title: 'Tintorie e finissaggi',
+        text: 'Ti avvisa se una pezza è difettosa prima che entri in tintoria: niente acqua, energia e prodotti chimici spesi per niente.',
+      },
+      {
+        key: 'solution', hash: '#conto-terzi',
+        title: 'Controlli qualità conto terzi',
+        text: 'Lavora accanto ai tuoi operatori in specola: non si stanca, va più veloce e prepara il report per ogni committente.',
+      },
+      {
+        key: 'investors', hash: '#confezionisti',
+        title: 'Confezionisti e brand',
+        text: 'Il tessuto arriva con la sua mappa dei difetti: il taglio li evita, la resa sale e puoi chiedere lo stesso standard a ogni fornitore.',
+      },
+      {
+        key: 'investors', hash: '#partner',
+        title: 'Costruttori, integratori e software house',
+        text: 'Porta il controllo qualità dentro le tue macchine e i dati di qualità dentro ERP e MES.',
+      },
+      {
+        key: 'investors', hash: '#investitori',
+        title: 'Investitori',
+        text: 'Dalla visione artificiale alla fabbrica intelligente: scopri dove stiamo andando.',
+      },
+    ] as const,
     problemEyebrow: 'Perché BrainTex',
     problemTitle: 'Il controllo tradizionale fatica a stare al passo.',
     problemText: [
@@ -80,18 +114,13 @@ const t = {
     claim: 'Il difetto diventa valore.',
     claimText:
       'BrainTex è una soluzione concreta per guidare il cambiamento verso un’industria più sostenibile: meno scarti, meno rilavorazioni, più valore da ogni metro prodotto.',
-    doorsEyebrow: 'Non sei un’azienda tessile?',
+    doorsEyebrow: 'Non solo aziende',
     doorsTitle: 'C’è una porta anche per te.',
     doors: [
       {
         key: 'careers',
         title: 'Lavora con noi',
         text: 'Ti piace trovare quello che gli altri non vedono? Mandaci la tua candidatura.',
-      },
-      {
-        key: 'investors',
-        title: 'Investitori e partner',
-        text: 'Visione, mercati e opportunità di collaborazione, anche per costruttori di macchine e integratori.',
       },
       {
         key: 'about',
@@ -125,6 +154,40 @@ const t = {
       { value: `> ${STATS.wasteReductionPercent}%`, label: 'less waste and rework' },
       { value: `${STATS.speedVsManual.toLocaleString('en-GB')}×`, label: 'faster than manual inspection, up to 1 m/s' },
     ],
+    forEyebrow: 'Who it is for',
+    forTitle: 'From weaving to garment making, and beyond.',
+    audiences: [
+      {
+        key: 'solution', hash: '',
+        title: 'Weaving and knitting mills',
+        text: 'BrainTex watches the fabric right on the loom and the knitting machine: a fault shows up after a few centimetres, not dozens of metres.',
+      },
+      {
+        key: 'factory', hash: '',
+        title: 'Dye houses and finishers',
+        text: 'It warns you when a piece is defective before it goes into dyeing: no water, energy or chemicals wasted.',
+      },
+      {
+        key: 'solution', hash: '#conto-terzi',
+        title: 'Quality-control service providers',
+        text: 'It works alongside your inspectors: it never gets tired, it is faster and it prepares the report for every customer.',
+      },
+      {
+        key: 'investors', hash: '#confezionisti',
+        title: 'Garment makers and brands',
+        text: 'Fabric arrives with its defect map: cutting avoids the defects, yield goes up and you can ask every supplier for the same standard.',
+      },
+      {
+        key: 'investors', hash: '#partner',
+        title: 'Machine builders, integrators and software houses',
+        text: 'Bring quality control into your machines and quality data into ERP and MES.',
+      },
+      {
+        key: 'investors', hash: '#investitori',
+        title: 'Investors',
+        text: 'From machine vision to the smart factory: see where we are heading.',
+      },
+    ] as const,
     problemEyebrow: 'Why BrainTex',
     problemTitle: 'Traditional inspection struggles to keep up.',
     problemText: [
@@ -177,18 +240,13 @@ const t = {
     claim: 'Defects become value.',
     claimText:
       'BrainTex is a concrete way to lead the shift towards a more sustainable industry: less waste, less rework, more value from every metre produced.',
-    doorsEyebrow: 'Not a textile company?',
+    doorsEyebrow: 'Not only companies',
     doorsTitle: 'There’s a door for you too.',
     doors: [
       {
         key: 'careers',
         title: 'Careers',
         text: 'Do you enjoy finding what others miss? Send us your application.',
-      },
-      {
-        key: 'investors',
-        title: 'Investors & partners',
-        text: 'Vision, markets and partnership opportunities, including for machine builders and integrators.',
       },
       {
         key: 'about',
@@ -270,6 +328,30 @@ const jsonLd = {
         ))
       }
     </ul>
+  </section>
+
+  <section class="section section--raised" id="per-chi">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.forEyebrow}</p>
+        <h2>{t.forTitle}</h2>
+      </div>
+      <ul class="grid grid--3 plain">
+        {
+          t.audiences.map((a, i) => (
+            <li data-reveal={String((i % 3) + 1)}>
+              <a class="card door" href={`${href(a.key, lang)}${a.hash}`}>
+                <h3>{a.title}</h3>
+                <p>{a.text}</p>
+                <span class="card__more" aria-hidden="true">
+                  {t.more} <span class="arrow" />
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </section>
 
   <section class="section">
@@ -354,7 +436,7 @@ const jsonLd = {
         <p class="eyebrow">{t.doorsEyebrow}</p>
         <h2>{t.doorsTitle}</h2>
       </div>
-      <ul class="grid grid--4 plain">
+      <ul class="grid grid--3 plain">
         {
           t.doors.map((d, i) => (
             <li data-reveal={String(i + 1)}>
