@@ -2,13 +2,14 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { SITE } from '../config';
+import { SITE, STATS } from '../config';
 import { href, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
+const millions = Math.floor(STATS.metersInspected / 1_000_000);
 
 // Ordine e ruoli come sul sito attuale.
 const team = [
@@ -29,16 +30,45 @@ const t = {
   it: {
     title: 'Chi siamo: il team BrainTex',
     description:
-      'BrainTex srl è una startup fondata a novembre 2024 e incubata in I3P, l’incubatore del Politecnico di Torino. Conosci il team e i riconoscimenti ricevuti.',
+      'BrainTex srl: storia, valori, team, riconoscimenti e reti di cui fa parte. Startup fondata a novembre 2024 e incubata in I3P, l’incubatore del Politecnico di Torino.',
     eyebrow: 'Chi siamo',
     h1: 'Un team nato per vedere quello che sfugge.',
     lead: 'BrainTex srl è stata fondata a novembre 2024 ed è incubata in I3P, l’incubatore del Politecnico di Torino. Il team è nato dall’Academy di I3P per aspiranti imprenditori.',
     storyEyebrow: 'La nostra storia',
     storyTitle: 'Tra il Politecnico e il distretto tessile.',
     story: [
+      'BrainTex nasce da un’osservazione semplice: nel tessile il controllo qualità si fa ancora in gran parte a vista e a fine processo, quando il difetto è già costato tessuto, tempo ed energia. Volevamo portare l’occhio esperto là dove il difetto nasce.',
       'Uniamo intelligenza artificiale, visione artificiale ed elettronica con l’esperienza di chi il tessuto lo lavora ogni giorno.',
       `La sede legale è a ${SITE.legalSeat}; la sede operativa è a ${SITE.operationalSeat}, nel cuore del distretto tessile.`,
     ],
+    milestonesLabel: 'Le tappe',
+    milestones: [
+      { when: 'Le origini', title: 'L’Academy di I3P', text: 'Il team si forma all’Academy di I3P per aspiranti imprenditori, partendo da un problema concreto del distretto tessile.' },
+      { when: 'Novembre 2024', title: 'Nasce BrainTex srl', text: 'La società viene costituita ed entra in incubazione in I3P, l’incubatore del Politecnico di Torino.' },
+      { when: '2025', title: 'I primi riconoscimenti', text: 'Start Cup Piemonte Valle d’Aosta, Premio Nazionale per l’Innovazione (Top 4 Industrial e Premio Venture CDP) e primo premio a Start Up Now.' },
+      { when: 'Oggi', title: 'Al lavoro in produzione', text: `BrainTex guarda il tessuto ogni giorno nelle aziende: oltre ${millions} milioni di metri ispezionati e una domanda di brevetto depositata.` },
+      { when: '2026', title: 'Forbes Under 30', text: 'Quattro fondatori nella classifica di Forbes Italia, categoria Manufacturing & Industry.' },
+      { when: 'Domani', title: 'La fabbrica intelligente', text: 'Sistemi collegati lungo tutta la filiera, che trasformano i dati in decisioni.' },
+    ],
+    valuesEyebrow: 'I nostri valori',
+    valuesTitle: 'Come lavoriamo, ogni giorno.',
+    values: [
+      { title: 'L’ultima parola è delle persone', text: 'BrainTex segnala, chi lavora decide. La tecnologia serve a togliere fatica, non a togliere il mestiere.' },
+      { title: 'Ascolto continuo', text: 'Ogni spunto di clienti e operatori viene preso in considerazione: il prodotto cresce insieme a chi lo usa.' },
+      { title: 'Concretezza', text: 'Lavoriamo sulle macchine vere, nei reparti, accanto a chi produce. Quello che conta è che funzioni in fabbrica.' },
+      { title: 'Il sapere resta a casa tua', text: 'I modelli sono addestrati per ogni singolo cliente e non vengono usati per altre aziende.' },
+      { title: 'Meno spreco', text: 'Ogni difetto fermato prima è tessuto, acqua ed energia che non vanno sprecati.' },
+      { title: 'Radici nel territorio', text: 'Tra il Politecnico e il distretto biellese: costruiamo insieme alla filiera, non al posto suo.' },
+    ],
+    networkEyebrow: 'Le reti di cui facciamo parte',
+    networkTitle: 'Non lavoriamo da soli.',
+    network: [
+      { name: 'Assintel', text: 'Associazione nazionale delle imprese ICT e digitali.' },
+      { name: 'InnovUp', text: 'L’associazione che rappresenta l’ecosistema italiano dell’innovazione: startup, PMI innovative e incubatori.' },
+      { name: 'Po.In.Tex', text: 'Il polo di innovazione tessile della Regione Piemonte, gestito da Città Studi Biella.' },
+      { name: 'MICS', text: 'Made in Italy Circolare e Sostenibile: il partenariato esteso tra università, centri di ricerca e imprese.' },
+    ],
+    logoPlaceholder: 'Logo in arrivo',
     teamEyebrow: 'Conosci il team',
     teamTitle: 'Il team che guida il cambiamento.',
     photoPlaceholder: 'Foto in arrivo',
@@ -65,16 +95,45 @@ const t = {
   en: {
     title: 'About us: the BrainTex team',
     description:
-      'BrainTex srl is a startup founded in November 2024 and incubated at I3P, the Politecnico di Torino incubator. Meet the team and see our awards.',
+      'BrainTex srl: story, values, team, awards and the networks it belongs to. A startup founded in November 2024 and incubated at I3P, the Politecnico di Torino incubator.',
     eyebrow: 'About us',
     h1: 'A team built to see what others miss.',
     lead: 'BrainTex srl was founded in November 2024 and is incubated at I3P, the Politecnico di Torino incubator. The team was born from the I3P Academy for aspiring entrepreneurs.',
     storyEyebrow: 'Our story',
     storyTitle: 'Between the Politecnico and the textile district.',
     story: [
+      'BrainTex was born from a simple observation: in textiles, quality control is still largely done by eye and at the end of the process, when the defect has already cost fabric, time and energy. We wanted to bring the expert eye to where the defect starts.',
       'We combine artificial intelligence, machine vision and electronics with the experience of people who work with fabric every day.',
       `Our registered office is in ${SITE.legalSeat}; our operational site is in ${SITE.operationalSeat}, at the heart of the textile district.`,
     ],
+    milestonesLabel: 'Milestones',
+    milestones: [
+      { when: 'The beginning', title: 'The I3P Academy', text: 'The team comes together at the I3P Academy for aspiring entrepreneurs, starting from a real problem of the textile district.' },
+      { when: 'November 2024', title: 'BrainTex srl is founded', text: 'The company is set up and joins I3P, the Politecnico di Torino incubator.' },
+      { when: '2025', title: 'First awards', text: 'Start Cup Piemonte Valle d’Aosta, National Innovation Award (Top 4 Industrial and CDP Venture Award) and first prize at Start Up Now.' },
+      { when: 'Today', title: 'At work in production', text: `BrainTex watches fabric every day in real companies: over ${millions} million metres inspected and a filed patent application.` },
+      { when: '2026', title: 'Forbes Under 30', text: 'Four founders in the Forbes Italia list, Manufacturing & Industry category.' },
+      { when: 'Tomorrow', title: 'The smart factory', text: 'Connected systems across the whole supply chain, turning data into decisions.' },
+    ],
+    valuesEyebrow: 'Our values',
+    valuesTitle: 'How we work, every day.',
+    values: [
+      { title: 'People have the final word', text: 'BrainTex flags, people decide. Technology is there to take away strain, not to take away the craft.' },
+      { title: 'Always listening', text: 'Every suggestion from customers and operators is taken into account: the product grows with the people who use it.' },
+      { title: 'Down to earth', text: 'We work on real machines, on the shop floor, next to the people who produce. What matters is that it works in the factory.' },
+      { title: 'Your know-how stays with you', text: 'Models are trained for each individual customer and are not used for other companies.' },
+      { title: 'Less waste', text: 'Every defect stopped earlier is fabric, water and energy that are not wasted.' },
+      { title: 'Rooted in the territory', text: 'Between the Politecnico and the Biella district: we build together with the supply chain, not in its place.' },
+    ],
+    networkEyebrow: 'Networks we belong to',
+    networkTitle: 'We do not work alone.',
+    network: [
+      { name: 'Assintel', text: 'The national association of ICT and digital companies.' },
+      { name: 'InnovUp', text: 'The association representing the Italian innovation ecosystem: startups, innovative SMEs and incubators.' },
+      { name: 'Po.In.Tex', text: 'The textile innovation cluster of the Piedmont Region, managed by Città Studi Biella.' },
+      { name: 'MICS', text: 'Made in Italy Circolare e Sostenibile: the extended partnership between universities, research centres and companies.' },
+    ],
+    logoPlaceholder: 'Logo coming soon',
     teamEyebrow: 'Meet the team',
     teamTitle: 'The team leading the change.',
     photoPlaceholder: 'Photo coming soon',
@@ -113,6 +172,38 @@ const t = {
       <div data-reveal="1">
         {t.story.map((p) => <p class="lead">{p}</p>)}
       </div>
+    </div>
+    <div class="wrap">
+      <ol class="milestones plain" aria-label={t.milestonesLabel}>
+        {
+          t.milestones.map((m, i) => (
+            <li class="milestone" data-reveal={String((i % 3) + 1)}>
+              <span class="milestone__when">{m.when}</span>
+              <h3>{m.title}</h3>
+              <p>{m.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.valuesEyebrow}</p>
+        <h2>{t.valuesTitle}</h2>
+      </div>
+      <ul class="grid grid--3 plain">
+        {
+          t.values.map((v, i) => (
+            <li class="card" data-reveal={String((i % 3) + 1)}>
+              <h3>{v.title}</h3>
+              <p>{v.text}</p>
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -158,10 +249,78 @@ const t = {
     </div>
   </section>
 
+  <section id="reti" class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.networkEyebrow}</p>
+        <h2>{t.networkTitle}</h2>
+      </div>
+      <ul class="grid grid--4 plain">
+        {
+          t.network.map((n, i) => (
+            <li class="card network" data-reveal={String((i % 4) + 1)}>
+              <div class="placeholder network__logo" title={t.logoPlaceholder}>
+                <span>{n.name}</span>
+              </div>
+              <h3>{n.name}</h3>
+              <p>{n.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
   <CtaBand title={t.ctaTitle} text={t.ctaText} button={t.ctaButton} link={href('careers', lang)} />
 </Base>
 
 <style>
+  .milestones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 1.5rem 2rem;
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .milestone {
+    padding-top: 1rem;
+    border-top: 2px solid var(--cyan-500);
+  }
+
+  .milestone:last-child {
+    border-top-color: var(--green-300);
+  }
+
+  .milestone__when {
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .milestone h3 {
+    margin: 0.3rem 0 0.4rem;
+    font-size: 1.15rem;
+  }
+
+  .milestone p,
+  .card p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .network__logo {
+    height: 5rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .network__logo span {
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
   .team {
     grid-template-columns: repeat(auto-fill, minmax(min(45%, 13rem), 1fr));
   }
