@@ -1,0 +1,436 @@
+---
+// Esempio di cruscotto: i dati di tutte le fasi convergono e vengono messi in relazione.
+// Dati inventati (src/data/samples.ts), solo dimostrativo.
+import { HEAT, HEAT_KINDS, KIND_NAMES, MACHINES, MAINTENANCE, TREND, YARN_LOTS } from '../../data/samples';
+import type { Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const num = (value: number, digits = 1) =>
+  value.toLocaleString(lang === 'it' ? 'it-IT' : 'en-GB', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+
+const t = {
+  it: {
+    badge: 'Esempio con dati inventati',
+    kicker: 'Cruscotto qualità',
+    title: 'Tutti i dati in un posto solo',
+    sourcesLabel: 'Dati che convergono',
+    sources: ['Tessitura', 'Controllo del greggio', 'Finissaggio', 'Controllo finito', 'Riscontri degli operatori', 'ERP e MES'],
+    kpis: [
+      ['48.200 m', 'ispezionati nella settimana'],
+      [num(TREND.at(-1)!), 'difetti ogni 100 m'],
+      ['184 su 200', 'pezze senza allarmi'],
+      ['16', 'allarmi gestiti a bordo macchina'],
+    ],
+    machine: 'Telaio',
+    charts: {
+      trend: {
+        title: 'Difetti ogni 100 m, ultime 12 settimane',
+        alt: 'Grafico a linea: i difetti ogni 100 metri scendono da 5,2 a 3,1 in dodici settimane.',
+        x: 'settimane',
+        says: 'La difettosità scende da quando gli allarmi fermano il difetto alla fonte.',
+      },
+      heat: {
+        title: 'Dove nascono i difetti: macchina × classe',
+        alt: 'Tabella a colori: numero di difetti per telaio e per classe. Il telaio 07 ha 11 casi di trama mancante, gli altri al massimo 2.',
+        says: 'La trama mancante si concentra sul telaio 07: è un problema di quella macchina, non dell’articolo.',
+      },
+      maint: {
+        title: 'Difetti e ore dall’ultima manutenzione',
+        alt: 'Grafico a punti: i difetti ogni 100 metri restano intorno a 3 fino a circa 300 ore dalla manutenzione, poi salgono fino a oltre 6.',
+        x: 'ore dall’ultima manutenzione',
+        y: 'difetti ogni 100 m',
+        mark: 'dopo ~300 h la qualità peggiora',
+        says: 'Dopo circa 300 ore i difetti aumentano: conviene anticipare l’intervento.',
+      },
+      yarn: {
+        title: 'Nodi ogni 100 m, per lotto di filato',
+        alt: 'Grafico a barre: il lotto L-24 ha 3,4 nodi ogni 100 metri, gli altri lotti circa 1.',
+        says: 'Il lotto L-24 porta il triplo dei nodi: un dato concreto da condividere con il fornitore del filato.',
+      },
+    },
+    saysLabel: 'Cosa dice',
+    closing:
+      'Ogni pezza ispezionata lascia dati. Messi in relazione tra loro e con quelli di produzione, diventano decisioni: su macchine, materie prime, manutenzione e fornitori.',
+  },
+  en: {
+    badge: 'Example with invented data',
+    kicker: 'Quality dashboard',
+    title: 'All the data in one place',
+    sourcesLabel: 'Data converging here',
+    sources: ['Weaving', 'Greige inspection', 'Finishing', 'Final inspection', 'Operator feedback', 'ERP and MES'],
+    kpis: [
+      ['48,200 m', 'inspected this week'],
+      [num(TREND.at(-1)!), 'defects per 100 m'],
+      ['184 of 200', 'pieces without alarms'],
+      ['16', 'alarms handled at the machine'],
+    ],
+    machine: 'Loom',
+    charts: {
+      trend: {
+        title: 'Defects per 100 m, last 12 weeks',
+        alt: 'Line chart: defects per 100 metres fall from 5.2 to 3.1 over twelve weeks.',
+        x: 'weeks',
+        says: 'Defect rate has been falling since alarms stop the defect at the source.',
+      },
+      heat: {
+        title: 'Where defects start: machine × class',
+        alt: 'Colour table: number of defects by loom and class. Loom 07 has 11 missing-weft cases, the others 2 at most.',
+        says: 'Missing weft concentrates on loom 07: it is a problem of that machine, not of the article.',
+      },
+      maint: {
+        title: 'Defects and hours since last maintenance',
+        alt: 'Scatter plot: defects per 100 metres stay around 3 up to about 300 hours after maintenance, then rise above 6.',
+        x: 'hours since last maintenance',
+        y: 'defects per 100 m',
+        mark: 'after ~300 h quality worsens',
+        says: 'After about 300 hours defects increase: it pays to bring the service forward.',
+      },
+      yarn: {
+        title: 'Knots per 100 m, by yarn lot',
+        alt: 'Bar chart: lot L-24 has 3.4 knots per 100 metres, the other lots about 1.',
+        says: 'Lot L-24 brings three times the knots: a concrete fact to share with the yarn supplier.',
+      },
+    },
+    saysLabel: 'What it says',
+    closing:
+      'Every inspected piece leaves data behind. Related to each other and to production data, they become decisions: on machines, raw materials, maintenance and suppliers.',
+  },
+}[lang];
+
+// Linea: 12 settimane, asse 0–6
+const L = { x: 34, w: 270, base: 150, unit: 22 };
+const lx = (i: number) => L.x + (i / (TREND.length - 1)) * L.w;
+const ly = (v: number) => L.base - v * L.unit;
+const linePath = TREND.map((v, i) => `${i ? 'L' : 'M'}${lx(i).toFixed(1)} ${ly(v).toFixed(1)}`).join('');
+
+// Mappa di calore: 5 passi di intensità dello stesso colore
+const heatMax = Math.max(...HEAT.flat());
+const heatStep = (v: number) => Math.min(4, Math.floor((v / heatMax) * 5));
+const H = { x: 62, y: 34, cw: 50, ch: 28 };
+
+// Punti: ore 0–400, difetti 0–7
+const S = { x: 34, w: 270, base: 150, h: 126 };
+const sx = (hours: number) => S.x + (hours / 400) * S.w;
+const sy = (v: number) => S.base - (v / 7) * S.h;
+
+const yarnMax = 4;
+---
+
+<article class="dash" aria-label={`${t.kicker} – ${t.badge}`}>
+  <header class="dash__head">
+    <div>
+      <p class="dash__kicker">{t.kicker}</p>
+      <h3>{t.title}</h3>
+    </div>
+    <span class="sample-badge">{t.badge}</span>
+  </header>
+
+  <div>
+    <p class="dash__label">{t.sourcesLabel}</p>
+    <ul class="sources plain">
+      {t.sources.map((s) => <li>{s}</li>)}
+    </ul>
+  </div>
+
+  <ul class="kpis plain">
+    {t.kpis.map(([value, label]) => (
+      <li>
+        <strong>{value}</strong>
+        <span>{label}</span>
+      </li>
+    ))}
+  </ul>
+
+  <div class="panels">
+    <figure class="panel">
+      <figcaption>{t.charts.trend.title}</figcaption>
+      <svg class="chart" viewBox="0 0 320 176" role="img" aria-label={t.charts.trend.alt}>
+        {[0, 2, 4, 6].map((v) => (
+          <g>
+            <line class="grid-line" x1={L.x} y1={ly(v)} x2={L.x + L.w} y2={ly(v)} />
+            <text class="tick" x={L.x - 6} y={ly(v) + 4} text-anchor="end">{v}</text>
+          </g>
+        ))}
+        <path class="line" d={linePath} />
+        {TREND.map((v, i) => (
+          <circle class="dot-hit" cx={lx(i)} cy={ly(v)} r="9"><title>{`${i + 1}: ${num(v)}`}</title></circle>
+        ))}
+        <circle class="dot" cx={lx(0)} cy={ly(TREND[0])} r="4" />
+        <circle class="dot" cx={lx(TREND.length - 1)} cy={ly(TREND.at(-1)!)} r="4" />
+        <text class="value" x={lx(0)} y={ly(TREND[0]) - 9}>{num(TREND[0])}</text>
+        <text class="value" x={lx(TREND.length - 1)} y={ly(TREND.at(-1)!) - 9} text-anchor="end">{num(TREND.at(-1)!)}</text>
+        <text class="tick" x={L.x + L.w} y="170" text-anchor="end">{t.charts.trend.x}</text>
+      </svg>
+      <p class="says"><strong>{t.saysLabel}:</strong> {t.charts.trend.says}</p>
+    </figure>
+
+    <figure class="panel">
+      <figcaption>{t.charts.heat.title}</figcaption>
+      <svg class="chart" viewBox="0 0 320 176" role="img" aria-label={t.charts.heat.alt}>
+        {HEAT_KINDS.map((k, c) => (
+          <text class="tick tick--small" x={H.x + c * H.cw + H.cw / 2 - 1} y={H.y - 8} text-anchor="middle">
+            {KIND_NAMES[k][lang].split(' ')[0]}
+          </text>
+        ))}
+        {HEAT.map((row, r) => (
+          <g>
+            <text class="tick" x={H.x - 8} y={H.y + r * H.ch + H.ch / 2 + 3} text-anchor="end">{t.machine} {MACHINES[r]}</text>
+            {row.map((v, c) => (
+              <g>
+                <rect class={`cell cell--${heatStep(v)}`} x={H.x + c * H.cw} y={H.y + r * H.ch} width={H.cw - 2} height={H.ch - 2} rx="3">
+                  <title>{`${t.machine} ${MACHINES[r]} · ${KIND_NAMES[HEAT_KINDS[c]][lang]}: ${v}`}</title>
+                </rect>
+                <text class={`cell-text cell-text--${heatStep(v)}`} x={H.x + c * H.cw + H.cw / 2 - 1} y={H.y + r * H.ch + H.ch / 2 + 3} text-anchor="middle">{v}</text>
+              </g>
+            ))}
+          </g>
+        ))}
+      </svg>
+      <p class="says"><strong>{t.saysLabel}:</strong> {t.charts.heat.says}</p>
+    </figure>
+
+    <figure class="panel">
+      <figcaption>{t.charts.maint.title}</figcaption>
+      <svg class="chart" viewBox="0 0 320 186" role="img" aria-label={t.charts.maint.alt}>
+        {[0, 2, 4, 6].map((v) => (
+          <g>
+            <line class="grid-line" x1={S.x} y1={sy(v)} x2={S.x + S.w} y2={sy(v)} />
+            <text class="tick" x={S.x - 6} y={sy(v) + 4} text-anchor="end">{v}</text>
+          </g>
+        ))}
+        {[0, 100, 200, 300, 400].map((h) => (
+          <text class="tick" x={sx(h)} y={S.base + 14} text-anchor="middle">{h}</text>
+        ))}
+        <line class="threshold" x1={sx(300)} y1={sy(7)} x2={sx(300)} y2={S.base} />
+        <text class="value value--small" x={sx(300) - 6} y={sy(7) + 10} text-anchor="end">{t.charts.maint.mark}</text>
+        {MAINTENANCE.map(([hours, v]) => (
+          <circle class="dot dot--ring" cx={sx(hours)} cy={sy(v)} r="4.5"><title>{`${hours} h · ${num(v)}`}</title></circle>
+        ))}
+        <text class="tick" x={S.x + S.w} y="181" text-anchor="end">{t.charts.maint.x}</text>
+      </svg>
+      <p class="says"><strong>{t.saysLabel}:</strong> {t.charts.maint.says}</p>
+    </figure>
+
+    <figure class="panel">
+      <figcaption>{t.charts.yarn.title}</figcaption>
+      <svg class="chart" viewBox="0 0 320 176" role="img" aria-label={t.charts.yarn.alt}>
+        {YARN_LOTS.map(([lot, v], i) => (
+          <g>
+            <text class="tick" x="44" y={38 + i * 34} text-anchor="end">{lot}</text>
+            <rect class="bar" x="52" y={24 + i * 34} width={(v / yarnMax) * 220} height="20" rx="3">
+              <title>{`${lot}: ${num(v)}`}</title>
+            </rect>
+            <text class="value" x={52 + (v / yarnMax) * 220 + 8} y={38 + i * 34}>{num(v)}</text>
+          </g>
+        ))}
+      </svg>
+      <p class="says"><strong>{t.saysLabel}:</strong> {t.charts.yarn.says}</p>
+    </figure>
+  </div>
+
+  <p class="dash__closing">{t.closing}</p>
+</article>
+
+<style>
+  .dash {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: clamp(1.1rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+  }
+
+  .dash__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .dash__kicker,
+  .dash__label {
+    margin: 0 0 0.4rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .sample-badge {
+    padding: 0.25rem 0.7rem;
+    border: 1px dashed var(--text-muted);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .sources li {
+    padding: 0.25rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 0.82rem;
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+    gap: 0.75rem;
+  }
+
+  .kpis li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.9rem 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+  }
+
+  .kpis strong {
+    font-size: 1.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kpis span {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .panels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1rem;
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+  }
+
+  .panel figcaption {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+
+  .chart {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .grid-line {
+    stroke: rgb(169 196 214 / 0.18);
+  }
+
+  .tick {
+    fill: var(--text-muted);
+    font-size: 10px;
+  }
+
+  .tick--small {
+    font-size: 9px;
+  }
+
+  .value {
+    fill: var(--text);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .value--small {
+    font-size: 9.5px;
+    font-weight: 400;
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--cyan-200);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  .dot {
+    fill: var(--cyan-200);
+  }
+
+  .dot--ring {
+    stroke: var(--bg-deep);
+    stroke-width: 2;
+  }
+
+  .dot-hit {
+    fill: transparent;
+  }
+
+  .threshold {
+    stroke: var(--text-muted);
+    stroke-dasharray: 4 4;
+  }
+
+  .bar {
+    fill: var(--cyan-200);
+  }
+
+  .cell {
+    fill: var(--cyan-200);
+  }
+
+  .cell--0 { fill-opacity: 0.12; }
+  .cell--1 { fill-opacity: 0.3; }
+  .cell--2 { fill-opacity: 0.5; }
+  .cell--3 { fill-opacity: 0.75; }
+  .cell--4 { fill-opacity: 1; }
+
+  .cell-text {
+    fill: var(--text);
+    font-size: 11px;
+    font-weight: 700;
+    pointer-events: none;
+  }
+
+  .cell-text--2,
+  .cell-text--3,
+  .cell-text--4 {
+    fill: var(--bg-deep);
+  }
+
+  .says {
+    margin: auto 0 0;
+    padding-top: 0.6rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.88rem;
+  }
+
+  .says strong {
+    color: var(--green-300);
+  }
+
+  .dash__closing {
+    margin: 0;
+    color: var(--text-muted);
+  }
+</style>

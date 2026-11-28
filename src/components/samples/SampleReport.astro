@@ -1,0 +1,524 @@
+---
+// Esempio di report di una pezza: dati inventati (src/data/samples.ts), solo dimostrativo.
+import { DEFECTS, KIND_NAMES, PIECE, type Outcome } from '../../data/samples';
+import type { Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const num = (value: number, digits = 1) =>
+  value.toLocaleString(lang === 'it' ? 'it-IT' : 'en-GB', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+
+const t = {
+  it: {
+    badge: 'Esempio con dati inventati',
+    title: 'Report di ispezione',
+    piece: 'Pezza P-000482',
+    registry: 'Anagrafica',
+    fields: [
+      ['Articolo', 'Esempio 100'],
+      ['Disegno e colore', 'Tinta unita, blu'],
+      ['Lotto', 'L-24'],
+      ['Macchina', 'Telaio 07'],
+      ['Capitolato', 'Standard di esempio'],
+      ['Fase', 'Tessitura'],
+    ],
+    metrics: 'Dati metrici',
+    metricList: [
+      ['Lunghezza', `${num(PIECE.length)} m`],
+      ['Altezza', `${PIECE.width} cm`],
+      ['Difetti contati', String(DEFECTS.length)],
+      ['Mostrati all’operatore', String(DEFECTS.filter((d) => d.outcome !== 'filtered').length)],
+      ['Filtrati', String(DEFECTS.filter((d) => d.outcome === 'filtered').length)],
+      ['Allarmi', '1'],
+      ['Difetti ogni 100 m', num((DEFECTS.length / PIECE.length) * 100)],
+    ],
+    map: 'Mappa digitale della pezza',
+    mapAlt: 'Mappa della pezza: posizione di ogni difetto lungo i 62,4 metri, con una zona di allarme tra 31 e 33 metri.',
+    selvedge: 'cimosa',
+    outcomes: { filtered: 'Filtrato', shown: 'Mostrato', alarm: 'Allarme' },
+    list: 'Elenco dei difetti mostrati',
+    cols: ['Posizione', 'Dalla cimosa', 'Classe', 'Dimensione', 'Esito', 'Immagine'],
+    image: 'foto',
+    listNote: '14 nodi filtrati: contati e consultabili, ma non mostrati all’operatore.',
+    chart: 'Difetti lungo la pezza',
+    chartAlt: 'Grafico a barre: difetti ogni 10 metri, filtrati e mostrati. Il tratto tra 30 e 40 metri ha 4 difetti mostrati.',
+    chartY: 'Difetti ogni 10 m',
+    links: 'Per approfondire',
+    linkImages: 'Immagini di ogni difetto',
+    linkTwin: 'Gemello digitale: la pezza intera, metro per metro',
+    linksNote: 'Nel report vero sono collegamenti. Qui sono solo illustrati.',
+    comments: 'Commenti dell’operatore',
+    comment: '“A 32 m allarme per trama mancante ripetuta: macchina fermata, causa rimossa, ripartenza regolare.”',
+    insight: 'Indicazioni dell’AI',
+    insights: [
+      'La trama mancante compare tre volte in poco più di un metro, sempre a circa 42 cm dalla cimosa: fa pensare a una causa meccanica in un punto preciso, non al filato.',
+      'I nodi sono distribuiti in modo uniforme su tutta la lunghezza: sono compatibili con il lotto di filato, non con la macchina.',
+    ],
+  },
+  en: {
+    badge: 'Example with invented data',
+    title: 'Inspection report',
+    piece: 'Piece P-000482',
+    registry: 'Piece record',
+    fields: [
+      ['Article', 'Sample 100'],
+      ['Pattern and colour', 'Plain, blue'],
+      ['Lot', 'L-24'],
+      ['Machine', 'Loom 07'],
+      ['Specification', 'Sample standard'],
+      ['Stage', 'Weaving'],
+    ],
+    metrics: 'Measurements',
+    metricList: [
+      ['Length', `${num(PIECE.length)} m`],
+      ['Width', `${PIECE.width} cm`],
+      ['Defects counted', String(DEFECTS.length)],
+      ['Shown to the operator', String(DEFECTS.filter((d) => d.outcome !== 'filtered').length)],
+      ['Filtered', String(DEFECTS.filter((d) => d.outcome === 'filtered').length)],
+      ['Alarms', '1'],
+      ['Defects per 100 m', num((DEFECTS.length / PIECE.length) * 100)],
+    ],
+    map: 'Digital map of the piece',
+    mapAlt: 'Map of the piece: position of each defect along its 62.4 metres, with an alarm zone between 31 and 33 metres.',
+    selvedge: 'selvedge',
+    outcomes: { filtered: 'Filtered', shown: 'Shown', alarm: 'Alarm' },
+    list: 'List of defects shown',
+    cols: ['Position', 'From selvedge', 'Class', 'Size', 'Outcome', 'Image'],
+    image: 'photo',
+    listNote: '14 filtered knots: counted and available, but not shown to the operator.',
+    chart: 'Defects along the piece',
+    chartAlt: 'Bar chart: defects every 10 metres, filtered and shown. The stretch between 30 and 40 metres has 4 shown defects.',
+    chartY: 'Defects per 10 m',
+    links: 'To dig deeper',
+    linkImages: 'Images of every defect',
+    linkTwin: 'Digital twin: the whole piece, metre by metre',
+    linksNote: 'In the real report these are links. Here they are only illustrated.',
+    comments: 'Operator comments',
+    comment: '“At 32 m alarm for repeated missing weft: machine stopped, cause removed, regular restart.”',
+    insight: 'AI insights',
+    insights: [
+      'Missing weft occurs three times in just over a metre, always about 42 cm from the selvedge: this suggests a mechanical cause at a precise point, not the yarn.',
+      'Knots are spread evenly along the whole length: they are consistent with the yarn lot, not with the machine.',
+    ],
+  },
+}[lang];
+
+// Mappa: 600 × 70 px per 62,4 m × 150 cm
+const MAP = { x: 20, y: 22, w: 600, h: 70 };
+const mx = (m: number) => MAP.x + (m / PIECE.length) * MAP.w;
+const my = (cm: number) => MAP.y + (cm / PIECE.width) * MAP.h;
+const ticks = [0, 10, 20, 30, 40, 50, 60];
+const order: Outcome[] = ['filtered', 'shown', 'alarm'];
+const shownDefects = DEFECTS.filter((d) => d.outcome !== 'filtered');
+
+// Grafico: difetti ogni 10 m, filtrati sotto e mostrati sopra
+const bins = ticks.map((from) => {
+  const inBin = DEFECTS.filter((d) => d.m >= from && d.m < from + 10);
+  const filtered = inBin.filter((d) => d.outcome === 'filtered').length;
+  return { from, filtered, shown: inBin.length - filtered };
+});
+const CH = { x: 40, base: 150, unit: 24, bw: 44, step: 82 };
+---
+
+<article class="report" aria-label={`${t.title} – ${t.badge}`}>
+  <header class="report__head">
+    <div>
+      <p class="report__kicker">{t.title}</p>
+      <h3>{t.piece}</h3>
+    </div>
+    <span class="sample-badge">{t.badge}</span>
+  </header>
+
+  <div class="report__grid">
+    <section>
+      <h4>{t.registry}</h4>
+      <dl class="pairs">
+        {t.fields.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+      </dl>
+    </section>
+    <section>
+      <h4>{t.metrics}</h4>
+      <dl class="pairs">
+        {t.metricList.map(([k, v]) => (<div><dt>{k}</dt><dd>{v}</dd></div>))}
+      </dl>
+    </section>
+  </div>
+
+  <section>
+    <h4>{t.map}</h4>
+    <div class="scroll">
+      <svg class="chart chart--map" viewBox="0 0 640 122" role="img" aria-label={t.mapAlt}>
+        <rect class="map-fabric" x={MAP.x} y={MAP.y} width={MAP.w} height={MAP.h} rx="3" />
+        <rect class="map-zone" x={mx(30.6)} y={MAP.y} width={mx(33.4) - mx(30.6)} height={MAP.h} />
+        {ticks.map((m) => (
+          <g>
+            <line class="grid-line" x1={mx(m)} y1={MAP.y} x2={mx(m)} y2={MAP.y + MAP.h + 4} />
+            <text class="tick" x={mx(m)} y={MAP.y + MAP.h + 17} text-anchor="middle">{m} m</text>
+          </g>
+        ))}
+        <text class="tick" x={MAP.x} y={MAP.y - 7}>{t.selvedge}</text>
+        {DEFECTS.map((d) => {
+          const label = `${num(d.m)} m · ${KIND_NAMES[d.kind][lang]} · ${t.outcomes[d.outcome]}`;
+          const x = mx(d.m);
+          const y = my(d.cm);
+          return d.outcome === 'filtered' ? (
+            <circle class="mark mark--filtered" cx={x} cy={y} r="3"><title>{label}</title></circle>
+          ) : d.outcome === 'shown' ? (
+            <circle class="mark mark--shown" cx={x} cy={y} r="5"><title>{label}</title></circle>
+          ) : (
+            <path class="mark mark--alarm" d={`M${x} ${y - 6}l6 6l-6 6l-6 -6z`}><title>{label}</title></path>
+          );
+        })}
+      </svg>
+    </div>
+    <ul class="legend plain">
+      {order.map((o) => (
+        <li><span class={`key key--${o}`} aria-hidden="true" />{t.outcomes[o]}</li>
+      ))}
+    </ul>
+  </section>
+
+  <section>
+    <h4>{t.list}</h4>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr>{t.cols.map((c) => <th scope="col">{c}</th>)}</tr>
+        </thead>
+        <tbody>
+          {shownDefects.map((d, i) => (
+            <tr>
+              <td>{num(d.m)} m</td>
+              <td>{d.cm} cm</td>
+              <td>{KIND_NAMES[d.kind][lang]}</td>
+              <td>{d.size}</td>
+              <td><span class={`pill pill--${d.outcome}`}>{t.outcomes[d.outcome]}</span></td>
+              <td><span class="fake-link">{t.image} {String(i + 1).padStart(2, '0')}</span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="note">{t.listNote}</p>
+  </section>
+
+  <div class="report__grid">
+    <section>
+      <h4>{t.chart}</h4>
+      <svg class="chart" viewBox="0 0 640 200" role="img" aria-label={t.chartAlt}>
+        {[0, 1, 2, 3, 4, 5].map((v) => (
+          <g>
+            <line class="grid-line" x1={CH.x} y1={CH.base - v * CH.unit} x2="620" y2={CH.base - v * CH.unit} />
+            <text class="tick" x={CH.x - 8} y={CH.base - v * CH.unit + 4} text-anchor="end">{v}</text>
+          </g>
+        ))}
+        {bins.map((b, i) => {
+          const x = CH.x + 16 + i * CH.step;
+          const hf = b.filtered * CH.unit;
+          const hs = b.shown * CH.unit;
+          return (
+            <g>
+              {b.filtered > 0 && (
+                <rect class="bar bar--filtered" x={x} y={CH.base - hf} width={CH.bw} height={hf} rx="2">
+                  <title>{`${b.from}–${b.from + 10} m · ${t.outcomes.filtered}: ${b.filtered}`}</title>
+                </rect>
+              )}
+              {b.shown > 0 && (
+                <rect class="bar bar--shown" x={x} y={CH.base - hf - hs - 2} width={CH.bw} height={hs} rx="2">
+                  <title>{`${b.from}–${b.from + 10} m · ${t.outcomes.shown}: ${b.shown}`}</title>
+                </rect>
+              )}
+              <text class="tick" x={x + CH.bw / 2} y={CH.base + 16} text-anchor="middle">{b.from}–{b.from + 10}</text>
+            </g>
+          );
+        })}
+        <text class="tick" x={CH.x} y="14">{t.chartY}</text>
+        <text class="tick" x="620" y="190" text-anchor="end">m</text>
+      </svg>
+      <ul class="legend plain">
+        <li><span class="key key--filtered-bar" aria-hidden="true" />{t.outcomes.filtered}</li>
+        <li><span class="key key--shown" aria-hidden="true" />{t.outcomes.shown}</li>
+      </ul>
+    </section>
+    <section>
+      <h4>{t.links}</h4>
+      <ul class="links plain">
+        <li><span class="fake-link">{t.linkImages}</span></li>
+        <li><span class="fake-link">{t.linkTwin}</span></li>
+      </ul>
+      <p class="note">{t.linksNote}</p>
+      <h4>{t.comments}</h4>
+      <p class="comment">{t.comment}</p>
+    </section>
+  </div>
+
+  <section class="insight">
+    <h4>{t.insight}</h4>
+    <ul>
+      {t.insights.map((i) => <li>{i}</li>)}
+    </ul>
+  </section>
+</article>
+
+<style>
+  .report {
+    --alarm: #ffc857;
+    --neutral: #8fa9bd;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+    padding: clamp(1.1rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+  }
+
+  .report__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .report__kicker {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .sample-badge {
+    padding: 0.25rem 0.7rem;
+    border: 1px dashed var(--text-muted);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .report__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 1.75rem 2.5rem;
+  }
+
+  .report__grid > * {
+    min-width: 0;
+  }
+
+  .pairs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+    gap: 0.7rem 1rem;
+    margin: 0;
+  }
+
+  .pairs dt {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .pairs dd {
+    margin: 0;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scroll {
+    overflow-x: auto;
+  }
+
+  .chart {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .chart--map {
+    min-width: 34rem;
+  }
+
+  .map-fabric {
+    fill: rgb(19 115 168 / 0.3);
+    stroke: var(--line);
+  }
+
+  .map-zone {
+    fill: rgb(255 200 87 / 0.16);
+  }
+
+  .grid-line {
+    stroke: rgb(169 196 214 / 0.18);
+  }
+
+  .tick {
+    fill: var(--text-muted);
+    font-size: 11px;
+  }
+
+  .mark {
+    stroke: var(--bg-deep);
+    stroke-width: 2;
+  }
+
+  .mark--filtered {
+    fill: none;
+    stroke: var(--neutral);
+    stroke-width: 1.5;
+  }
+
+  .mark--shown {
+    fill: var(--cyan-200);
+  }
+
+  .mark--alarm {
+    fill: var(--alarm);
+  }
+
+  .bar--filtered {
+    fill: var(--neutral);
+  }
+
+  .bar--shown {
+    fill: var(--cyan-200);
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 0.6rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+  }
+
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .key {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: var(--cyan-200);
+  }
+
+  .key--filtered {
+    background: none;
+    border: 1.5px solid var(--neutral);
+  }
+
+  .key--filtered-bar {
+    border-radius: 2px;
+    background: var(--neutral);
+  }
+
+  .key--alarm {
+    border-radius: 0;
+    background: var(--alarm);
+    transform: rotate(45deg) scale(0.85);
+  }
+
+  table {
+    width: 100%;
+    min-width: 32rem;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th {
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--line);
+  }
+
+  td {
+    padding: 0.45rem 0.6rem;
+    border-bottom: 1px solid rgb(169 196 214 / 0.1);
+  }
+
+  .pill {
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--cyan-200);
+    border-radius: 999px;
+    font-size: 0.78rem;
+  }
+
+  .pill--alarm {
+    border-color: var(--alarm);
+    background: var(--alarm);
+    color: var(--bg-deep);
+    font-weight: 700;
+  }
+
+  .fake-link {
+    color: var(--accent);
+    text-decoration: underline dotted;
+  }
+
+  .links {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .note {
+    margin: 0.6rem 0 0;
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .links + .note {
+    margin-bottom: 1.5rem;
+  }
+
+  .comment {
+    margin: 0;
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--line);
+    font-style: italic;
+  }
+
+  .insight {
+    padding: 1.1rem 1.25rem;
+    border: 1px solid rgb(156 237 64 / 0.4);
+    border-radius: var(--radius-sm);
+    background: rgb(156 237 64 / 0.06);
+  }
+
+  .insight h4 {
+    color: var(--green-300);
+  }
+
+  .insight ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  .insight li + li {
+    margin-top: 0.5rem;
+  }
+</style>

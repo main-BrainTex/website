@@ -2,6 +2,8 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
+import SampleDashboard from '../components/samples/SampleDashboard.astro';
+import SampleReport from '../components/samples/SampleReport.astro';
 import { STATS } from '../config';
 import { href, type Lang } from '../i18n';
 
@@ -64,6 +66,14 @@ const t = {
         text: 'Un documento chiaro per la qualità interna e per rispondere a richieste o contestazioni.',
       },
     ],
+    reportEyebrow: 'Il report, in pratica',
+    reportTitle: 'Com’è fatto il report di una pezza.',
+    reportText:
+      'Anagrafica, misure, mappa digitale, elenco dei difetti, grafico, commenti dell’operatore e indicazioni dell’AI: tutto in un documento, pronto per la qualità interna o per chi riceve il tessuto.',
+    dashEyebrow: 'Il cruscotto, in pratica',
+    dashTitle: 'Un patrimonio di dati che oggi quasi nessuno usa.',
+    dashText:
+      'Ogni fase produce informazioni. BrainTex le raccoglie in un unico cruscotto, le mette in relazione e ti dice cosa significano.',
     numbers: [
       { value: `${STATS.speedVsManual.toLocaleString('it-IT')}×`, label: 'più veloce del controllo manuale' },
       { value: `${STATS.maxSpeedMps} m/s`, label: 'velocità massima di ispezione' },
@@ -192,6 +202,14 @@ const t = {
         text: 'A clear document for internal quality and for answering requests or disputes.',
       },
     ],
+    reportEyebrow: 'The report, in practice',
+    reportTitle: 'What a piece report looks like.',
+    reportText:
+      'Piece record, measurements, digital map, defect list, chart, operator comments and AI insights: all in one document, ready for internal quality or for whoever receives the fabric.',
+    dashEyebrow: 'The dashboard, in practice',
+    dashTitle: 'A wealth of data that almost nobody uses today.',
+    dashText:
+      'Every stage generates information. BrainTex gathers it in a single dashboard, relates it and tells you what it means.',
     numbers: [
       { value: `${STATS.speedVsManual.toLocaleString('en-GB')}×`, label: 'faster than manual inspection' },
       { value: `${STATS.maxSpeedMps} m/s`, label: 'maximum inspection speed' },
@@ -334,6 +352,28 @@ const t = {
           ))
         }
       </ul>
+    </div>
+  </section>
+
+  <section id="report" class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.reportEyebrow}</p>
+        <h2>{t.reportTitle}</h2>
+        <p class="lead">{t.reportText}</p>
+      </div>
+      <SampleReport lang={lang} />
+    </div>
+  </section>
+
+  <section id="cruscotto" class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.dashEyebrow}</p>
+        <h2>{t.dashTitle}</h2>
+        <p class="lead">{t.dashText}</p>
+      </div>
+      <SampleDashboard lang={lang} />
     </div>
   </section>
 
