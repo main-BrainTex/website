@@ -11,6 +11,9 @@ import fotoSergio from '../assets/team/sergio.jpg';
 import fotoSimone from '../assets/team/simone.jpg';
 import fotoMarco from '../assets/team/marco.jpg';
 import fotoAndrea from '../assets/team/andrea.jpg';
+import fotoAcademy from '../assets/photos/i3p-startup-academy.jpg';
+import fotoProduzione from '../assets/photos/team-in-produzione.jpg';
+import fotoPni from '../assets/photos/pni-2025.jpg';
 import fotoParco from '../assets/photos/team-parco.jpg';
 import fotoItw from '../assets/photos/italian-tech-week-2024.jpg';
 import logoAssintel from '../assets/logos/assintel.png';
@@ -58,10 +61,10 @@ const t = {
     ],
     milestonesLabel: 'Le tappe',
     milestones: [
-      { when: 'Le origini', title: 'L’Academy di I3P', text: 'Il team si forma all’Academy di I3P per aspiranti imprenditori, partendo da un problema concreto del distretto tessile.' },
+      { when: 'Le origini', title: 'L’Academy di I3P', text: 'Il team si forma all’Academy di I3P per aspiranti imprenditori, partendo da un problema concreto del distretto tessile.', photo: fotoAcademy, alt: 'Il team BrainTex con gli attestati della Startup Academy di I3P, davanti alla slide di presentazione' },
       { when: 'Novembre 2024', title: 'Nasce BrainTex srl', text: 'La società viene costituita ed entra in incubazione in I3P, l’incubatore del Politecnico di Torino.' },
-      { when: '2025', title: 'I primi riconoscimenti', text: 'Start Cup Piemonte Valle d’Aosta, Premio Nazionale per l’Innovazione (Top 4 Industrial e Premio Venture CDP) e primo premio a Start Up Now.' },
-      { when: 'Oggi', title: 'Al lavoro in produzione', text: `BrainTex guarda il tessuto ogni giorno nelle aziende: oltre ${millions} milioni di metri ispezionati e una domanda di brevetto depositata.` },
+      { when: '2025', title: 'I primi riconoscimenti', text: 'Start Cup Piemonte Valle d’Aosta, Premio Nazionale per l’Innovazione (Top 4 Industrial e Premio Venture CDP) e primo premio a Start Up Now.', photo: fotoPni, alt: 'Il team BrainTex alla premiazione del PNI 2025' },
+      { when: 'Oggi', title: 'Al lavoro in produzione', text: `BrainTex guarda il tessuto ogni giorno nelle aziende: oltre ${millions} milioni di metri ispezionati e una domanda di brevetto depositata.`, photo: fotoProduzione, alt: 'Quattro fondatori di BrainTex in reparto, davanti a una linea con il sistema installato' },
       { when: '2026', title: 'Forbes Under 30', text: 'Quattro fondatori nella classifica di Forbes Italia, categoria Manufacturing & Industry.' },
       { when: 'Domani', title: 'La fabbrica intelligente', text: 'Sistemi collegati lungo tutta la filiera, che trasformano i dati in decisioni.' },
     ],
@@ -131,10 +134,10 @@ const t = {
     ],
     milestonesLabel: 'Milestones',
     milestones: [
-      { when: 'The beginning', title: 'The I3P Academy', text: 'The team comes together at the I3P Academy for aspiring entrepreneurs, starting from a real problem of the textile district.' },
+      { when: 'The beginning', title: 'The I3P Academy', text: 'The team comes together at the I3P Academy for aspiring entrepreneurs, starting from a real problem of the textile district.', photo: fotoAcademy, alt: 'The BrainTex team with their I3P Startup Academy certificates, in front of the presentation slide' },
       { when: 'November 2024', title: 'BrainTex srl is founded', text: 'The company is set up and joins I3P, the Politecnico di Torino incubator.' },
-      { when: '2025', title: 'First awards', text: 'Start Cup Piemonte Valle d’Aosta, National Innovation Award (Top 4 Industrial and CDP Venture Award) and first prize at Start Up Now.' },
-      { when: 'Today', title: 'At work in production', text: `BrainTex watches fabric every day in real companies: over ${millions} million metres inspected and a filed patent application.` },
+      { when: '2025', title: 'First awards', text: 'Start Cup Piemonte Valle d’Aosta, National Innovation Award (Top 4 Industrial and CDP Venture Award) and first prize at Start Up Now.', photo: fotoPni, alt: 'The BrainTex team at the PNI 2025 award ceremony' },
+      { when: 'Today', title: 'At work in production', text: `BrainTex watches fabric every day in real companies: over ${millions} million metres inspected and a filed patent application.`, photo: fotoProduzione, alt: 'Four BrainTex founders on the factory floor, in front of a line with the system installed' },
       { when: '2026', title: 'Forbes Under 30', text: 'Four founders in the Forbes Italia list, Manufacturing & Industry category.' },
       { when: 'Tomorrow', title: 'The smart factory', text: 'Connected systems across the whole supply chain, turning data into decisions.' },
     ],
@@ -209,6 +212,16 @@ const t = {
         {
           t.milestones.map((m, i) => (
             <li class="milestone" data-reveal={String((i % 3) + 1)}>
+              {m.photo && (
+                <Image
+                  class="milestone__photo"
+                  src={m.photo}
+                  alt={m.alt}
+                  widths={[400, 640, 960]}
+                  sizes="(max-width: 48rem) 100vw, 22rem"
+                  format="webp"
+                />
+              )}
               <span class="milestone__when">{m.when}</span>
               <h3>{m.title}</h3>
               <p>{m.text}</p>
@@ -345,6 +358,17 @@ const t = {
   .milestone {
     padding-top: 1rem;
     border-top: 2px solid var(--cyan-500);
+  }
+
+  .milestone__photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    object-position: 50% 35%;
+    margin-bottom: 0.9rem;
+    border-radius: var(--radius-sm);
   }
 
   .milestone:last-child {
