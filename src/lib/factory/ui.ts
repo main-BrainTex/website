@@ -36,11 +36,6 @@ function webglAvailable(): boolean {
 
 const controllers = new WeakMap<HTMLElement, FactoryController>();
 
-/** Restituisce il controller del simulatore (per il racconto a scorrimento della pagina). */
-export function getFactoryController(root: HTMLElement): FactoryController | undefined {
-  return controllers.get(root);
-}
-
 export function initFactorySim(root: HTMLElement): FactoryController {
   const existing = controllers.get(root);
   if (existing) return existing;
