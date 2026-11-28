@@ -48,6 +48,10 @@ const t = {
     agentSectors: 'Settori e tipo di aziende che visiti',
     agentMandates: 'Mandati che hai già',
     agentMandatesHint: 'Ci aiuta a evitare sovrapposizioni.',
+    topics: {
+      presentazione: 'Vorrei ricevere la presentazione di BrainTex per investitori.',
+      call: 'Vorrei fissare una call conoscitiva con BrainTex.',
+    },
     optional: 'facoltativo',
     privacyBefore: 'Ho letto l’',
     privacyLink: 'informativa privacy',
@@ -115,6 +119,10 @@ const t = {
     agentSectors: 'Sectors and type of companies you visit',
     agentMandates: 'Mandates you already hold',
     agentMandatesHint: 'It helps us avoid overlaps.',
+    topics: {
+      presentazione: 'I would like to receive the BrainTex investor presentation.',
+      call: 'I would like to book an introductory call with BrainTex.',
+    },
     optional: 'optional',
     privacyBefore: 'I have read the ',
     privacyLink: 'privacy notice',
@@ -151,6 +159,7 @@ const messages = JSON.stringify({
   failed: t.failed,
   notConfigured: t.notConfigured,
   invalid: t.invalid,
+  topics: t.topics,
 });
 
 // Testi che cambiano in base a "Chi sei?" (collegamento e suggerimento del messaggio).
@@ -406,7 +415,7 @@ const variants = JSON.stringify({
 
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
   if (form) {
-    const msg = JSON.parse(form.dataset.messages ?? '{}') as Record<string, string>;
+    const msg = JSON.parse(form.dataset.messages ?? '{}') as Record<string, string> & { topics: Record<string, string> };
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
     const audience = form.elements.namedItem('audience') as HTMLSelectElement;
@@ -414,6 +423,10 @@ const variants = JSON.stringify({
     // Preseleziona "Chi sei?" dal link di provenienza (es. ?chi=candidato).
     const preset = new URLSearchParams(location.search).get('chi');
     if (preset && [...audience.options].some((o) => o.value === preset)) audience.value = preset;
+    // ...e un messaggio di partenza dal tema scelto (es. ?tema=presentazione), sempre modificabile.
+    const topic = msg.topics[new URLSearchParams(location.search).get('tema') ?? ''];
+    const messageField = form.elements.namedItem('message') as HTMLTextAreaElement;
+    if (topic && !messageField.value) messageField.value = topic;
 
     // Campi e testi che dipendono da "Chi sei?": i campi nascosti sono disattivati, quindi non vengono né controllati né inviati.
     const variants = JSON.parse(form.dataset.variants ?? '{}') as Record<string, Record<string, string>>;
