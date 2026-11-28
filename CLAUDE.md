@@ -60,6 +60,8 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - Anti-spam: honeypot + filtri del servizio. Niente captcha di terze parti (nessuno script esterno oltre a GA).
 - Validazione campi, messaggi chiari di conferma/errore, campo "Chi sei?" che finisce nell'oggetto.
 - Decisione (28/11/2026): "Chi sei?" comprende anche confezionista/brand, controllo qualità conto terzi, IT provider/software house, fornitore e agente di commercio. Per fornitori e agenti compaiono pochi campi in più, solo quelli utili a valutare la proposta (fornitore: cosa propone, categoria, sito; agente: zone, settori, mandati attuali). Niente allegati.
+- Decisione (28/11/2026): voce "Proposta di progetto" (bandi, co-sviluppo, ricerca) con tipo e scadenza facoltativa. Il form accetta `?chi=` (pubblico), `?tema=` (messaggio di partenza: presentazione, call, fattibilita) e `?domanda=` (domanda arrivata dall'assistente FAQ).
+- Prenotazione di una call (decisione 28/11/2026): solo un link a Cal.com che compare dopo l'invio del form, e solo per aziende tessili, controlli conto terzi e confezionisti. Niente calendario incorporato né script esterni. URL nella variabile di build `PUBLIC_BOOKING_URL` (variabile GitHub); senza variabile il link non compare. Cal.com (USA, EU-US Data Privacy Framework) è indicato nella Privacy Policy.
 - GDPR: la base giuridica per rispondere non è il consenso. Casella obbligatoria di sola presa visione ("Ho letto l'informativa privacy"), informativa breve sotto il pulsante (titolare, finalità, conservazione, link) e avviso di non inserire dati sensibili. Raccogliere solo i dati necessari.
 
 ## Vincoli di contenuto (fatti da rispettare)
@@ -77,8 +79,11 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - Dati societari (art. 2250 c.c., sempre nel footer): BrainTex srl · Sede legale Via Lamaccia 11, 28078 Romagnano Sesia (NO) · Sede operativa Via Pietro Micca 4, 13900 Biella (BI) · C.F. e P.IVA 02789950033 · Registro Imprese di Novara · REA NO-317837 · Capitale sociale 22.222,22 € i.v.
 - Lavora con noi (decisione 28/11/2026): spazio "Posizioni aperte" sempre presente, alimentato da `src/data/jobs.ts`; se l'elenco è vuoto (oggi lo è) mostra l'invito alla candidatura spontanea. Aree tecniche e business in card espandibili con esempi di attività (esempi, non offerte). Sezione dedicata ad agenti di commercio e rappresentanti. Una posizione si pubblica solo su indicazione di bt.
 - Pubblici oltre alle aziende tessili (decisione 28/11/2026): confezionisti e brand (anche come partner: possono chiedere ai fornitori uno standard di controllo); controlli qualità conto terzi (messaggio dedicato: benessere degli operatori, velocità, capacità produttiva); IT provider e software house, soprattutto ERP e MES; fornitori (proposte solo tramite form).
+- Assistenza (decisione 28/11/2026): niente chat esterna, niente WhatsApp. Assistente FAQ in tutte le pagine (`FaqAssistant.astro`), che gira solo nel browser, cerca tra le FAQ di `src/data/faq.ts` e se non trova la risposta porta al form con la domanda già scritta. Pagina "Domande frequenti" con JSON-LD FAQPage. Le FAQ contengono solo fatti già approvati.
 - Contatti pubblici: solo form + LinkedIn (nessuna email in chiaro), salvo il recapito del titolare richiesto per legge nella Privacy Policy (info@braintex.it, confermato da bt il 28/11/2026).
 - Non usare l'articolo di Industria Italiana sul Premio MICS.
+- Chi siamo (decisione 28/11/2026): tappe della storia, valori e reti di cui BrainTex fa parte (Assintel, InnovUp, Po.In.Tex, MICS), con loghi segnaposto finché non arrivano quelli ufficiali.
+- Consegna e assistenza (decisione 28/11/2026): si pubblicano solo le fasi (analisi di fattibilità con sopralluogo, progettazione e analisi funzionale con valutazione di estensioni, installazione e attivazione, onboarding in loco e da remoto con affiancamento, assistenza e ascolto continui), mai i tempi: si definiscono nell'analisi di fattibilità. Progetti su misura: di norma no, ma si può fare richiesta; se in linea con la visione si valuta con un'analisi di fattibilità.
 - Niente conteggi superflui o dettagli interni in pagina (decisione 28/11/2026): non si indica quanti sono i benefici o gli eventi; nessun commento HTML nel sito pubblicato; della tecnologia si dice solo "sistema di visione", senza descrivere telecamere o modalità di acquisizione.
 
 ## Esperienza interattiva
@@ -110,4 +115,4 @@ Per tutto ciò che non si può fare da qui (account, chiavi, impostazioni GitHub
 
 ## Comandi
 - `npm ci` installa le dipendenze · `npm run dev` sviluppo locale · `npm run build` compila in `dist/` · `npm run preview` serve la build.
-- Variabili di build (vedi `.env.example`): `BASE_PATH`, `DEPLOY_TARGET` (`production` solo per il sito pubblico), `PUBLIC_FORM_ID`.
+- Variabili di build (vedi `.env.example`): `BASE_PATH`, `DEPLOY_TARGET` (`production` solo per il sito pubblico), `PUBLIC_FORM_ID`, `PUBLIC_BOOKING_URL`.
