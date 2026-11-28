@@ -195,7 +195,7 @@ const variants = JSON.stringify({
     <p class="field__error" id="cf-company-err" data-error={t.errors.company}></p>
   </div>
 
-  <!-- Campi in più per i fornitori: compaiono solo scegliendo "Fornitore" -->
+  {/* Campi in più per i fornitori: compaiono solo scegliendo "Fornitore" */}
   <div class="field field--wide" data-for="fornitore" hidden>
     <label for="cf-supplier-category">{t.supplierCategory} <span class="req" aria-hidden="true">*</span></label>
     <select id="cf-supplier-category" name="supplierCategory" required disabled aria-describedby="cf-supplier-category-err">
@@ -205,7 +205,7 @@ const variants = JSON.stringify({
     <p class="field__error" id="cf-supplier-category-err" data-error={t.errors.supplierCategory}></p>
   </div>
 
-  <!-- Campi in più per agenti e rappresentanti -->
+  {/* Campi in più per agenti e rappresentanti */}
   <div class="field" data-for="agente" hidden>
     <label for="cf-agent-areas">{t.agentAreas} <span class="req" aria-hidden="true">*</span></label>
     <input id="cf-agent-areas" name="agentAreas" type="text" required disabled maxlength="200" aria-describedby="cf-agent-areas-err" />
@@ -235,7 +235,7 @@ const variants = JSON.stringify({
     <p class="field__error" id="cf-message-err" data-error={t.errors.message}></p>
   </div>
 
-  <!-- Trappola per bot: invisibile alle persone e agli screen reader -->
+  {/* Trappola per bot: invisibile alle persone e agli screen reader */}
   <div class="hp" aria-hidden="true">
     <label for="cf-botcheck">Non compilare</label>
     <input id="cf-botcheck" name="botcheck" type="checkbox" tabindex="-1" autocomplete="off" />
