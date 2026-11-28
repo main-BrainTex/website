@@ -260,7 +260,7 @@ const t = {
                 src={m.photo}
                 alt={m.name}
                 widths={[320, 480, 640]}
-                sizes="(max-width: 40rem) 45vw, 16rem"
+                sizes="(max-width: 48rem) 45vw, 18rem"
                 format="webp"
               />
               <h3>{m.name}</h3>
@@ -354,7 +354,7 @@ const t = {
   }
 
   .network-grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 10.5rem), 1fr));
   }
 
   .logo-tile {
@@ -385,7 +385,7 @@ const t = {
 
   .supporters ul {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
     gap: 1rem 1.5rem;
   }
 
@@ -396,7 +396,14 @@ const t = {
   }
 
   .team {
-    grid-template-columns: repeat(auto-fill, minmax(min(45%, 13rem), 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 56rem;
+  }
+
+  @media (min-width: 48rem) {
+    .team {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
   .member__photo {
