@@ -143,6 +143,19 @@ const t = {
       },
     ],
     qcCta: 'Parliamo del tuo reparto',
+    workEyebrow: 'Come lavoriamo',
+    workTitle: 'Dal primo sopralluogo all’assistenza, sempre insieme.',
+    workText: 'Ogni installazione parte dalla tua produzione. I tempi li definiamo insieme nell’analisi di fattibilità, anche in base al luogo.',
+    work: [
+      { title: 'Analisi di fattibilità', text: 'Visitiamo il sito di installazione, guardiamo macchine, articoli e flussi e capiamo dove BrainTex porta più valore.' },
+      { title: 'Progettazione e analisi funzionale', text: 'Definiamo come BrainTex lavorerà nel tuo reparto e valutiamo dove potrà estendersi in futuro.' },
+      { title: 'Installazione e attivazione', text: 'Montiamo il sistema sulle tue macchine e lo mettiamo in funzione sul tuo tessuto.' },
+      { title: 'Onboarding', text: 'Affianchiamo chi lavora direttamente in reparto, in presenza e da remoto, finché BrainTex diventa parte della giornata.' },
+      { title: 'Assistenza e ascolto continui', text: 'Restiamo in contatto: ogni spunto tuo e dei tuoi operatori viene preso in considerazione e aiuta BrainTex a migliorare.' },
+    ],
+    customTitle: 'Hai un’esigenza diversa?',
+    customText: 'Di solito non realizziamo progetti su misura. Se però la tua richiesta è in linea con la nostra visione, possiamo valutarla e proporti un’analisi di fattibilità.',
+    customCta: 'Raccontaci la tua esigenza',
     trustEyebrow: 'Dati e proprietà intellettuale',
     trustTitle: 'I tuoi dati restano tuoi.',
     trust: [
@@ -279,6 +292,19 @@ const t = {
       },
     ],
     qcCta: 'Let’s talk about your department',
+    workEyebrow: 'How we work',
+    workTitle: 'From the first site visit to ongoing support, always together.',
+    workText: 'Every installation starts from your production. We set the timing together during the feasibility study, also depending on the location.',
+    work: [
+      { title: 'Feasibility study', text: 'We visit the installation site, look at machines, articles and flows, and understand where BrainTex adds the most value.' },
+      { title: 'Design and functional analysis', text: 'We define how BrainTex will work in your department and assess where it could extend in the future.' },
+      { title: 'Installation and activation', text: 'We fit the system on your machines and start it up on your fabric.' },
+      { title: 'Onboarding', text: 'We work alongside your people right on the shop floor, on site and remotely, until BrainTex becomes part of the day.' },
+      { title: 'Ongoing support and listening', text: 'We stay in touch: every suggestion from you and your operators is taken into account and helps BrainTex improve.' },
+    ],
+    customTitle: 'Do you have a different need?',
+    customText: 'We do not usually build custom projects. But if your request fits our vision, we can assess it and offer you a feasibility study.',
+    customCta: 'Tell us about your need',
     trustEyebrow: 'Data and intellectual property',
     trustTitle: 'Your data stays yours.',
     trust: [
@@ -442,6 +468,34 @@ const t = {
     </div>
   </section>
 
+  <section id="come-lavoriamo" class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.workEyebrow}</p>
+        <h2>{t.workTitle}</h2>
+        <p class="lead">{t.workText}</p>
+      </div>
+      <ol class="work plain">
+        {
+          t.work.map((w, i) => (
+            <li class="card" data-reveal={String((i % 3) + 1)}>
+              <span class="card__num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{w.title}</h3>
+              <p>{w.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="custom" data-reveal>
+        <div>
+          <h3>{t.customTitle}</h3>
+          <p>{t.customText}</p>
+        </div>
+        <a class="btn btn--ghost" href={`${href('contact', lang)}?chi=cliente&tema=fattibilita`}>{t.customCta}</a>
+      </div>
+    </div>
+  </section>
+
   <section class="numbers" aria-label={t.numbersLabel}>
     <ul class="wrap numbers__list plain">
       {
@@ -471,6 +525,41 @@ const t = {
 </Base>
 
 <style>
+  .work {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 1rem;
+  }
+
+  .work p {
+    margin-bottom: 0;
+  }
+
+  .custom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    margin-top: 2rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+  }
+
+  .custom > div {
+    flex: 1 1 24rem;
+  }
+
+  .custom h3 {
+    margin-bottom: 0.4rem;
+  }
+
+  .custom p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
   .qc-cta {
     margin: 2rem 0 0;
   }
