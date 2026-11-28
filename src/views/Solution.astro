@@ -82,6 +82,7 @@ const t = {
       { value: `~${STATS.powerWatts} W`, label: 'di assorbimento, un consumo contenuto' },
     ],
     numbersLabel: 'BrainTex in numeri',
+    glossaryLink: 'Quali difetti esistono e come si chiamano? Leggi la guida ai difetti e il glossario tessile',
     howEyebrow: 'Come ragiona',
     howTitle: 'Non conta difetti: impara, distingue, si adatta.',
     concepts: [
@@ -231,6 +232,7 @@ const t = {
       { value: `~${STATS.powerWatts} W`, label: 'power draw, a low consumption' },
     ],
     numbersLabel: 'BrainTex in numbers',
+    glossaryLink: 'Which defects exist and what are they called? Read the defect guide and textile glossary',
     howEyebrow: 'How it thinks',
     howTitle: 'It doesn’t just count defects: it learns, distinguishes, adapts.',
     concepts: [
@@ -421,6 +423,9 @@ const t = {
           ))
         }
       </ul>
+      <p class="glossary-link" data-reveal>
+        <a href={href('glossary', lang)}>{t.glossaryLink} →</a>
+      </p>
     </div>
   </section>
 
@@ -525,6 +530,11 @@ const t = {
 </Base>
 
 <style>
+  .glossary-link {
+    margin: 2rem 0 0;
+    font-weight: 700;
+  }
+
   .work {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
