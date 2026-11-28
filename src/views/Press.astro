@@ -93,6 +93,10 @@ const t = {
     eventsEmpty: 'Le prossime date le pubblichiamo qui. Nel frattempo, se vuoi incontrarci in fiera o in azienda, scrivici: organizziamo volentieri.',
     eventsCta: 'Fissiamo un incontro',
     eventsSite: 'Sito dell’evento',
+    exhibitor: 'Siamo espositori',
+    visitor: 'Ci saremo come visitatori',
+    meet: 'Fissiamo un incontro',
+    meetMessage: (name: string, when: string) => `Vorrei incontrarvi a ${name} (${when}).`,
   },
   en: {
     title: 'Press',
@@ -111,6 +115,10 @@ const t = {
     eventsEmpty: 'We publish upcoming dates here. Meanwhile, if you would like to meet us at a fair or at your company, write to us: we are happy to arrange it.',
     eventsCta: 'Let’s arrange a meeting',
     eventsSite: 'Event website',
+    exhibitor: 'We are exhibiting',
+    visitor: 'We will be visiting',
+    meet: 'Let’s meet there',
+    meetMessage: (name: string, when: string) => `I would like to meet you at ${name} (${when}).`,
   },
 }[lang];
 
@@ -119,6 +127,13 @@ const fmt = (iso: string) =>
 
 // Solo eventi non ancora conclusi (al momento della build), in ordine di data.
 const today = new Date().toISOString().slice(0, 10);
+// "2–4 febbraio 2027" se il mese è lo stesso, altrimenti le due date per intero.
+const range = (start: string, end: string) => {
+  const a = new Date(start);
+  const b = new Date(end);
+  if (a.getMonth() !== b.getMonth() || a.getFullYear() !== b.getFullYear()) return `${fmt(start)} – ${fmt(end)}`;
+  return `${a.getDate()}–${b.getDate()} ${a.toLocaleDateString(t.locale, { month: 'long', year: 'numeric' })}`;
+};
 const upcoming = EVENTS.filter((e) => e.end >= today).sort((a, b) => a.start.localeCompare(b.start));
 ---
 
@@ -162,19 +177,26 @@ const upcoming = EVENTS.filter((e) => e.end >= today).sort((a, b) => a.start.loc
           <ul class="events plain">
             {upcoming.map((e) => (
               <li class="card event" data-reveal>
-                <time datetime={e.start}>
-                  {fmt(e.start)} – {fmt(e.end)}
-                </time>
-                <h3>{e.name}</h3>
-                <p>
-                  {e.place[lang]}
-                  {e.where && ` · ${e.where[lang]}`}
-                </p>
-                {e.url && (
-                  <a href={e.url} target="_blank" rel="noopener">
-                    {t.eventsSite} <span class="visually-hidden">{t.newTab}</span>
-                  </a>
-                )}
+                <div class="event__info">
+                  <time datetime={e.start}>{range(e.start, e.end)}</time>
+                  <h3>{e.name}</h3>
+                  <p class={`event__role event__role--${e.role}`}>{e.role === 'exhibitor' ? t.exhibitor : t.visitor}</p>
+                  <p>
+                    {e.place[lang]}
+                    {e.where && ` · ${e.where[lang]}`}
+                  </p>
+                  {e.url && (
+                    <a href={e.url} target="_blank" rel="noopener">
+                      {t.eventsSite} <span class="visually-hidden">{t.newTab}</span>
+                    </a>
+                  )}
+                </div>
+                <a
+                  class="btn btn--ghost"
+                  href={`${href('contact', lang)}?domanda=${encodeURIComponent(t.meetMessage(e.name, range(e.start, e.end)))}`}
+                >
+                  {t.meet}
+                </a>
               </li>
             ))}
           </ul>
@@ -195,6 +217,34 @@ const upcoming = EVENTS.filter((e) => e.end >= today).sort((a, b) => a.start.loc
   .events {
     display: grid;
     gap: 1rem;
+  }
+
+  .event {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+  }
+
+  .event__info {
+    flex: 1 1 22rem;
+  }
+
+  .event .event__role {
+    display: inline-block;
+    margin-bottom: 0.4rem;
+    padding: 0.1rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+
+  .event .event__role--exhibitor {
+    border-color: var(--green-300);
+    color: var(--green-300);
+    font-weight: 700;
   }
 
   .event time {
