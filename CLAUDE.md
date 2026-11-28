@@ -40,7 +40,7 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - HTML semantico, `lang` corretto ("it" / "en"), un solo `h1` per pagina, gerarchia dei titoli corretta.
 - Title e meta description unici per pagina; canonical sempre su `https://www.braintex.it` (dominio canonico scelto: con www); Open Graph; hreflang IT/EN.
 - `sitemap.xml` e `robots.txt` riferiti a www.braintex.it, generati in build dall'elenco pagine (sempre aggiornati).
-- JSON-LD Organization (e LocalBusiness quando ci saranno gli indirizzi completi).
+- JSON-LD Organization in home, con sede legale, sede operativa, LinkedIn e logo (`public/logo.png`, versione a colori su bianco, URL fisso). LocalBusiness non serve: BrainTex non riceve clienti in sede.
 - `alt` su tutte le immagini; immagini ottimizzate (WebP/AVIF, dimensioni corrette, lazy loading).
 - Ottime Core Web Vitals, responsive, accessibile (contrasto AA, tastiera, "riduci movimento"). Pagina 404 personalizzata.
 

@@ -275,9 +275,12 @@ const t = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': `${SITE.origin}/#organization`,
   name: SITE.name,
   legalName: SITE.legalName,
   url: canonical('home', lang),
+  logo: `${SITE.origin}/logo.png`,
+  image: `${SITE.origin}/social-${lang}.jpg`,
   description: t.description,
   foundingDate: SITE.foundingDate,
   vatID: `IT${SITE.vat}`,
