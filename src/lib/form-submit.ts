@@ -14,6 +14,8 @@ export interface ContactMessage {
   company: string;
   link: string;
   message: string;
+  /** Campi in più per fornitori e agenti (etichetta → valore); quelli vuoti non vengono inviati. */
+  details: Record<string, string>;
   lang: string;
   /** Campo trappola per i bot: se compilato, il messaggio viene scartato. */
   honeypot: boolean;
@@ -37,7 +39,8 @@ export async function sendContactMessage(msg: ContactMessage): Promise<SendResul
         email: msg.email,
         'Chi sei': msg.audience,
         Azienda: msg.company || '—',
-        'LinkedIn / portfolio': msg.link || '—',
+        'Link (profilo, sito o catalogo)': msg.link || '—',
+        ...Object.fromEntries(Object.entries(msg.details).filter(([, value]) => value)),
         Messaggio: msg.message,
         Lingua: msg.lang,
       }),

@@ -14,24 +14,46 @@ const t = {
     audience: 'Chi sei?',
     choose: 'Scegli…',
     audiences: {
-      cliente: 'Azienda tessile / cliente',
+      cliente: 'Azienda tessile (tessitura, tintoria, finissaggio)',
+      terzista: 'Controllo qualità conto terzi',
+      confezionista: 'Confezionista o brand',
       candidato: 'Candidato',
+      agente: 'Agente di commercio o rappresentante',
       investitore: 'Investitore',
-      partner: 'Partner, costruttore o integratore',
+      partner: 'Costruttore di macchine o integratore',
+      it: 'IT provider o software house (ERP, MES…)',
+      fornitore: 'Fornitore',
       stampa: 'Stampa',
       altro: 'Altro',
     },
     company: 'Azienda o ente',
     link: 'Profilo LinkedIn o portfolio',
     linkHint: 'Utile soprattutto per le candidature.',
+    linkSupplier: 'Sito, catalogo o scheda tecnica',
+    linkSupplierHint: 'Un link ci basta: non servono allegati.',
     message: 'Messaggio',
     messageHint: 'Non inserire dati sensibili, ad esempio sulla salute.',
+    messageSupplierHint:
+      'Descrivi cosa proponi e, se li conosci, tempi di consegna, quantità minime e zone servite. Non inserire dati sensibili.',
+    messageAgentHint: 'Raccontaci in breve la tua esperienza. Non inserire dati sensibili.',
+    supplierCategory: 'Cosa proponi?',
+    supplierCategories: {
+      componenti: 'Componenti e materiali',
+      lavorazioni: 'Lavorazioni e produzione conto terzi',
+      software: 'Software e servizi IT',
+      servizi: 'Servizi professionali e consulenza',
+      altro: 'Altro',
+    },
+    agentAreas: 'Zone e distretti che segui',
+    agentSectors: 'Settori e tipo di aziende che visiti',
+    agentMandates: 'Mandati che hai già',
+    agentMandatesHint: 'Ci aiuta a evitare sovrapposizioni.',
     optional: 'facoltativo',
     privacyBefore: 'Ho letto l’',
     privacyLink: 'informativa privacy',
     privacyAfter: '.',
     notice:
-      'Titolare del trattamento è BrainTex srl. Usiamo i dati che ci invii solo per rispondere alla tua richiesta e, se ti candidi, per valutare la candidatura; li conserviamo al massimo 24 mesi. Trovi i dettagli e i tuoi diritti nella ',
+      'Titolare del trattamento è BrainTex srl. Usiamo i dati che ci invii solo per rispondere alla tua richiesta e, se ti candidi o ci proponi una collaborazione o una fornitura, per valutarla; li conserviamo al massimo 24 mesi. Trovi i dettagli e i tuoi diritti nella ',
     noticeLink: 'Privacy Policy',
     send: 'Invia il messaggio',
     sending: 'Invio in corso…',
@@ -39,6 +61,9 @@ const t = {
       name: 'Scrivi il tuo nome.',
       email: 'Inserisci un indirizzo email valido.',
       audience: 'Scegli una voce.',
+      company: 'Indica l’azienda.',
+      supplierCategory: 'Scegli una categoria.',
+      agentAreas: 'Indica almeno una zona.',
       link: 'Inserisci un indirizzo web completo (https://…).',
       message: 'Scrivi un messaggio di almeno 10 caratteri.',
       privacy: 'Conferma di aver letto l’informativa privacy.',
@@ -56,24 +81,46 @@ const t = {
     audience: 'Who are you?',
     choose: 'Choose…',
     audiences: {
-      cliente: 'Textile company / customer',
+      cliente: 'Textile company (weaving, dyeing, finishing)',
+      terzista: 'Quality-control service provider',
+      confezionista: 'Garment maker or brand',
       candidato: 'Candidate',
+      agente: 'Sales agent or representative',
       investitore: 'Investor',
-      partner: 'Partner, machine builder or integrator',
+      partner: 'Machine builder or integrator',
+      it: 'IT provider or software house (ERP, MES…)',
+      fornitore: 'Supplier',
       stampa: 'Press',
       altro: 'Other',
     },
     company: 'Company or organisation',
     link: 'LinkedIn profile or portfolio',
     linkHint: 'Especially useful for applications.',
+    linkSupplier: 'Website, catalogue or datasheet',
+    linkSupplierHint: 'A link is enough: no attachments needed.',
     message: 'Message',
     messageHint: 'Please do not include sensitive data, for example about health.',
+    messageSupplierHint:
+      'Describe what you offer and, if known, lead times, minimum quantities and areas served. Please do not include sensitive data.',
+    messageAgentHint: 'Tell us briefly about your experience. Please do not include sensitive data.',
+    supplierCategory: 'What do you offer?',
+    supplierCategories: {
+      componenti: 'Components and materials',
+      lavorazioni: 'Manufacturing and subcontracting',
+      software: 'Software and IT services',
+      servizi: 'Professional services and consulting',
+      altro: 'Other',
+    },
+    agentAreas: 'Areas and districts you cover',
+    agentSectors: 'Sectors and type of companies you visit',
+    agentMandates: 'Mandates you already hold',
+    agentMandatesHint: 'It helps us avoid overlaps.',
     optional: 'optional',
     privacyBefore: 'I have read the ',
     privacyLink: 'privacy notice',
     privacyAfter: '.',
     notice:
-      'The data controller is BrainTex srl. We use the data you send only to reply to your request and, if you apply, to assess your application; we keep it for no longer than 24 months. Details and your rights are in the ',
+      'The data controller is BrainTex srl. We use the data you send only to reply to your request and, if you apply or propose a partnership or supply, to assess it; we keep it for no longer than 24 months. Details and your rights are in the ',
     noticeLink: 'Privacy Policy',
     send: 'Send message',
     sending: 'Sending…',
@@ -81,6 +128,9 @@ const t = {
       name: 'Please enter your name.',
       email: 'Please enter a valid email address.',
       audience: 'Please choose an option.',
+      company: 'Please enter the company.',
+      supplierCategory: 'Please choose a category.',
+      agentAreas: 'Please enter at least one area.',
       link: 'Please enter a full web address (https://…).',
       message: 'Please write a message of at least 10 characters.',
       privacy: 'Please confirm you have read the privacy notice.',
@@ -102,9 +152,16 @@ const messages = JSON.stringify({
   notConfigured: t.notConfigured,
   invalid: t.invalid,
 });
+
+// Testi che cambiano in base a "Chi sei?" (collegamento e suggerimento del messaggio).
+const variants = JSON.stringify({
+  default: { link: t.link, linkHint: t.linkHint, messageHint: t.messageHint },
+  fornitore: { link: t.linkSupplier, linkHint: t.linkSupplierHint, messageHint: t.messageSupplierHint },
+  agente: { link: t.link, linkHint: t.linkHint, messageHint: t.messageAgentHint },
+});
 ---
 
-<form class="contact-form" data-contact-form data-messages={messages} data-lang={lang} novalidate>
+<form class="contact-form" data-contact-form data-messages={messages} data-variants={variants} data-lang={lang} novalidate>
   <noscript><p class="form-status form-status--error">{t.noscript}</p></noscript>
 
   <div class="field">
@@ -129,12 +186,43 @@ const messages = JSON.stringify({
   </div>
 
   <div class="field">
-    <label for="cf-company">{t.company} <span class="opt">({t.optional})</span></label>
-    <input id="cf-company" name="company" type="text" autocomplete="organization" maxlength="160" />
+    <label for="cf-company">
+      {t.company}
+      <span class="opt" data-company-optional>({t.optional})</span>
+      <span class="req" aria-hidden="true" data-company-required hidden>*</span>
+    </label>
+    <input id="cf-company" name="company" type="text" autocomplete="organization" maxlength="160" aria-describedby="cf-company-err" />
+    <p class="field__error" id="cf-company-err" data-error={t.errors.company}></p>
+  </div>
+
+  <!-- Campi in più per i fornitori: compaiono solo scegliendo "Fornitore" -->
+  <div class="field field--wide" data-for="fornitore" hidden>
+    <label for="cf-supplier-category">{t.supplierCategory} <span class="req" aria-hidden="true">*</span></label>
+    <select id="cf-supplier-category" name="supplierCategory" required disabled aria-describedby="cf-supplier-category-err">
+      <option value="">{t.choose}</option>
+      {Object.values(t.supplierCategories).map((label) => <option>{label}</option>)}
+    </select>
+    <p class="field__error" id="cf-supplier-category-err" data-error={t.errors.supplierCategory}></p>
+  </div>
+
+  <!-- Campi in più per agenti e rappresentanti -->
+  <div class="field" data-for="agente" hidden>
+    <label for="cf-agent-areas">{t.agentAreas} <span class="req" aria-hidden="true">*</span></label>
+    <input id="cf-agent-areas" name="agentAreas" type="text" required disabled maxlength="200" aria-describedby="cf-agent-areas-err" />
+    <p class="field__error" id="cf-agent-areas-err" data-error={t.errors.agentAreas}></p>
+  </div>
+  <div class="field" data-for="agente" hidden>
+    <label for="cf-agent-sectors">{t.agentSectors} <span class="opt">({t.optional})</span></label>
+    <input id="cf-agent-sectors" name="agentSectors" type="text" disabled maxlength="200" />
+  </div>
+  <div class="field field--wide" data-for="agente" hidden>
+    <label for="cf-agent-mandates">{t.agentMandates} <span class="opt">({t.optional})</span></label>
+    <input id="cf-agent-mandates" name="agentMandates" type="text" disabled maxlength="300" aria-describedby="cf-agent-mandates-hint" />
+    <p class="field__hint" id="cf-agent-mandates-hint">{t.agentMandatesHint}</p>
   </div>
 
   <div class="field field--wide">
-    <label for="cf-link">{t.link} <span class="opt">({t.optional})</span></label>
+    <label for="cf-link"><span data-link-label>{t.link}</span> <span class="opt">({t.optional})</span></label>
     <input id="cf-link" name="link" type="url" inputmode="url" placeholder="https://" maxlength="300" aria-describedby="cf-link-hint cf-link-err" />
     <p class="field__hint" id="cf-link-hint">{t.linkHint}</p>
     <p class="field__error" id="cf-link-err" data-error={t.errors.link}></p>
@@ -193,6 +281,10 @@ const messages = JSON.stringify({
 
   .field--wide {
     grid-column: 1 / -1;
+  }
+
+  .field[hidden] {
+    display: none;
   }
 
   label {
@@ -323,6 +415,29 @@ const messages = JSON.stringify({
     const preset = new URLSearchParams(location.search).get('chi');
     if (preset && [...audience.options].some((o) => o.value === preset)) audience.value = preset;
 
+    // Campi e testi che dipendono da "Chi sei?": i campi nascosti sono disattivati, quindi non vengono né controllati né inviati.
+    const variants = JSON.parse(form.dataset.variants ?? '{}') as Record<string, Record<string, string>>;
+    const company = form.elements.namedItem('company') as HTMLInputElement;
+    const applyAudience = () => {
+      const who = audience.value;
+      form.querySelectorAll<HTMLElement>('[data-for]').forEach((group) => {
+        const active = group.dataset.for === who;
+        group.hidden = !active;
+        group.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input, select').forEach((el) => {
+          el.disabled = !active;
+        });
+      });
+      const texts = variants[who] ?? variants.default;
+      form.querySelector('[data-link-label]')!.textContent = texts.link;
+      form.querySelector('#cf-link-hint')!.textContent = texts.linkHint;
+      form.querySelector('#cf-message-hint')!.textContent = texts.messageHint;
+      company.required = who === 'fornitore';
+      form.querySelector<HTMLElement>('[data-company-required]')!.hidden = !company.required;
+      form.querySelector<HTMLElement>('[data-company-optional]')!.hidden = company.required;
+    };
+    audience.addEventListener('change', applyAudience);
+    applyAudience();
+
     const setStatus = (text: string, kind: 'ok' | 'error' | '' = '') => {
       status.textContent = text;
       status.className = `form-status${kind ? ` form-status--${kind}` : ''}`;
@@ -352,7 +467,7 @@ const messages = JSON.stringify({
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const invalid = fields.filter((f) => !validate(f));
+      const invalid = fields.filter((f) => !f.disabled && !validate(f));
       if (invalid.length) {
         setStatus(msg.invalid, 'error');
         invalid[0].focus();
@@ -369,6 +484,12 @@ const messages = JSON.stringify({
         company: String(data.get('company') ?? ''),
         link: String(data.get('link') ?? ''),
         message: String(data.get('message')),
+        details: {
+          'Categoria fornitura': String(data.get('supplierCategory') ?? ''),
+          'Zone seguite': String(data.get('agentAreas') ?? ''),
+          'Settori e aziende': String(data.get('agentSectors') ?? ''),
+          'Mandati attuali': String(data.get('agentMandates') ?? ''),
+        },
         lang: form.dataset.lang ?? 'it',
         honeypot: data.get('botcheck') !== null,
       });
@@ -377,6 +498,7 @@ const messages = JSON.stringify({
       if (result.ok) {
         track('generate_lead', { form: 'contatti', audience: audience.value });
         form.reset();
+        applyAudience();
         fields.forEach((f) => f.removeAttribute('aria-invalid'));
         setStatus(msg.ok, 'ok');
       } else {
