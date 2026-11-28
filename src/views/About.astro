@@ -4,6 +4,13 @@ import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { SITE, STATS } from '../config';
 import { href, type Lang } from '../i18n';
+import { Image } from 'astro:assets';
+import fotoFrancesco from '../assets/team/francesco.jpg';
+import fotoMirko from '../assets/team/mirko.jpg';
+import fotoSergio from '../assets/team/sergio.jpg';
+import fotoSimone from '../assets/team/simone.jpg';
+import fotoMarco from '../assets/team/marco.jpg';
+import fotoAndrea from '../assets/team/andrea.jpg';
 
 interface Props {
   lang: Lang;
@@ -13,18 +20,13 @@ const millions = Math.floor(STATS.metersInspected / 1_000_000);
 
 // Ordine e ruoli come sul sito attuale.
 const team = [
-  { name: 'Francesco Mascarana', role: 'Chief Executive Officer' },
-  { name: 'Mirko Agarla', role: 'Chief Technology Officer' },
-  { name: 'Sergio Gugliandolo', role: 'Chief Product Officer' },
-  { name: 'Simone Torino', role: 'Chief Operating Officer' },
-  { name: 'Marco Buzzonetti', role: 'Chief Financial Officer' },
-  { name: 'Andrea Gullì', role: 'VP of Technology' },
+  { name: 'Francesco Mascarana', role: 'Chief Executive Officer', photo: fotoFrancesco },
+  { name: 'Mirko Agarla', role: 'Chief Technology Officer', photo: fotoMirko },
+  { name: 'Sergio Gugliandolo', role: 'Chief Product Officer', photo: fotoSergio },
+  { name: 'Simone Torino', role: 'Chief Operating Officer', photo: fotoSimone },
+  { name: 'Marco Buzzonetti', role: 'Chief Financial Officer', photo: fotoMarco },
+  { name: 'Andrea Gullì', role: 'VP of Technology', photo: fotoAndrea },
 ];
-const initials = (name: string) =>
-  name
-    .split(' ')
-    .map((p) => p[0])
-    .join('');
 
 const t = {
   it: {
@@ -71,7 +73,6 @@ const t = {
     logoPlaceholder: 'Logo in arrivo',
     teamEyebrow: 'Conosci il team',
     teamTitle: 'Il team che guida il cambiamento.',
-    photoPlaceholder: 'Foto in arrivo',
     awardsEyebrow: 'Riconoscimenti',
     awardsTitle: 'Premi e selezioni.',
     awards: [
@@ -136,7 +137,6 @@ const t = {
     logoPlaceholder: 'Logo coming soon',
     teamEyebrow: 'Meet the team',
     teamTitle: 'The team leading the change.',
-    photoPlaceholder: 'Photo coming soon',
     awardsEyebrow: 'Awards',
     awardsTitle: 'Awards and selections.',
     awards: [
@@ -217,9 +217,14 @@ const t = {
         {
           team.map((m, i) => (
             <li class="member" data-reveal={String((i % 3) + 1)}>
-              <div class="placeholder member__photo" title={t.photoPlaceholder}>
-                <span aria-hidden="true">{initials(m.name)}</span>
-              </div>
+              <Image
+                class="member__photo"
+                src={m.photo}
+                alt={m.name}
+                widths={[320, 480, 640]}
+                sizes="(max-width: 40rem) 45vw, 16rem"
+                format="webp"
+              />
               <h3>{m.name}</h3>
               <p class="muted">{m.role}</p>
             </li>
@@ -326,16 +331,14 @@ const t = {
   }
 
   .member__photo {
-    aspect-ratio: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
     margin-bottom: 1rem;
     border-radius: var(--radius);
-  }
-
-  .member__photo span {
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--cyan-300);
+    background: var(--surface);
   }
 
   .member h3 {
