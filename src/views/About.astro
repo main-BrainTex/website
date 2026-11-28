@@ -11,6 +11,8 @@ import fotoSergio from '../assets/team/sergio.jpg';
 import fotoSimone from '../assets/team/simone.jpg';
 import fotoMarco from '../assets/team/marco.jpg';
 import fotoAndrea from '../assets/team/andrea.jpg';
+import fotoParco from '../assets/photos/team-parco.jpg';
+import fotoItw from '../assets/photos/italian-tech-week-2024.jpg';
 import logoAssintel from '../assets/logos/assintel.png';
 import logoInnovup from '../assets/logos/innovup.png';
 import logoPointex from '../assets/logos/pointex.png';
@@ -82,6 +84,9 @@ const t = {
       { name: 'MICS', text: 'Made in Italy Circolare e Sostenibile: il partenariato esteso tra università, centri di ricerca e imprese.' },
       { name: 'Polo ICT', text: 'Il polo di innovazione ICT della Regione Piemonte, gestito da Fondazione Piemonte Innova.' },
     ],
+    itwAlt: 'Quattro fondatori di BrainTex all’Italian Tech Week 2024 a Torino',
+    itwCaption: 'All’Italian Tech Week 2024, Torino.',
+    teamPhotoAlt: 'Il team BrainTex in un parco, con le magliette BrainTex',
     supportersTitle: 'Ci hanno sostenuto',
     supporters: [
       { name: 'I3P, Incubatore del Politecnico di Torino', note: 'Incubatore' },
@@ -152,6 +157,9 @@ const t = {
       { name: 'MICS', text: 'Made in Italy Circolare e Sostenibile: the extended partnership between universities, research centres and companies.' },
       { name: 'Polo ICT', text: 'The ICT innovation cluster of the Piedmont Region, managed by Fondazione Piemonte Innova.' },
     ],
+    itwAlt: 'Four BrainTex founders at Italian Tech Week 2024 in Turin',
+    itwCaption: 'At Italian Tech Week 2024, Turin.',
+    teamPhotoAlt: 'The BrainTex team in a park, wearing BrainTex T-shirts',
     supportersTitle: 'They supported us',
     supporters: [
       { name: 'I3P, Politecnico di Torino incubator', note: 'Incubator' },
@@ -208,6 +216,10 @@ const t = {
           ))
         }
       </ol>
+      <figure class="photo photo--wide" data-reveal>
+        <Image src={fotoItw} alt={t.itwAlt} widths={[640, 960, 1280, 1600]} sizes="(max-width: 70rem) 100vw, 68rem" format="webp" />
+        <figcaption>{t.itwCaption}</figcaption>
+      </figure>
       <div class="supporters" data-reveal>
         <h3>{t.supportersTitle}</h3>
         <ul class="plain">
@@ -228,9 +240,14 @@ const t = {
 
   <section class="section section--surface">
     <div class="wrap">
-      <div class="section-head" data-reveal>
-        <p class="eyebrow">{t.valuesEyebrow}</p>
-        <h2>{t.valuesTitle}</h2>
+      <div class="split values-head">
+        <div class="section-head" data-reveal>
+          <p class="eyebrow">{t.valuesEyebrow}</p>
+          <h2>{t.valuesTitle}</h2>
+        </div>
+        <figure class="photo" data-reveal="1">
+          <Image src={fotoParco} alt={t.teamPhotoAlt} widths={[480, 800, 1200]} sizes="(max-width: 48rem) 100vw, 34rem" format="webp" />
+        </figure>
       </div>
       <ul class="grid grid--3 plain">
         {
@@ -372,6 +389,41 @@ const t = {
     height: auto;
     max-width: 100%;
     max-height: 100%;
+  }
+
+  .photo {
+    margin: 0;
+  }
+
+  .photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+
+  .photo--wide {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .photo--wide img {
+    aspect-ratio: 16 / 7;
+    object-fit: cover;
+  }
+
+  .photo figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .values-head {
+    align-items: center;
+    margin-bottom: clamp(2rem, 5vw, 3rem);
+  }
+
+  .values-head .section-head {
+    margin-bottom: 0;
   }
 
   .supporters {
