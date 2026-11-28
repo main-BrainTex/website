@@ -1,7 +1,7 @@
 ---
 import { formatAddress, SITE } from '../config';
 import { href, UI, type Lang, type RouteKey } from '../i18n';
-import LogoPlaceholder from './LogoPlaceholder.astro';
+import Logo from './Logo.astro';
 
 interface Props {
   lang: Lang;
@@ -17,7 +17,7 @@ const year = new Date().getFullYear();
   <div class="wrap">
     <div class="site-footer__top">
       <div class="site-footer__brand">
-        <LogoPlaceholder label={t.logoPlaceholder} />
+        <Logo height={34} />
         <p class="muted">
           {f.legalSeat}: {formatAddress(SITE.legalAddress)}<br />
           {f.operationalSeat}: {formatAddress(SITE.operationalAddress)}

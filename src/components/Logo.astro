@@ -1,0 +1,29 @@
+---
+// Logo ufficiale BrainTex, versione negativa orizzontale (per il tema scuro).
+import { Image } from 'astro:assets';
+import logo from '../assets/brand/logo-negativo.png';
+
+interface Props {
+  height?: number;
+  eager?: boolean;
+}
+const { height = 30, eager = false } = Astro.props;
+---
+
+<Image
+  class="logo"
+  src={logo}
+  alt="BrainTex"
+  height={height}
+  densities={[1, 2, 3]}
+  format="webp"
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : undefined}
+/>
+
+<style>
+  .logo {
+    display: block;
+    width: auto;
+  }
+</style>

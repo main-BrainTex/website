@@ -1,6 +1,6 @@
 ---
 import { href, UI, LANGS, type Lang, type RouteKey } from '../i18n';
-import LogoPlaceholder from './LogoPlaceholder.astro';
+import Logo from './Logo.astro';
 
 interface Props {
   lang: Lang;
@@ -15,7 +15,7 @@ const items: RouteKey[] = ['solution', 'factory', 'benefits', 'about', 'careers'
 <header class="site-header">
   <div class="wrap site-header__inner">
     <a class="site-header__brand" href={href('home', lang)} aria-label="BrainTex – Home">
-      <LogoPlaceholder label={t.logoPlaceholder} />
+      <Logo eager />
     </a>
 
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">

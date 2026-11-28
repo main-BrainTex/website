@@ -60,7 +60,6 @@ export const UI = {
       glossary: 'Glossario tessile',
       sustainability: 'Sostenibilità',
     },
-    logoPlaceholder: 'Segnaposto logo: in attesa del file vettoriale ufficiale',
     footer: {
       fse: 'Realizzato con il finanziamento del Fondo Sociale Europeo Plus',
       ngeu: "Finanziato dall'Unione europea – NextGenerationEU",
@@ -96,7 +95,6 @@ export const UI = {
       glossary: 'Textile glossary',
       sustainability: 'Sustainability',
     },
-    logoPlaceholder: 'Logo placeholder: awaiting the official vector file',
     footer: {
       fse: 'Realizzato con il finanziamento del Fondo Sociale Europeo Plus',
       ngeu: "Finanziato dall'Unione europea – NextGenerationEU",
