@@ -75,13 +75,6 @@ const t = {
     dashTitle: 'Un patrimonio di dati che oggi quasi nessuno usa.',
     dashText:
       'Ogni fase produce informazioni. BrainTex le raccoglie in un unico cruscotto, le mette in relazione e ti dice cosa significano.',
-    numbers: [
-      { value: `${STATS.speedVsManual.toLocaleString('it-IT')}×`, label: 'più veloce del controllo manuale' },
-      { value: `${STATS.maxSpeedMps} m/s`, label: 'velocità massima di ispezione' },
-      { value: `< ${STATS.minutesToLearnFabric} min`, label: 'per imparare un nuovo articolo' },
-      { value: `~${STATS.powerWatts} W`, label: 'di assorbimento, un consumo contenuto' },
-    ],
-    numbersLabel: 'BrainTex in numeri',
     glossaryLink: 'Quali difetti esistono e come si chiamano? Leggi la guida ai difetti e il glossario tessile',
     howEyebrow: 'Come ragiona',
     howTitle: 'Non conta difetti: impara, distingue, si adatta.',
@@ -226,13 +219,6 @@ const t = {
     dashTitle: 'A wealth of data that almost nobody uses today.',
     dashText:
       'Every stage generates information. BrainTex gathers it in a single dashboard, relates it and tells you what it means.',
-    numbers: [
-      { value: `${STATS.speedVsManual.toLocaleString('en-GB')}×`, label: 'faster than manual inspection' },
-      { value: `${STATS.maxSpeedMps} m/s`, label: 'maximum inspection speed' },
-      { value: `< ${STATS.minutesToLearnFabric} min`, label: 'to learn a new article' },
-      { value: `~${STATS.powerWatts} W`, label: 'power draw, a low consumption' },
-    ],
-    numbersLabel: 'BrainTex in numbers',
     glossaryLink: 'Which defects exist and what are they called? Read the defect guide and textile glossary',
     howEyebrow: 'How it thinks',
     howTitle: 'It doesn’t just count defects: it learns, distinguishes, adapts.',
@@ -503,19 +489,6 @@ const t = {
     </div>
   </section>
 
-  <section class="numbers" aria-label={t.numbersLabel}>
-    <ul class="wrap numbers__list plain">
-      {
-        t.numbers.map((n, i) => (
-          <li data-reveal={String(i + 1)}>
-            <strong>{n.value}</strong>
-            <span>{n.label}</span>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
   <section class="section">
     <div class="wrap">
       <div class="section-head" data-reveal>
@@ -591,34 +564,5 @@ const t = {
   .views__img {
     aspect-ratio: 4 / 3;
     margin-bottom: 1.25rem;
-  }
-
-  .numbers {
-    border-block: 1px solid var(--line);
-    background: var(--bg-deep);
-  }
-
-  .numbers__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
-    gap: 1.5rem;
-    padding-block: 2.5rem;
-  }
-
-  .numbers__list li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .numbers__list strong {
-    font-size: clamp(2rem, 1.6rem + 1.8vw, 2.8rem);
-    line-height: 1;
-    color: var(--green-300);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .numbers__list span {
-    color: var(--text-muted);
   }
 </style>

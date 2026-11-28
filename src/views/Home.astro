@@ -3,14 +3,13 @@ import Base from '../layouts/Base.astro';
 import FabricScanner from '../components/FabricScanner.astro';
 import CtaBand from '../components/CtaBand.astro';
 import HomeStory from '../components/HomeStory.astro';
-import { SITE, STATS } from '../config';
+import { SITE } from '../config';
 import { canonical, href, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const millions = Math.floor(STATS.metersInspected / 1_000_000);
 
 const t = {
   it: {
@@ -22,12 +21,6 @@ const t = {
     lead: 'BrainTex porta l’intelligenza artificiale nel controllo qualità come un collega che non si stanca mai: lavora sui macchinari che hai già, guarda il 100% del tessuto in tempo reale e ti avvisa a ogni difetto.',
     ctaPrimary: 'Scopri la soluzione',
     ctaSecondary: 'Parliamone',
-    stats: [
-      { value: `${millions}+`, label: 'milioni di metri di tessuto ispezionati' },
-      { value: `< ${STATS.minutesToLearnFabric}`, label: 'minuti per imparare un nuovo articolo' },
-      { value: `> ${STATS.wasteReductionPercent}%`, label: 'di scarti e rilavorazioni in meno' },
-      { value: `${STATS.speedVsManual.toLocaleString('it-IT')}×`, label: 'più veloce del controllo manuale, fino a 1 m/s' },
-    ],
     forEyebrow: 'Per chi è',
     forTitle: 'Dalla tessitura alla confezione, e oltre.',
     audiences: [
@@ -157,12 +150,6 @@ const t = {
     lead: 'BrainTex brings artificial intelligence into quality control like a colleague who never gets tired: it works on the machines you already have, watches 100% of the fabric in real time and alerts you to every defect.',
     ctaPrimary: 'Discover the solution',
     ctaSecondary: 'Let’s talk',
-    stats: [
-      { value: `${millions}M+`, label: 'metres of fabric inspected' },
-      { value: `< ${STATS.minutesToLearnFabric}`, label: 'minutes to learn a new article' },
-      { value: `> ${STATS.wasteReductionPercent}%`, label: 'less waste and rework' },
-      { value: `${STATS.speedVsManual.toLocaleString('en-GB')}×`, label: 'faster than manual inspection, up to 1 m/s' },
-    ],
     forEyebrow: 'Who it is for',
     forTitle: 'From weaving to garment making, and beyond.',
     audiences: [
@@ -335,19 +322,6 @@ const jsonLd = {
     </div>
   </section>
 
-  <section class="stats" aria-label={lang === 'it' ? 'BrainTex in numeri' : 'BrainTex in numbers'}>
-    <ul class="wrap stats__list">
-      {
-        t.stats.map((s, i) => (
-          <li data-reveal={String(i + 1)}>
-            <strong>{s.value}</strong>
-            <span>{s.label}</span>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
   <section class="section section--raised" id="per-chi">
     <div class="wrap">
       <div class="section-head" data-reveal>
@@ -511,37 +485,6 @@ const jsonLd = {
     .hero__grid {
       grid-template-columns: 1fr;
     }
-  }
-
-  .stats {
-    border-block: 1px solid var(--line);
-    background: var(--bg-deep);
-  }
-
-  .stats__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-    gap: 1.5rem;
-    margin: 0 auto;
-    padding-block: 2.5rem;
-    list-style: none;
-  }
-
-  .stats__list li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
-
-  .stats__list strong {
-    font-size: clamp(2.4rem, 1.8rem + 2.5vw, 3.4rem);
-    line-height: 1;
-    color: var(--green-300);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .stats__list span {
-    color: var(--text-muted);
   }
 
   .eye {

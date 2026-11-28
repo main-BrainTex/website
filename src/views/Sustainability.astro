@@ -2,7 +2,6 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
-import { STATS } from '../config';
 import { href, type Lang } from '../i18n';
 
 interface Props {
@@ -64,8 +63,6 @@ const t = {
         text: 'Quando si spedisce solo ciò che è stato controllato, diminuiscono contestazioni, resi e nuove spedizioni.',
       },
     ],
-    statValue: `> ${STATS.wasteReductionPercent}%`,
-    statLabel: 'di scarti e rilavorazioni in meno con BrainTex',
     calcEyebrow: 'Fai due conti',
     calcTitle: 'Quanto pesa una pezza fermata prima della tintoria?',
     calcText:
@@ -134,8 +131,6 @@ const t = {
         text: 'When only inspected goods are shipped, disputes, returns and new shipments go down.',
       },
     ],
-    statValue: `> ${STATS.wasteReductionPercent}%`,
-    statLabel: 'less waste and rework with BrainTex',
     calcEyebrow: 'Do the maths',
     calcTitle: 'How much does a piece stopped before dyeing weigh?',
     calcText:
@@ -219,10 +214,6 @@ const calc = JSON.stringify({ ...FACTORS, locale: t.locale });
           ))
         }
       </ul>
-      <p class="stat" data-reveal>
-        <strong>{t.statValue}</strong>
-        <span>{t.statLabel}</span>
-      </p>
     </div>
   </section>
 
@@ -305,19 +296,6 @@ const calc = JSON.stringify({ ...FACTORS, locale: t.locale });
 
   .card p {
     color: var(--text-muted);
-  }
-
-  .stat {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.5rem 1rem;
-    margin: 2rem 0 0;
-  }
-
-  .stat strong {
-    font-size: clamp(2rem, 5vw, 3rem);
-    color: var(--green-300);
   }
 
   .calc {
