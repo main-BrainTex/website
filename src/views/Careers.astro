@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import { JOBS } from '../data/jobs';
 import { href, type Lang } from '../i18n';
 
 interface Props {
@@ -8,36 +9,131 @@ interface Props {
 }
 const { lang } = Astro.props;
 const applyLink = `${href('contact', lang)}?chi=candidato`;
+const agentLink = `${href('contact', lang)}?chi=agente`;
 
 const t = {
   it: {
     title: 'Lavora con noi',
     description:
-      'Lavora con BrainTex: intelligenza artificiale e visione artificiale per il tessile. Nessuna posizione aperta al momento, candidatura spontanea sempre benvenuta.',
+      'Lavora con BrainTex: intelligenza artificiale e visione artificiale per il tessile. Posizioni aperte, aree di lavoro, candidatura spontanea e collaborazione per agenti di commercio.',
     eyebrow: 'Lavora con noi',
     h1: 'Ti piace trovare quello che gli altri non vedono?',
-    lead: 'Al momento non ci sono posizioni aperte. Ma siamo sempre curiosi di conoscere persone in gamba: mandaci una candidatura spontanea.',
+    lead: 'Portiamo l’intelligenza artificiale sulle macchine tessili, ogni giorno, in fabbrica. Cerchiamo persone curiose, tecniche e non.',
     apply: 'Invia la candidatura',
-    whatEyebrow: 'Cosa facciamo',
-    whatTitle: 'Tecnologia vera, su macchine vere.',
-    what: [
+    jobsEyebrow: 'Posizioni aperte',
+    jobsTitle: 'Le ricerche in corso.',
+    jobsEmptyTitle: 'In questo momento non ci sono ricerche aperte.',
+    jobsEmpty:
+      'Le pubblichiamo qui appena partono. Nel frattempo la candidatura spontanea è sempre benvenuta: la leggiamo davvero e ti rispondiamo.',
+    jobApply: 'Candidati',
+    areasEyebrow: 'Dove potresti lavorare',
+    areasTitle: 'Tecnologia vera, su macchine vere. E un’azienda da far crescere.',
+    areasHint: 'Tocca un’area per vedere un esempio di attività. Sono esempi, non offerte di lavoro.',
+    groups: [
       {
-        title: 'Intelligenza artificiale',
-        text: 'Modelli che imparano un articolo nuovo in pochi minuti e trovano difetti che sfuggono all’occhio.',
+        name: 'Aree tecniche',
+        areas: [
+          {
+            title: 'Intelligenza artificiale',
+            text: 'Modelli che imparano un articolo nuovo in pochi minuti e trovano difetti che sfuggono all’occhio.',
+            role: 'Per esempio: machine learning engineer',
+            tasks: [
+              'Addestri e valuti i modelli sulle immagini che arrivano dalla produzione.',
+              'Usi i riscontri degli operatori per insegnare al sistema cosa conta davvero.',
+              'Porti in fabbrica quello che funziona, non solo quello che vince in laboratorio.',
+            ],
+          },
+          {
+            title: 'Hardware ed elettronica',
+            text: 'Unità di ispezione che lavorano tutti i giorni in fabbrica, accanto alle persone.',
+            role: 'Per esempio: progettista elettronico o meccatronico',
+            tasks: [
+              'Progetti e collaudi componenti che devono reggere polvere, vibrazioni e turni continui.',
+              'Curi il dialogo con la macchina: segnali, avvisi, fermo.',
+              'Rendi l’installazione più semplice e più rapida.',
+            ],
+          },
+          {
+            title: 'Software e prodotto',
+            text: 'Applicazioni che portano le informazioni giuste all’operatore, nel momento giusto.',
+            role: 'Per esempio: sviluppatore backend o frontend',
+            tasks: [
+              'Costruisci le schermate che l’operatore usa a bordo macchina.',
+              'Trasformi i dati di ispezione in report e cruscotti comprensibili.',
+              'Colleghi BrainTex ai gestionali di fabbrica.',
+            ],
+          },
+          {
+            title: 'Installazione e assistenza',
+            text: 'Montaggio, avviamento e affiancamento nei reparti, accanto a chi produce.',
+            role: 'Per esempio: tecnico di installazione',
+            tasks: [
+              'Monti e metti in funzione il sistema sulle macchine del cliente.',
+              'Affianchi gli operatori nei primi giorni e raccogli le loro osservazioni.',
+              'Segui il sistema nel tempo, in presenza e da remoto.',
+            ],
+          },
+        ],
       },
       {
-        title: 'Hardware ed elettronica',
-        text: 'Unità di ispezione che lavorano tutti i giorni in fabbrica, accanto alle persone.',
-      },
-      {
-        title: 'Software e prodotto',
-        text: 'Applicazioni che portano le informazioni giuste all’operatore, nel momento giusto.',
-      },
-      {
-        title: 'Rapporto con le aziende',
-        text: 'Ascolto della produzione, installazione e affiancamento nel distretto tessile.',
+        name: 'Aree business',
+        areas: [
+          {
+            title: 'Vendite e sviluppo commerciale',
+            text: 'Capire i problemi di qualità di un’azienda e mostrare come si risolvono.',
+            role: 'Per esempio: business developer',
+            tasks: [
+              'Incontri imprenditori, direttori di produzione e responsabili qualità.',
+              'Traduci le esigenze del reparto in una proposta chiara.',
+              'Apri nuovi distretti e nuovi settori.',
+            ],
+          },
+          {
+            title: 'Successo del cliente',
+            text: 'Fare in modo che il sistema venga usato bene e porti risultati.',
+            role: 'Per esempio: customer success o application specialist',
+            tasks: [
+              'Imposti con il cliente capitolati, classi di difetto e regole di allarme.',
+              'Leggi insieme a lui report e cruscotti per decidere cosa migliorare.',
+              'Riporti al team di prodotto quello che serve davvero in reparto.',
+            ],
+          },
+          {
+            title: 'Marketing e comunicazione',
+            text: 'Raccontare una tecnologia complessa con parole semplici.',
+            role: 'Per esempio: marketing specialist',
+            tasks: [
+              'Curi sito, LinkedIn, fiere ed eventi di settore.',
+              'Prepari i materiali per la rete commerciale.',
+              'Trasformi i risultati in storie che si capiscono al primo colpo.',
+            ],
+          },
+          {
+            title: 'Operazioni, amministrazione e bandi',
+            text: 'Tutto quello che permette agli altri di lavorare bene.',
+            role: 'Per esempio: operations o project manager',
+            tasks: [
+              'Segui acquisti, fornitori e pianificazione delle installazioni.',
+              'Gestisci progetti finanziati e rendicontazione.',
+              'Metti ordine nei processi di un’azienda che cresce.',
+            ],
+          },
+        ],
       },
     ],
+    agentsEyebrow: 'Agenti e rappresentanti',
+    agentsTitle: 'Conosci già le aziende tessili della tua zona?',
+    agents: [
+      'Cerchiamo agenti di commercio e rappresentanti che lavorano già con tessiture, tintorie, finissaggi, controlli qualità o confezionisti, in Italia e all’estero.',
+      'A chi porta BrainTex ai propri clienti diamo formazione sul prodotto, materiali e affiancamento tecnico nelle visite.',
+    ],
+    agentsList: [
+      'Le zone e i distretti che segui',
+      'I settori e il tipo di aziende che visiti',
+      'I mandati che hai già, per evitare sovrapposizioni',
+    ],
+    agentsListTitle: 'Nel modulo ti chiediamo:',
+    agentsCta: 'Proponiti come agente',
     howEyebrow: 'Come candidarti',
     howTitle: 'Due minuti, nessun formato da rispettare.',
     how: 'Compila il modulo di contatto scegliendo “Candidato”: raccontaci chi sei e cosa ti piacerebbe fare, e aggiungi il link al tuo profilo LinkedIn o al tuo portfolio.',
@@ -45,31 +141,125 @@ const t = {
   en: {
     title: 'Careers',
     description:
-      'Work at BrainTex: artificial intelligence and machine vision for textiles. No open positions right now, spontaneous applications always welcome.',
+      'Work at BrainTex: artificial intelligence and machine vision for textiles. Open positions, areas of work, spontaneous applications and opportunities for sales agents.',
     eyebrow: 'Careers',
     h1: 'Do you enjoy finding what others miss?',
-    lead: 'There are no open positions right now. But we are always curious to meet talented people: send us a spontaneous application.',
+    lead: 'We bring artificial intelligence onto textile machines, every day, on the factory floor. We look for curious people, technical or not.',
     apply: 'Apply now',
-    whatEyebrow: 'What we do',
-    whatTitle: 'Real technology, on real machines.',
-    what: [
+    jobsEyebrow: 'Open positions',
+    jobsTitle: 'What we are hiring for.',
+    jobsEmptyTitle: 'There are no open positions right now.',
+    jobsEmpty:
+      'We publish them here as soon as they open. Meanwhile, spontaneous applications are always welcome: we do read them and we reply.',
+    jobApply: 'Apply',
+    areasEyebrow: 'Where you could work',
+    areasTitle: 'Real technology, on real machines. And a company to grow.',
+    areasHint: 'Tap an area to see an example of the work. These are examples, not job offers.',
+    groups: [
       {
-        title: 'Artificial intelligence',
-        text: 'Models that learn a new article in minutes and find defects the eye misses.',
+        name: 'Technical areas',
+        areas: [
+          {
+            title: 'Artificial intelligence',
+            text: 'Models that learn a new article in minutes and find defects the eye misses.',
+            role: 'For example: machine learning engineer',
+            tasks: [
+              'You train and evaluate models on images coming from production.',
+              'You use operator feedback to teach the system what really matters.',
+              'You bring to the factory what works, not just what wins in the lab.',
+            ],
+          },
+          {
+            title: 'Hardware and electronics',
+            text: 'Inspection units working every day on the factory floor, alongside people.',
+            role: 'For example: electronics or mechatronics designer',
+            tasks: [
+              'You design and test components that must withstand dust, vibration and continuous shifts.',
+              'You look after the dialogue with the machine: signals, alerts, stop.',
+              'You make installation simpler and faster.',
+            ],
+          },
+          {
+            title: 'Software and product',
+            text: 'Applications that bring the right information to the operator at the right time.',
+            role: 'For example: backend or frontend developer',
+            tasks: [
+              'You build the screens operators use at the machine.',
+              'You turn inspection data into clear reports and dashboards.',
+              'You connect BrainTex to factory management systems.',
+            ],
+          },
+          {
+            title: 'Installation and service',
+            text: 'Fitting, start-up and on-site support, next to the people who produce.',
+            role: 'For example: installation technician',
+            tasks: [
+              'You fit and start up the system on the customer’s machines.',
+              'You support operators in the first days and collect their remarks.',
+              'You follow the system over time, on site and remotely.',
+            ],
+          },
+        ],
       },
       {
-        title: 'Hardware and electronics',
-        text: 'Inspection units working every day on the factory floor, alongside people.',
-      },
-      {
-        title: 'Software and product',
-        text: 'Applications that bring the right information to the operator at the right time.',
-      },
-      {
-        title: 'Working with companies',
-        text: 'Listening to production, installation and on-site support in the textile district.',
+        name: 'Business areas',
+        areas: [
+          {
+            title: 'Sales and business development',
+            text: 'Understanding a company’s quality problems and showing how to solve them.',
+            role: 'For example: business developer',
+            tasks: [
+              'You meet owners, production managers and quality managers.',
+              'You turn shop-floor needs into a clear proposal.',
+              'You open new districts and new sectors.',
+            ],
+          },
+          {
+            title: 'Customer success',
+            text: 'Making sure the system is used well and delivers results.',
+            role: 'For example: customer success or application specialist',
+            tasks: [
+              'You set up specifications, defect classes and alarm rules with the customer.',
+              'You read reports and dashboards together to decide what to improve.',
+              'You bring back to the product team what the shop floor really needs.',
+            ],
+          },
+          {
+            title: 'Marketing and communication',
+            text: 'Explaining a complex technology in simple words.',
+            role: 'For example: marketing specialist',
+            tasks: [
+              'You look after the website, LinkedIn, trade fairs and industry events.',
+              'You prepare materials for the sales network.',
+              'You turn results into stories people get at first glance.',
+            ],
+          },
+          {
+            title: 'Operations, administration and funding',
+            text: 'Everything that lets the others work well.',
+            role: 'For example: operations or project manager',
+            tasks: [
+              'You follow purchasing, suppliers and installation planning.',
+              'You manage funded projects and reporting.',
+              'You bring order to the processes of a growing company.',
+            ],
+          },
+        ],
       },
     ],
+    agentsEyebrow: 'Agents and representatives',
+    agentsTitle: 'Do you already know the textile companies in your area?',
+    agents: [
+      'We are looking for sales agents and representatives who already work with weaving mills, dye houses, finishers, quality-control services or garment makers, in Italy and abroad.',
+      'Those who bring BrainTex to their customers get product training, materials and technical support during visits.',
+    ],
+    agentsList: [
+      'The areas and districts you cover',
+      'The sectors and type of companies you visit',
+      'The mandates you already hold, to avoid overlaps',
+    ],
+    agentsListTitle: 'In the form we ask you:',
+    agentsCta: 'Apply as an agent',
     howEyebrow: 'How to apply',
     howTitle: 'Two minutes, no format required.',
     how: 'Fill in the contact form choosing “Candidate”: tell us who you are and what you would like to do, and add a link to your LinkedIn profile or portfolio.',
@@ -84,22 +274,94 @@ const t = {
     </div>
   </PageHero>
 
-  <section class="section">
+  <section id="posizioni" class="section">
     <div class="wrap">
       <div class="section-head" data-reveal>
-        <p class="eyebrow">{t.whatEyebrow}</p>
-        <h2>{t.whatTitle}</h2>
+        <p class="eyebrow">{t.jobsEyebrow}</p>
+        <h2>{t.jobsTitle}</h2>
       </div>
-      <ul class="grid grid--4 plain">
-        {
-          t.what.map((w, i) => (
-            <li class="card" data-reveal={String(i + 1)}>
-              <h3>{w.title}</h3>
-              <p>{w.text}</p>
-            </li>
-          ))
-        }
-      </ul>
+      {
+        JOBS.length > 0 ? (
+          <ul class="jobs plain">
+            {JOBS.map((job) => (
+              <li class="card job" id={job.id} data-reveal>
+                <div>
+                  <p class="job__meta">
+                    {job.area[lang]} · {job.place[lang]}
+                  </p>
+                  <h3>{job.title[lang]}</h3>
+                  <p>{job.summary[lang]}</p>
+                </div>
+                <a class="btn btn--ghost" href={applyLink}>
+                  {t.jobApply}
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="card job job--empty" data-reveal="1">
+            <div>
+              <h3>{t.jobsEmptyTitle}</h3>
+              <p>{t.jobsEmpty}</p>
+            </div>
+            <a class="btn" href={applyLink}>
+              {t.apply}
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section id="aree" class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.areasEyebrow}</p>
+        <h2>{t.areasTitle}</h2>
+        <p>{t.areasHint}</p>
+      </div>
+      {
+        t.groups.map((group) => (
+          <div class="group">
+            <h3 class="group__name">{group.name}</h3>
+            <div class="areas">
+              {group.areas.map((area) => (
+                <details class="card area">
+                  <summary>
+                    <span class="area__title">{area.title}</span>
+                    <span class="area__text">{area.text}</span>
+                  </summary>
+                  <div class="area__body">
+                    <p class="area__role">{area.role}</p>
+                    <ul>
+                      {area.tasks.map((task) => (
+                        <li>{task}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section id="agenti" class="section">
+    <div class="wrap split">
+      <div data-reveal>
+        <p class="eyebrow">{t.agentsEyebrow}</p>
+        <h2>{t.agentsTitle}</h2>
+      </div>
+      <div data-reveal="1">
+        {t.agents.map((p) => <p class="lead">{p}</p>)}
+        <p class="agents__list-title">{t.agentsListTitle}</p>
+        <ul class="agents__list">
+          {t.agentsList.map((item) => <li>{item}</li>)}
+        </ul>
+        <a class="btn btn--ghost" href={agentLink}>{t.agentsCta}</a>
+      </div>
     </div>
   </section>
 
@@ -116,3 +378,129 @@ const t = {
     </div>
   </section>
 </Base>
+
+<style>
+  .jobs {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .job {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+  }
+
+  .job > div {
+    flex: 1 1 22rem;
+  }
+
+  .job p {
+    margin-bottom: 0;
+  }
+
+  .job--empty {
+    border-style: dashed;
+  }
+
+  .job__meta {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
+  .group + .group {
+    margin-top: 2.5rem;
+  }
+
+  .group__name {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .areas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .area {
+    padding: 0;
+  }
+
+  .area summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.4rem 1rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .area summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .area summary::after {
+    content: '+';
+    grid-area: 1 / 2;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .area[open] summary::after {
+    content: '−';
+  }
+
+  .area summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .area__title {
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  .area__text {
+    grid-column: 1 / -1;
+    color: var(--text-muted);
+  }
+
+  .area__body {
+    padding: 0 1.5rem 1.5rem;
+  }
+
+  .area__role {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .area__body ul,
+  .agents__list {
+    margin: 0 0 1.5rem;
+    padding-left: 1.2rem;
+  }
+
+  .area__body ul {
+    margin-bottom: 0;
+  }
+
+  .area__body li + li,
+  .agents__list li + li {
+    margin-top: 0.4rem;
+  }
+
+  .agents__list-title {
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+</style>
