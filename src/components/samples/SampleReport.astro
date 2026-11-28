@@ -48,7 +48,7 @@ const t = {
     links: 'Per approfondire',
     linkImages: 'Immagini di ogni difetto',
     linkTwin: 'Gemello digitale: la pezza intera, metro per metro',
-    linksNote: 'Nel report vero sono collegamenti. Qui sono solo illustrati.',
+    linksNote: 'Qui aprono il gemello digitale di esempio, subito sotto il report.',
     comments: 'Commenti dell’operatore',
     comment: '“A 32 m allarme per trama mancante ripetuta: macchina fermata, causa rimossa, ripartenza regolare.”',
     insight: 'Indicazioni dell’AI',
@@ -94,7 +94,7 @@ const t = {
     links: 'To dig deeper',
     linkImages: 'Images of every defect',
     linkTwin: 'Digital twin: the whole piece, metre by metre',
-    linksNote: 'In the real report these are links. Here they are only illustrated.',
+    linksNote: 'Here they open the sample digital twin, right below the report.',
     comments: 'Operator comments',
     comment: '“At 32 m alarm for repeated missing weft: machine stopped, cause removed, regular restart.”',
     insight: 'AI insights',
@@ -195,7 +195,7 @@ const CH = { x: 40, base: 150, unit: 24, bw: 44, step: 82 };
               <td>{KIND_NAMES[d.kind][lang]}</td>
               <td>{d.size}</td>
               <td><span class={`pill pill--${d.outcome}`}>{t.outcomes[d.outcome]}</span></td>
-              <td><span class="fake-link">{t.image} {String(i + 1).padStart(2, '0')}</span></td>
+              <td><a href="#gemello" data-twin-goto={DEFECTS.indexOf(d)}>{t.image} {String(i + 1).padStart(2, '0')}</a></td>
             </tr>
           ))}
         </tbody>
@@ -245,8 +245,8 @@ const CH = { x: 40, base: 150, unit: 24, bw: 44, step: 82 };
     <section>
       <h4>{t.links}</h4>
       <ul class="links plain">
-        <li><span class="fake-link">{t.linkImages}</span></li>
-        <li><span class="fake-link">{t.linkTwin}</span></li>
+        <li><a href="#gemello" data-twin-goto={DEFECTS.indexOf(shownDefects[0])}>{t.linkImages}</a></li>
+        <li><a href="#gemello" data-twin-goto="-1">{t.linkTwin}</a></li>
       </ul>
       <p class="note">{t.linksNote}</p>
       <h4>{t.comments}</h4>
@@ -472,11 +472,6 @@ const CH = { x: 40, base: 150, unit: 24, bw: 44, step: 82 };
     background: var(--alarm);
     color: var(--bg-deep);
     font-weight: 700;
-  }
-
-  .fake-link {
-    color: var(--accent);
-    text-decoration: underline dotted;
   }
 
   .links {

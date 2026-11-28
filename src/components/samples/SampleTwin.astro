@@ -1,0 +1,539 @@
+---
+// Esempio di gemello digitale: la pezza del report di esempio, navigabile metro per metro.
+// Dati inventati (src/data/samples.ts). Coordinate del disegno: 1 unità = 1 cm, quindi la pezza è 6240 × 150.
+import { DEFECTS, KIND_NAMES, PIECE } from '../../data/samples';
+import type { Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const num = (value: number) =>
+  value.toLocaleString(lang === 'it' ? 'it-IT' : 'en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+const t = {
+  it: {
+    badge: 'Esempio con dati inventati',
+    kicker: 'Gemello digitale',
+    title: 'La pezza intera, metro per metro',
+    text: 'Scorri la pezza come se fosse davanti a te, anche settimane dopo la consegna. Tocca un difetto per vedere la sua scheda.',
+    viewAlt: 'Tratto di pezza ingrandito: scorre con il cursore o con i pulsanti.',
+    position: 'Posizione lungo la pezza, in metri',
+    prev: 'Difetto precedente',
+    next: 'Difetto successivo',
+    filtered: 'Mostra anche i difetti filtrati',
+    overview: 'Pezza intera',
+    card: 'Scheda del difetto',
+    none: 'Nessun difetto selezionato: scegline uno sulla pezza o usa i pulsanti.',
+    image: 'Immagine del difetto (illustrazione)',
+    fields: { kind: 'Classe', m: 'Posizione', cm: 'Dalla cimosa', size: 'Dimensione', outcome: 'Esito' },
+    outcomes: { filtered: 'Filtrato', shown: 'Mostrato', alarm: 'Allarme' },
+    defectAt: 'a',
+  },
+  en: {
+    badge: 'Example with invented data',
+    kicker: 'Digital twin',
+    title: 'The whole piece, metre by metre',
+    text: 'Scroll through the piece as if it were in front of you, even weeks after delivery. Tap a defect to see its record.',
+    viewAlt: 'Enlarged stretch of the piece: it moves with the slider or the buttons.',
+    position: 'Position along the piece, in metres',
+    prev: 'Previous defect',
+    next: 'Next defect',
+    filtered: 'Also show filtered defects',
+    overview: 'Whole piece',
+    card: 'Defect record',
+    none: 'No defect selected: pick one on the piece or use the buttons.',
+    image: 'Image of the defect (illustration)',
+    fields: { kind: 'Class', m: 'Position', cm: 'From selvedge', size: 'Size', outcome: 'Outcome' },
+    outcomes: { filtered: 'Filtered', shown: 'Shown', alarm: 'Alarm' },
+    defectAt: 'at',
+  },
+}[lang];
+
+const LENGTH = PIECE.length * 100;
+const VIEW = 400; // tratto visibile: 4 metri
+const metres = Array.from({ length: Math.floor(PIECE.length) + 1 }, (_, i) => i);
+
+// Dati per lo script (niente codice inline, per la CSP)
+const data = JSON.stringify(
+  DEFECTS.map((d) => ({
+    m: d.m,
+    kind: d.kind,
+    outcome: d.outcome,
+    values: [KIND_NAMES[d.kind][lang], `${num(d.m)} m`, `${d.cm} cm`, d.size ?? '–', t.outcomes[d.outcome]],
+  })),
+);
+---
+
+<article class="twin" id="gemello" data-twin data-defects={data} aria-label={`${t.kicker} – ${t.badge}`}>
+  <header class="twin__head">
+    <div>
+      <p class="twin__kicker">{t.kicker}</p>
+      <h3>{t.title}</h3>
+      <p class="twin__text">{t.text}</p>
+    </div>
+    <span class="sample-badge">{t.badge}</span>
+  </header>
+
+  <div class="twin__body">
+    <div class="twin__stage">
+      <svg class="twin__view" viewBox={`0 -14 ${VIEW} 164`} role="img" aria-label={t.viewAlt} data-view>
+        <defs>
+          <pattern id="twin-weave" width="6" height="6" patternUnits="userSpaceOnUse">
+            <rect class="weave-bg" width="6" height="6" />
+            <rect class="weave-warp" width="1.4" height="6" />
+            <rect class="weave-weft" width="6" height="2" />
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width={LENGTH} height={PIECE.width} fill="url(#twin-weave)" />
+        {metres.map((m) => (
+          <g>
+            <line class="ruler" x1={m * 100} y1="-4" x2={m * 100} y2="150" />
+            <text class="ruler-text" x={m * 100 + 3} y="-5">{m} m</text>
+          </g>
+        ))}
+        {DEFECTS.map((d, i) => (
+          <g
+            class={`twin-defect twin-defect--${d.outcome}`}
+            transform={`translate(${d.m * 100} ${d.cm})`}
+            data-twin-defect={i}
+            tabindex="0"
+            role="button"
+            aria-label={`${KIND_NAMES[d.kind][lang]} ${t.defectAt} ${num(d.m)} m`}
+          >
+            <circle class="hit" r="12" />
+            {d.outcome === 'alarm' ? <path class="shape" d="M0 -7l7 7l-7 7l-7 -7z" /> : <circle class="shape" r={d.outcome === 'filtered' ? 3 : 6} />}
+            <circle class="core" r="1.6" />
+          </g>
+        ))}
+      </svg>
+
+      <div class="twin__controls">
+        <button type="button" class="twin__btn" data-twin-prev aria-label={t.prev}>←</button>
+        <label class="visually-hidden" for={`twin-pos-${lang}`}>{t.position}</label>
+        <input id={`twin-pos-${lang}`} type="range" min="0" max={PIECE.length - VIEW / 100} step="0.1" value="0" data-twin-range />
+        <button type="button" class="twin__btn" data-twin-next aria-label={t.next}>→</button>
+        <output class="twin__pos" for={`twin-pos-${lang}`} data-twin-pos>0 m</output>
+      </div>
+
+      <p class="twin__label">{t.overview}</p>
+      <svg class="twin__mini" viewBox={`0 0 ${LENGTH} 150`} preserveAspectRatio="none" aria-hidden="true">
+        <rect class="mini-bg" width={LENGTH} height="150" />
+        {DEFECTS.map((d) => (
+          <rect class={`mini-mark mini-mark--${d.outcome}`} x={d.m * 100 - 9} y={d.cm - 22} width="18" height="44" />
+        ))}
+        <rect class="mini-window" x="0" y="0" width={VIEW} height="150" data-twin-window />
+      </svg>
+
+      <label class="twin__toggle">
+        <input type="checkbox" data-twin-filtered />
+        {t.filtered}
+      </label>
+    </div>
+
+    <aside class="twin__card" aria-live="polite">
+      <h4>{t.card}</h4>
+      <p class="twin__none" data-twin-none>{t.none}</p>
+      <div data-twin-detail hidden>
+        <svg class="twin__photo" viewBox="0 0 60 60" role="img" aria-label={t.image}>
+          <rect width="60" height="60" fill="url(#twin-weave)" />
+          <ellipse class="photo photo--stain" cx="30" cy="30" rx="13" ry="9" />
+          <rect class="photo photo--pull" x="28.5" y="8" width="3" height="44" rx="1.5" />
+          <circle class="photo photo--knot" cx="30" cy="30" r="5" />
+          <rect class="photo photo--weft" x="4" y="28" width="52" height="4" />
+          <circle class="photo photo--hole" cx="30" cy="30" r="7" />
+        </svg>
+        <dl class="twin__fields">
+          {Object.values(t.fields).map((label, i) => (
+            <div>
+              <dt>{label}</dt>
+              <dd data-twin-value={i}></dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </aside>
+  </div>
+</article>
+
+<style>
+  .twin {
+    --alarm: #ffc857;
+    --neutral: #8fa9bd;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding: clamp(1.1rem, 3vw, 2rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-deep);
+    scroll-margin-top: 6rem;
+  }
+
+  .twin__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: start;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .twin__kicker {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .twin__text {
+    margin: 0.4rem 0 0;
+    max-width: 44rem;
+    color: var(--text-muted);
+  }
+
+  .sample-badge {
+    padding: 0.25rem 0.7rem;
+    border: 1px dashed var(--text-muted);
+    border-radius: 999px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .twin__body {
+    display: grid;
+    grid-template-columns: minmax(0, 2.4fr) minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 52rem) {
+    .twin__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .twin__view {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+  }
+
+  .weave-bg {
+    fill: #0b4f7c;
+  }
+
+  .weave-warp {
+    fill: rgb(87 240 254 / 0.16);
+  }
+
+  .weave-weft {
+    fill: rgb(0 23 42 / 0.35);
+  }
+
+  .ruler {
+    stroke: rgb(234 244 250 / 0.28);
+    stroke-width: 0.6;
+  }
+
+  .ruler-text {
+    fill: var(--text-muted);
+    font-size: 7px;
+  }
+
+  .twin-defect {
+    cursor: pointer;
+    outline: none;
+  }
+
+  .twin-defect .hit {
+    fill: transparent;
+  }
+
+  .twin-defect .shape {
+    fill: none;
+    stroke: var(--cyan-200);
+    stroke-width: 1.6;
+  }
+
+  .twin-defect .core {
+    fill: var(--bg-deep);
+  }
+
+  .twin-defect--alarm .shape {
+    stroke: var(--alarm);
+  }
+
+  .twin-defect--filtered {
+    display: none;
+  }
+
+  .twin.show-filtered .twin-defect--filtered {
+    display: inline;
+  }
+
+  .twin-defect--filtered .shape {
+    stroke: var(--neutral);
+    stroke-width: 1;
+  }
+
+  .twin-defect:focus-visible .hit,
+  .twin-defect.is-selected .hit {
+    fill: rgb(234 244 250 / 0.14);
+    stroke: var(--text);
+    stroke-width: 1;
+  }
+
+  .twin__controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+  }
+
+  .twin__controls input {
+    flex: 1;
+    min-width: 0;
+    accent-color: var(--cyan-200);
+  }
+
+  .twin__btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .twin__btn:hover {
+    border-color: var(--accent);
+  }
+
+  .twin__pos {
+    min-width: 4.5rem;
+    text-align: right;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .twin__label {
+    margin: 1rem 0 0.3rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .twin__mini {
+    display: block;
+    width: 100%;
+    height: 1.6rem;
+    border-radius: 4px;
+  }
+
+  .mini-bg {
+    fill: rgb(19 115 168 / 0.35);
+  }
+
+  .mini-mark {
+    fill: var(--cyan-200);
+  }
+
+  .mini-mark--alarm {
+    fill: var(--alarm);
+  }
+
+  .mini-mark--filtered {
+    display: none;
+    fill: var(--neutral);
+  }
+
+  .twin.show-filtered .mini-mark--filtered {
+    display: inline;
+  }
+
+  .mini-window {
+    fill: rgb(234 244 250 / 0.18);
+    stroke: var(--text);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .twin__toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.9rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .twin__toggle input {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--cyan-200);
+  }
+
+  .twin__card {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    align-self: start;
+  }
+
+  h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .twin__none {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .twin__photo {
+    display: block;
+    width: 100%;
+    max-width: 11rem;
+    height: auto;
+    margin-bottom: 0.9rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .photo {
+    display: none;
+    fill: rgb(0 15 30 / 0.85);
+  }
+
+  .photo--pull,
+  .photo--knot {
+    fill: rgb(190 235 255 / 0.9);
+  }
+
+  .twin[data-kind='stain'] .photo--stain,
+  .twin[data-kind='pull'] .photo--pull,
+  .twin[data-kind='knot'] .photo--knot,
+  .twin[data-kind='weft'] .photo--weft,
+  .twin[data-kind='hole'] .photo--hole {
+    display: inline;
+  }
+
+  .twin__fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+    gap: 0.6rem 1rem;
+    margin: 0;
+  }
+
+  .twin__fields dt {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .twin__fields dd {
+    margin: 0;
+    font-weight: 700;
+  }
+</style>
+
+<script>
+  interface TwinDefect {
+    m: number;
+    kind: string;
+    outcome: string;
+    values: string[];
+  }
+
+  const VIEW = 400; // centimetri visibili
+
+  const root = document.querySelector<HTMLElement>('[data-twin]');
+  if (root) {
+    const defects = JSON.parse(root.dataset.defects ?? '[]') as TwinDefect[];
+    const view = root.querySelector<SVGSVGElement>('[data-view]')!;
+    const range = root.querySelector<HTMLInputElement>('[data-twin-range]')!;
+    const posEl = root.querySelector<HTMLElement>('[data-twin-pos]')!;
+    const windowEl = root.querySelector<SVGRectElement>('[data-twin-window]')!;
+    const filteredBox = root.querySelector<HTMLInputElement>('[data-twin-filtered]')!;
+    const detail = root.querySelector<HTMLElement>('[data-twin-detail]')!;
+    const none = root.querySelector<HTMLElement>('[data-twin-none]')!;
+    const marks = [...root.querySelectorAll<SVGGElement>('[data-twin-defect]')];
+    const locale = document.documentElement.lang === 'en' ? 'en-GB' : 'it-IT';
+    const max = Number(range.max);
+    let selected = -1;
+
+    // Sposta il tratto visibile: basta cambiare il riquadro del disegno.
+    const moveTo = (metres: number) => {
+      const m = Math.max(0, Math.min(max, metres));
+      range.value = String(m);
+      view.setAttribute('viewBox', `${m * 100} -14 ${VIEW} 164`);
+      windowEl.setAttribute('x', String(m * 100));
+      posEl.textContent = `${m.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 })} m`;
+    };
+
+    const select = (index: number) => {
+      const d = defects[index];
+      if (!d) return;
+      if (d.outcome === 'filtered' && !filteredBox.checked) {
+        filteredBox.checked = true;
+        root.classList.add('show-filtered');
+      }
+      selected = index;
+      marks.forEach((mark, i) => mark.classList.toggle('is-selected', i === index));
+      root.dataset.kind = d.kind;
+      d.values.forEach((value, i) => {
+        root.querySelector<HTMLElement>(`[data-twin-value="${i}"]`)!.textContent = value;
+      });
+      none.hidden = true;
+      detail.hidden = false;
+      moveTo(d.m - VIEW / 200);
+    };
+
+    // Difetto precedente o successivo tra quelli visibili (i filtrati solo se richiesti).
+    const step = (direction: 1 | -1) => {
+      const centre = Number(range.value) + VIEW / 200;
+      const visible = defects
+        .map((d, i) => ({ ...d, i }))
+        .filter((d) => filteredBox.checked || d.outcome !== 'filtered');
+      const from = selected >= 0 ? defects[selected].m : centre;
+      const target =
+        direction === 1 ? visible.find((d) => d.m > from + 0.01) : visible.reverse().find((d) => d.m < from - 0.01);
+      if (target) select(target.i);
+    };
+
+    range.addEventListener('input', () => moveTo(Number(range.value)));
+    root.querySelector('[data-twin-prev]')!.addEventListener('click', () => step(-1));
+    root.querySelector('[data-twin-next]')!.addEventListener('click', () => step(1));
+    filteredBox.addEventListener('change', () => root.classList.toggle('show-filtered', filteredBox.checked));
+    marks.forEach((mark, i) => {
+      mark.addEventListener('click', () => select(i));
+      mark.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          select(i);
+        }
+      });
+    });
+
+    // Dal report: i rimandi "foto" e "gemello digitale" portano qui, sul difetto giusto.
+    document.querySelectorAll<HTMLAnchorElement>('[data-twin-goto]').forEach((link) =>
+      link.addEventListener('click', () => {
+        const index = Number(link.dataset.twinGoto);
+        if (index >= 0) select(index);
+      }),
+    );
+
+    moveTo(0);
+  }
+</script>
