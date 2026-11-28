@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
 import CtaBand from '../components/CtaBand.astro';
+import FabricView from '../components/FabricView.astro';
 import SampleDashboard from '../components/samples/SampleDashboard.astro';
 import SampleReport from '../components/samples/SampleReport.astro';
 import SampleTwin from '../components/samples/SampleTwin.astro';
@@ -30,7 +31,6 @@ const t = {
       { title: 'Cosa vede il sistema', text: 'Lo stesso tratto, guardato da vicino mentre scorre.' },
       { title: 'Cosa capisce il sistema', text: 'Il difetto riconosciuto, localizzato e contornato.' },
     ],
-    imagePlaceholder: 'Immagine in arrivo',
     featEyebrow: 'Le caratteristiche',
     featTitle: 'Pensato per la produzione vera.',
     features: [
@@ -177,7 +177,6 @@ const t = {
       { title: 'What the system sees', text: 'The same stretch, looked at closely as it moves.' },
       { title: 'What the system understands', text: 'The defect recognised, located and outlined.' },
     ],
-    imagePlaceholder: 'Image coming soon',
     featEyebrow: 'Features',
     featTitle: 'Built for real production.',
     features: [
@@ -323,7 +322,7 @@ const t = {
         {
           t.views.map((v, i) => (
             <li data-reveal={String(i + 1)}>
-              <div class="placeholder views__img">{t.imagePlaceholder}</div>
+              <FabricView lang={lang} kind={(['human', 'system', 'understood'] as const)[i]} />
               <h3>{v.title}</h3>
               <p class="muted">{v.text}</p>
             </li>
@@ -559,10 +558,5 @@ const t = {
     margin: 0;
     padding: 0;
     list-style: none;
-  }
-
-  .views__img {
-    aspect-ratio: 4 / 3;
-    margin-bottom: 1.25rem;
   }
 </style>
