@@ -15,7 +15,7 @@ export type NodeKey =
   | 'qualita'
   | 'uffici'
   | 'magazzino'
-  | 'cliente'
+  | 'confezionista'
   | 'ambiente';
 
 export interface FactoryNode {
@@ -36,7 +36,7 @@ export const NODES: FactoryNode[] = [
   { key: 'qualita', kind: 'department', x: 34, y: 12, name: tx('Qualità', 'Quality') },
   { key: 'uffici', kind: 'department', x: 56, y: 12, name: tx('Uffici e direzione', 'Offices and management') },
   { key: 'magazzino', kind: 'department', x: 78, y: 12, name: tx('Magazzino e spedizioni', 'Warehouse and shipping') },
-  { key: 'cliente', kind: 'department', x: 89, y: 40, name: tx('Cliente', 'Customer') },
+  { key: 'confezionista', kind: 'department', x: 89, y: 40, name: tx('Confezionista', 'Garment maker') },
   { key: 'ambiente', kind: 'department', x: 42, y: 55, name: tx('Ambiente', 'Environment') },
 ];
 
@@ -64,12 +64,12 @@ export const INDICATORS: Indicator[] = [
   { key: 'macchine', name: tx('Salute delle macchine', 'Machine health'), hint: tx('Guasti visti in anticipo, manutenzione programmata', 'Faults seen early, planned maintenance') },
   { key: 'processo', name: tx('Conoscenza del processo', 'Process knowledge'), hint: tx('Quanto l’azienda sa dove e perché nascono i difetti', 'How well the company knows where and why defects arise') },
   { key: 'serenita', name: tx('Serenità del lavoro', 'Peace of mind at work'), hint: tx('Meno fatica, meno pressione, esperienza condivisa', 'Less strain, less pressure, shared experience') },
-  { key: 'fiducia', name: tx('Fiducia di cliente e filiera', 'Customer and supply chain trust'), hint: tx('Contestazioni risolte con i dati, fornitori e confezionisti allineati', 'Disputes settled with data, suppliers and garment makers aligned') },
+  { key: 'fiducia', name: tx('Fiducia della filiera', 'Supply chain trust'), hint: tx('Contestazioni risolte con i dati, confezionisti che si fidano del fornitore', 'Disputes settled with data, garment makers who trust their supplier') },
   { key: 'ambiente', name: tx('Impronta ambientale', 'Environmental footprint'), hint: tx('Tessuto, acqua, energia e prodotti chimici sprecati', 'Fabric, water, energy and chemicals wasted'), lowerIsBetter: true },
   { key: 'norme', name: tx('Prontezza normativa', 'Regulatory readiness'), hint: tx('Dati pronti per passaporto digitale, audit e certificazioni', 'Data ready for digital passports, audits and certifications') },
 ];
 
-export type DefectOutcome = 'fonte' | 'controllo' | 'cliente';
+export type DefectOutcome = 'fonte' | 'controllo' | 'confezionista';
 
 export interface FactoryEvent {
   key: string;
@@ -132,7 +132,7 @@ export const EVENTS: FactoryEvent[] = [
       en: ['The data shows the increase', 'It is linked to the parameter', 'Corrected before it becomes waste'],
     },
     indicators: ['processo', 'qualita'],
-    defect: { without: 'cliente', with: 'fonte' },
+    defect: { without: 'confezionista', with: 'fonte' },
     meters: 200,
   }),
   ev({
@@ -188,13 +188,13 @@ export const EVENTS: FactoryEvent[] = [
       en: ['The system learns the article in less than 2 minutes', 'The same attention from the first metre'],
     },
     indicators: ['qualita'],
-    defect: { without: 'cliente', with: 'controllo' },
+    defect: { without: 'confezionista', with: 'controllo' },
   }),
   ev({
     key: 'turno',
     phase: tx('Controllo finito', 'Final inspection'),
     origin: 'controllo',
-    targets: ['qualita', 'cliente'],
+    targets: ['qualita', 'confezionista'],
     title: tx('Fine turno', 'End of shift'),
     action: tx('Fine turno', 'End of shift'),
     without: {
@@ -206,7 +206,7 @@ export const EVENTS: FactoryEvent[] = [
       en: ['Constant attention', 'The operator confirms or dismisses each alert'],
     },
     indicators: ['serenita', 'qualita'],
-    defect: { without: 'cliente', with: 'controllo' },
+    defect: { without: 'confezionista', with: 'controllo' },
   }),
   ev({
     key: 'operatore',
@@ -229,7 +229,7 @@ export const EVENTS: FactoryEvent[] = [
     key: 'urgente',
     phase: tx('Controllo finito', 'Final inspection'),
     origin: 'controllo',
-    targets: ['magazzino', 'cliente'],
+    targets: ['magazzino', 'confezionista'],
     title: tx('Ordine urgente, picco di produzione', 'Rush order, production peak'),
     action: tx('Ordine urgente', 'Rush order'),
     without: {
@@ -246,7 +246,7 @@ export const EVENTS: FactoryEvent[] = [
   ev({
     key: 'confezione',
     phase: tx('Confezione', 'Garment making'),
-    origin: 'cliente',
+    origin: 'confezionista',
     targets: ['uffici'],
     title: tx('Il confezionista taglia il tessuto', 'The garment maker cuts the fabric'),
     action: tx('Il confezionista taglia', 'The garment maker cuts'),
@@ -255,20 +255,37 @@ export const EVENTS: FactoryEvent[] = [
       en: ['Defects found at cutting', 'Pieces scrapped', 'A dispute'],
     },
     with: {
-      it: ['La mappa dei difetti viaggia con la pezza', 'Piazzamento che evita i difetti', 'Tessuto “pronto ago”'],
-      en: ['The defect map travels with the piece', 'Lay plans that avoid defects', 'Sewing-ready fabric'],
+      it: ['La mappa dei difetti viaggia con la pezza', 'Il taglio automatico piazza i capi evitando i difetti', 'Più resa del tessuto, meno scarti di taglio'],
+      en: ['The defect map travels with the piece', 'Automatic cutting places the parts around the defects', 'Higher fabric yield, less cutting waste'],
     },
-    indicators: ['fiducia'],
-    defect: { without: 'cliente', with: 'controllo' },
+    indicators: ['fiducia', 'ambiente'],
+    defect: { without: 'confezionista', with: 'controllo' },
     meters: 5,
     returned: true,
   }),
   ev({
+    key: 'fornitore',
+    phase: tx('Confezione', 'Garment making'),
+    origin: 'confezionista',
+    targets: ['uffici', 'magazzino'],
+    title: tx('Il confezionista decide a chi affidare la prossima stagione', 'The garment maker decides who gets next season’s work'),
+    action: tx('Il confezionista sceglie i fornitori', 'The garment maker picks suppliers'),
+    without: {
+      it: ['Tutti i fornitori sembrano uguali', 'Il lavoro viene diviso tra tanti, per prudenza', 'Ordini piccoli e incerti'],
+      en: ['All suppliers look the same', 'Work is split among many, to be safe', 'Small, uncertain orders'],
+    },
+    with: {
+      it: ['Ogni consegna arriva con dati di qualità confrontabili', 'La fiducia nel fornitore cresce', 'Più produzione concentrata su chi è affidabile'],
+      en: ['Every delivery comes with comparable quality data', 'Trust in the supplier grows', 'More production concentrated on the reliable one'],
+    },
+    indicators: ['fiducia', 'consegne'],
+  }),
+  ev({
     key: 'contestazione',
     phase: tx('Commerciale', 'Sales'),
-    origin: 'cliente',
+    origin: 'confezionista',
     targets: ['uffici'],
-    title: tx('Il cliente contesta una pezza, settimane dopo', 'The customer disputes a piece, weeks later'),
+    title: tx('Il confezionista contesta una pezza, settimane dopo', 'The garment maker disputes a piece, weeks later'),
     action: tx('Arriva una contestazione', 'A dispute arrives'),
     without: {
       it: ['Nessun dato', 'Parola contro parola', 'Sconto o reso'],
@@ -285,7 +302,7 @@ export const EVENTS: FactoryEvent[] = [
     key: 'preventivo',
     phase: tx('Commerciale', 'Sales'),
     origin: 'uffici',
-    targets: ['cliente'],
+    targets: ['confezionista'],
     title: tx('Si prepara un preventivo per un nuovo articolo', 'A quote is prepared for a new article'),
     action: tx('Prepara un preventivo', 'Prepare a quote'),
     without: { it: ['Stima a sensazione di scarti e tempi'], en: ['A gut-feeling estimate of waste and lead times'] },
@@ -312,9 +329,9 @@ export const EVENTS: FactoryEvent[] = [
   ev({
     key: 'passaporto',
     phase: tx('Sostenibilità', 'Sustainability'),
-    origin: 'cliente',
+    origin: 'confezionista',
     targets: ['uffici', 'ambiente'],
-    title: tx('Un cliente o un ente chiede dati per il passaporto digitale o un audit', 'A customer or body asks for digital passport or audit data'),
+    title: tx('Un confezionista, un brand o un ente chiede dati per il passaporto digitale o un audit', 'A garment maker, brand or body asks for digital passport or audit data'),
     action: tx('Richiesta di dati', 'Data request'),
     without: { it: ['Dati sparsi o cartacei', 'Settimane di lavoro'], en: ['Scattered or paper data', 'Weeks of work'] },
     with: {
@@ -390,10 +407,10 @@ export const EVENTS: FactoryEvent[] = [
   ev({
     key: 'visita',
     phase: tx('Commerciale', 'Sales'),
-    origin: 'cliente',
+    origin: 'confezionista',
     targets: ['controllo'],
-    title: tx('Un cliente visita lo stabilimento', 'A customer visits the mill'),
-    action: tx('Visita di un cliente', 'Customer visit'),
+    title: tx('Un confezionista visita lo stabilimento', 'A garment maker visits the mill'),
+    action: tx('Visita di un confezionista', 'Garment maker visit'),
     without: { it: ['La qualità si racconta a parole'], en: ['Quality is described in words'] },
     with: {
       it: ['Si mostrano in diretta il controllo del 100%', 'E il report delle sue pezze'],
@@ -405,16 +422,16 @@ export const EVENTS: FactoryEvent[] = [
     key: 'approvazione',
     phase: tx('Commerciale', 'Sales'),
     origin: 'magazzino',
-    targets: ['cliente'],
-    title: tx('Il cliente vuole vedere la merce prima della spedizione', 'The customer wants to see the goods before shipping'),
+    targets: ['confezionista'],
+    title: tx('Il confezionista vuole vedere la merce prima della spedizione', 'The garment maker wants to see the goods before shipping'),
     action: tx('Spedizione in arrivo', 'Shipment pending'),
     without: {
-      it: ['Si spedisce con il report cartaceo', 'Il cliente scopre a destinazione ciò che non accetta', 'Reso e nuova spedizione'],
-      en: ['Shipped with a paper report', 'The customer finds what they reject on arrival', 'Return and new shipment'],
+      it: ['Si spedisce con il report cartaceo', 'Il confezionista scopre a destinazione ciò che non accetta', 'Reso e nuova spedizione'],
+      en: ['Shipped with a paper report', 'The garment maker finds what they reject on arrival', 'Return and new shipment'],
     },
     with: {
-      it: ['Report e immagini inviati prima', 'Il cliente approva o chiede la bonifica', 'Si spedisce solo ciò che è approvato'],
-      en: ['Report and images sent beforehand', 'The customer approves or asks for an allowance', 'Only approved goods ship'],
+      it: ['Report e immagini inviati prima', 'Il confezionista approva o chiede la bonifica', 'Si spedisce solo ciò che è approvato'],
+      en: ['Report and images sent beforehand', 'The garment maker approves or asks for an allowance', 'Only approved goods ship'],
     },
     indicators: ['fiducia', 'ambiente'],
     returned: true,
@@ -446,11 +463,11 @@ export interface RoleLens {
 }
 
 export const LENSES: RoleLens[] = [
-  { key: 'direzione', name: tx('Titolare e direzione', 'Owners and management'), events: ['riunione', 'contestazione', 'preventivo'], indicators: ['fiducia', 'processo', 'consegne'] },
+  { key: 'direzione', name: tx('Titolare e direzione', 'Owners and management'), events: ['riunione', 'contestazione', 'fornitore'], indicators: ['fiducia', 'processo', 'consegne'] },
   { key: 'qualita', name: tx('Qualità', 'Quality'), events: ['turno', 'articolo', 'contestazione', 'filato'], indicators: ['qualita', 'processo'] },
   { key: 'produzione', name: tx('Produzione', 'Production'), events: ['ago', 'deriva', 'urgente'], indicators: ['consegne'] },
   { key: 'manutenzione', name: tx('Manutenzione', 'Maintenance'), events: ['ago', 'deriva'], indicators: ['macchine'] },
-  { key: 'commerciale', name: tx('Commerciale', 'Sales'), events: ['contestazione', 'preventivo', 'confezione'], indicators: ['fiducia', 'consegne'] },
+  { key: 'commerciale', name: tx('Commerciale', 'Sales'), events: ['contestazione', 'preventivo', 'confezione', 'fornitore'], indicators: ['fiducia', 'consegne'] },
   { key: 'sostenibilita', name: tx('Sostenibilità', 'Sustainability'), events: ['tintoria', 'passaporto', 'progettazione'], indicators: ['ambiente', 'norme'] },
   { key: 'operatore', name: tx('Operatore', 'Operator'), events: ['turno', 'operatore'], indicators: ['serenita'] },
 ];
@@ -494,12 +511,12 @@ export const TOUR: { focus: NodeKey | null; events: string[]; title: T; text: T 
     ),
   },
   {
-    focus: 'cliente',
-    events: ['contestazione'],
-    title: tx('Il cliente: una contestazione settimane dopo', 'The customer: a dispute weeks later'),
+    focus: 'confezionista',
+    events: ['confezione', 'fornitore'],
+    title: tx('Il confezionista: taglio, resa e fiducia', 'The garment maker: cutting, yield and trust'),
     text: tx(
-      'Senza dati è parola contro parola. Con il report di ogni pezza la risposta arriva in pochi minuti.',
-      'Without data it is your word against theirs. With a report for every piece, the answer comes within minutes.',
+      'La filiera è fatta di tante aziende. Chi confeziona taglia il tessuto: con la mappa dei difetti il taglio automatico li evita, la resa sale e gli scarti scendono. E una contestazione non è più parola contro parola: chi riceve dati affidabili concentra il lavoro su quel fornitore.',
+      'The supply chain is made of many companies. The garment maker cuts the fabric: with the defect map, automatic cutting avoids defects, yield goes up and waste goes down. And a dispute is no longer your word against theirs: those who receive reliable data concentrate their work on that supplier.',
     ),
   },
 ];

@@ -85,7 +85,7 @@ export class FactorySim extends EventTarget {
     const outcome = event.defect?.[mode];
     if (outcome === 'fonte') day.stoppedAtSource += 1;
     if (outcome === 'controllo') day.stoppedAtInspection += 1;
-    if (outcome === 'cliente') day.reachedCustomer += 1;
+    if (outcome === 'confezionista') day.reachedCustomer += 1;
     if (event.meters) day.meters += event.meters;
     if (!good) {
       if (event.scrap) day.scrap += 1;

@@ -20,7 +20,7 @@ const t = {
     without: 'Senza BrainTex',
     with: 'Con BrainTex',
     mapLabel: 'Mappa della filiera: fase evidenziata e percorso del difetto',
-    stations: ['Tessitura', 'Greggio e finissaggio', 'Controllo finito', 'Cliente'],
+    stations: ['Tessitura', 'Greggio e finissaggio', 'Controllo finito', 'Confezionista'],
     events: [
       {
         phase: 'Tessitura',
@@ -63,13 +63,13 @@ const t = {
         ],
       },
       {
-        phase: 'Cliente',
-        title: 'Settimane dopo, il cliente contesta una pezza.',
+        phase: 'Confezionista',
+        title: 'Settimane dopo, il confezionista contesta una pezza.',
         without: ['Nessun dato da mostrare', 'Parola contro parola', 'Sconto o reso'],
         with: [
           'Il report ha metro, tipo e immagine di ogni difetto',
           'Risposta in pochi minuti',
-          'La fiducia del cliente cresce',
+          'La fiducia del confezionista cresce',
         ],
       },
     ],
@@ -85,7 +85,7 @@ const t = {
     without: 'Without BrainTex',
     with: 'With BrainTex',
     mapLabel: 'Supply chain map: highlighted stage and path of the defect',
-    stations: ['Weaving', 'Greige and finishing', 'Final inspection', 'Customer'],
+    stations: ['Weaving', 'Greige and finishing', 'Final inspection', 'Garment maker'],
     events: [
       {
         phase: 'Weaving',
@@ -120,13 +120,13 @@ const t = {
         ],
       },
       {
-        phase: 'Customer',
-        title: 'Weeks later, the customer disputes a piece.',
+        phase: 'Garment maker',
+        title: 'Weeks later, the garment maker disputes a piece.',
         without: ['No data to show', 'Your word against theirs', 'Discount or return'],
         with: [
           'The report shows metre, type and image of each defect',
           'An answer within minutes',
-          'Customer trust grows',
+          'The garment maker’s trust grows',
         ],
       },
     ],
@@ -482,7 +482,7 @@ const t = {
     const last = nodes.length - 1;
     let active = 0;
 
-    // Senza BrainTex il difetto prosegue fino al cliente; con BrainTex si ferma dove nasce.
+    // Senza BrainTex il difetto prosegue fino al confezionista; con BrainTex si ferma dove nasce.
     const render = () => {
       const without = root.dataset.mode === 'without';
       const stop = without ? last : active;
