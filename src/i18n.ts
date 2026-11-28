@@ -15,6 +15,7 @@ export const ROUTES = {
   press: { it: '/parlano-di-noi', en: '/en/press' },
   contact: { it: '/contatti', en: '/en/contact' },
   faq: { it: '/domande-frequenti', en: '/en/faq' },
+  glossary: { it: '/glossario-tessile', en: '/en/textile-glossary' },
   privacy: { it: '/privacypolicy-braintex', en: '/en/privacy-policy' },
   cookies: { it: '/cookie-policy', en: '/en/cookie-policy' },
 } as const satisfies Record<string, Record<Lang, string>>;
@@ -55,6 +56,7 @@ export const UI = {
       press: 'Parlano di noi',
       contact: 'Contatti',
       faq: 'Domande frequenti',
+      glossary: 'Glossario tessile',
     },
     logoPlaceholder: 'Segnaposto logo: in attesa del file vettoriale ufficiale',
     footer: {
@@ -89,6 +91,7 @@ export const UI = {
       press: 'Press',
       contact: 'Contact',
       faq: 'FAQ',
+      glossary: 'Textile glossary',
     },
     logoPlaceholder: 'Logo placeholder: awaiting the official vector file',
     footer: {

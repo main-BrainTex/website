@@ -1,0 +1,349 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { DEFECT_PHASES, DEFECTS, TERM_GROUPS, TERMS, type DefectPhase, type TermGroup } from '../data/glossary';
+import { canonical, href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const t = {
+  it: {
+    title: 'Glossario tessile e guida ai difetti del tessuto',
+    description:
+      'I termini del tessile, anche quelli di reparto, e i difetti più comuni del tessuto: come si riconoscono e da dove nascono. Dalla tessitura alla confezione.',
+    eyebrow: 'Glossario tessile',
+    h1: 'Le parole del tessile, anche quelle di reparto.',
+    lead: 'Ogni mestiere ha la sua lingua. Qui trovi i difetti più comuni del tessuto e i termini che si sentono ogni giorno tra telai, tintorie, specole e tavoli di taglio.',
+    search: 'Cerca un termine o un difetto',
+    searchPlaceholder: 'Es. cimosa, rameuse, trama mancante…',
+    noResults: 'Nessun risultato. Forse la chiamate in un altro modo? Diccelo qui sotto.',
+    defectsEyebrow: 'Guida ai difetti',
+    defectsTitle: 'I difetti più comuni, fase per fase.',
+    defectsText: 'Come si riconoscono e da dove nascono di solito. Tocca un difetto per aprirlo.',
+    aka: 'Detto anche',
+    look: 'Come si riconosce',
+    cause: 'Da dove nasce',
+    termsEyebrow: 'Glossario',
+    termsTitle: 'Dalla rocca al piazzamento.',
+    feedbackTitle: 'Manca una parola? Nel tuo reparto la chiamate in un altro modo?',
+    feedbackText:
+      'Faccelo sapere. Questo glossario cresce con chi lo usa, come tutto quello che facciamo: ogni suggerimento viene letto e preso in considerazione.',
+    feedbackCta: 'Suggerisci una parola',
+  },
+  en: {
+    title: 'Textile glossary and guide to fabric defects',
+    description:
+      'Textile terms, shop-floor jargon included, and the most common fabric defects: how to recognise them and where they come from. From weaving to garment making.',
+    eyebrow: 'Textile glossary',
+    h1: 'The words of textiles, shop-floor jargon included.',
+    lead: 'Every trade has its own language. Here you will find the most common fabric defects and the terms heard every day among looms, dye houses, inspection tables and cutting tables.',
+    search: 'Search for a term or a defect',
+    searchPlaceholder: 'E.g. selvedge, stenter, mispick…',
+    noResults: 'No results. Maybe you call it something else? Let us know below.',
+    defectsEyebrow: 'Defect guide',
+    defectsTitle: 'The most common defects, stage by stage.',
+    defectsText: 'How to recognise them and where they usually come from. Tap a defect to open it.',
+    aka: 'Also called',
+    look: 'How to recognise it',
+    cause: 'Where it comes from',
+    termsEyebrow: 'Glossary',
+    termsTitle: 'From yarn cone to cutting marker.',
+    feedbackTitle: 'Is a word missing? Do you call it something else in your department?',
+    feedbackText:
+      'Let us know. This glossary grows with the people who use it, like everything we do: every suggestion is read and taken into account.',
+    feedbackCta: 'Suggest a word',
+  },
+}[lang];
+
+const phases = Object.keys(DEFECT_PHASES) as DefectPhase[];
+const groups = Object.keys(TERM_GROUPS) as TermGroup[];
+const byName = (a: { term: Record<Lang, string> }, b: { term: Record<Lang, string> }) =>
+  a.term[lang].localeCompare(b.term[lang], lang);
+// Testo su cui cerca la casella di ricerca (nome, altri nomi e descrizione).
+const haystack = (...parts: (string | undefined)[]) => parts.filter(Boolean).join(' ').toLowerCase();
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  name: t.eyebrow,
+  url: canonical('glossary', lang),
+  hasDefinedTerm: [
+    ...DEFECTS.map((d) => ({ '@type': 'DefinedTerm', name: d.name[lang], description: `${d.look[lang]} ${d.cause[lang]}` })),
+    ...TERMS.map((x) => ({ '@type': 'DefinedTerm', name: x.term[lang], description: x.def[lang] })),
+  ],
+};
+---
+
+<Base lang={lang} routeKey="glossary" title={t.title} description={t.description} jsonLd={jsonLd}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
+
+  <div class="gl" data-glossary>
+    <div class="wrap gl__search" role="search">
+      <label for={`gl-q-${lang}`}>{t.search}</label>
+      <input id={`gl-q-${lang}`} type="search" autocomplete="off" placeholder={t.searchPlaceholder} data-gl-input />
+      <p class="gl__none" role="status" data-gl-none data-text={t.noResults}></p>
+    </div>
+
+    <section class="section" id="difetti">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">{t.defectsEyebrow}</p>
+          <h2>{t.defectsTitle}</h2>
+          <p>{t.defectsText}</p>
+        </div>
+        {
+          phases.map((ph) => (
+            <div class="gl__group" data-gl-group>
+              <h3 class="gl__group-name">{DEFECT_PHASES[ph][lang]}</h3>
+              <div class="gl__grid">
+                {DEFECTS.filter((d) => d.phase === ph).map((d) => (
+                  <details class="gl__item" id={d.id} data-gl-item={haystack(d.name[lang], d.aka[lang], d.look[lang], d.cause[lang])}>
+                    <summary>
+                      <span class="gl__term">{d.name[lang]}</span>
+                      {d.aka[lang] && <span class="gl__aka">{d.aka[lang]}</span>}
+                    </summary>
+                    <dl class="gl__body">
+                      <dt>{t.look}</dt>
+                      <dd>{d.look[lang]}</dd>
+                      <dt>{t.cause}</dt>
+                      <dd>{d.cause[lang]}</dd>
+                    </dl>
+                  </details>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section section--raised" id="termini">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">{t.termsEyebrow}</p>
+          <h2>{t.termsTitle}</h2>
+        </div>
+        {
+          groups.map((g) => (
+            <div class="gl__group" data-gl-group>
+              <h3 class="gl__group-name">{TERM_GROUPS[g][lang]}</h3>
+              <div class="gl__grid">
+                {TERMS.filter((x) => x.group === g)
+                  .sort(byName)
+                  .map((x) => (
+                    <details class="gl__item" id={x.id} data-gl-item={haystack(x.term[lang], x.aka?.[lang], x.def[lang])}>
+                      <summary>
+                        <span class="gl__term">{x.term[lang]}</span>
+                        {x.aka?.[lang] && <span class="gl__aka">{x.aka[lang]}</span>}
+                      </summary>
+                      <p class="gl__body">{x.def[lang]}</p>
+                    </details>
+                  ))}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+
+  <section class="section">
+    <div class="wrap gl__feedback">
+      <div>
+        <h2>{t.feedbackTitle}</h2>
+        <p class="lead">{t.feedbackText}</p>
+      </div>
+      <a class="btn" href={`${href('contact', lang)}?tema=glossario`}>{t.feedbackCta}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .gl__search {
+    display: grid;
+    gap: 0.5rem;
+    max-width: 36rem;
+    padding-block: clamp(1.5rem, 4vw, 2.5rem) 0;
+  }
+
+  .gl__search label {
+    font-weight: 700;
+  }
+
+  .gl__search input {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid rgb(169 196 214 / 0.45);
+    border-radius: var(--radius-sm);
+    background: var(--bg-deep);
+    color: var(--text);
+    font: inherit;
+  }
+
+  .gl__search input:focus-visible {
+    outline: 2px solid var(--accent);
+    border-color: var(--accent);
+  }
+
+  .gl__none {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .gl__none:empty {
+    display: none;
+  }
+
+  .gl__group + .gl__group {
+    margin-top: 2rem;
+  }
+
+  .gl__group[hidden],
+  .gl__item[hidden] {
+    display: none;
+  }
+
+  .gl__group-name {
+    margin-bottom: 0.9rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .gl__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 0.75rem;
+    align-items: start;
+  }
+
+  .gl__item {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: var(--bg-deep);
+  }
+
+  .gl__item summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.15rem 0.75rem;
+    padding: 0.85rem 1rem;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .gl__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .gl__item summary::after {
+    content: '+';
+    grid-area: 1 / 2;
+    color: var(--accent);
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+
+  .gl__item[open] summary::after {
+    content: '−';
+  }
+
+  .gl__item summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .gl__term {
+    font-weight: 700;
+  }
+
+  .gl__aka {
+    grid-column: 1;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--text-muted);
+  }
+
+  .gl__body {
+    margin: 0;
+    padding: 0 1rem 1rem;
+    color: var(--text-muted);
+  }
+
+  .gl__body dt {
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .gl__body dd {
+    margin: 0.15rem 0 0;
+  }
+
+  .gl__feedback {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem 3rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+  }
+
+  .gl__feedback > div {
+    flex: 1 1 28rem;
+  }
+
+  .gl__feedback h2 {
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+  }
+
+  .gl__feedback .lead {
+    margin-bottom: 0;
+  }
+</style>
+
+<script>
+  // Filtra difetti e termini mentre si scrive; i risultati si aprono da soli.
+  const root = document.querySelector<HTMLElement>('[data-glossary]');
+  if (root) {
+    const input = root.querySelector<HTMLInputElement>('[data-gl-input]')!;
+    const none = root.querySelector<HTMLElement>('[data-gl-none]')!;
+    const groups = [...root.querySelectorAll<HTMLElement>('[data-gl-group]')];
+    const norm = (s: string) =>
+      s
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '');
+
+    input.addEventListener('input', () => {
+      const q = norm(input.value.trim());
+      let shown = 0;
+      for (const group of groups) {
+        let inGroup = 0;
+        group.querySelectorAll<HTMLDetailsElement>('[data-gl-item]').forEach((item) => {
+          const match = !q || norm(item.dataset.glItem ?? '').includes(q);
+          item.hidden = !match;
+          item.open = Boolean(q) && match;
+          if (match) inGroup += 1;
+        });
+        group.hidden = inGroup === 0;
+        shown += inGroup;
+      }
+      none.textContent = shown === 0 ? (none.dataset.text ?? '') : '';
+    });
+
+    // Link diretto a un termine (es. #rameuse): lo apre.
+    const target = location.hash && document.getElementById(location.hash.slice(1));
+    if (target instanceof HTMLDetailsElement) target.open = true;
+  }
+</script>
