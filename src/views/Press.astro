@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import { EVENTS } from '../data/events';
 import { href, type Lang } from '../i18n';
 
 interface Props {
@@ -87,6 +88,11 @@ const t = {
     awards: 'Tutti i riconoscimenti',
     contact: 'Contatti per la stampa',
     locale: 'it-IT',
+    eventsEyebrow: 'Dove incontrarci',
+    eventsTitle: 'Fiere ed eventi.',
+    eventsEmpty: 'Le prossime date le pubblichiamo qui. Nel frattempo, se vuoi incontrarci in fiera o in azienda, scrivici: organizziamo volentieri.',
+    eventsCta: 'Fissiamo un incontro',
+    eventsSite: 'Sito dell’evento',
   },
   en: {
     title: 'Press',
@@ -100,11 +106,20 @@ const t = {
     awards: 'All our awards',
     contact: 'Press contact',
     locale: 'en-GB',
+    eventsEyebrow: 'Where to meet us',
+    eventsTitle: 'Trade fairs and events.',
+    eventsEmpty: 'We publish upcoming dates here. Meanwhile, if you would like to meet us at a fair or at your company, write to us: we are happy to arrange it.',
+    eventsCta: 'Let’s arrange a meeting',
+    eventsSite: 'Event website',
   },
 }[lang];
 
 const fmt = (iso: string) =>
   new Date(iso).toLocaleDateString(t.locale, { day: 'numeric', month: 'long', year: 'numeric' });
+
+// Solo eventi non ancora conclusi (al momento della build), in ordine di data.
+const today = new Date().toISOString().slice(0, 10);
+const upcoming = EVENTS.filter((e) => e.end >= today).sort((a, b) => a.start.localeCompare(b.start));
 ---
 
 <Base lang={lang} routeKey="press" title={t.title} description={t.description}>
@@ -135,9 +150,82 @@ const fmt = (iso: string) =>
       </ul>
     </div>
   </section>
+
+  <section id="eventi" class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.eventsEyebrow}</p>
+        <h2>{t.eventsTitle}</h2>
+      </div>
+      {
+        upcoming.length > 0 ? (
+          <ul class="events plain">
+            {upcoming.map((e) => (
+              <li class="card event" data-reveal>
+                <time datetime={e.start}>
+                  {fmt(e.start)} – {fmt(e.end)}
+                </time>
+                <h3>{e.name}</h3>
+                <p>
+                  {e.place[lang]}
+                  {e.where && ` · ${e.where[lang]}`}
+                </p>
+                {e.url && (
+                  <a href={e.url} target="_blank" rel="noopener">
+                    {t.eventsSite} <span class="visually-hidden">{t.newTab}</span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div class="card events__empty" data-reveal>
+            <p>{t.eventsEmpty}</p>
+            <a class="btn btn--ghost" href={href('contact', lang)}>
+              {t.eventsCta}
+            </a>
+          </div>
+        )
+      }
+    </div>
+  </section>
 </Base>
 
 <style>
+  .events {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .event time {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  .event h3 {
+    margin: 0.3rem 0;
+  }
+
+  .event p {
+    margin: 0 0 0.5rem;
+    color: var(--text-muted);
+  }
+
+  .events__empty {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem 2rem;
+    border-style: dashed;
+  }
+
+  .events__empty p {
+    flex: 1 1 24rem;
+    margin: 0;
+  }
+
   .article {
     display: flex;
     flex-direction: column;
