@@ -31,6 +31,7 @@ jobs:
           BASE_PATH: /${{ github.event.repository.name }}/
           DEPLOY_TARGET: preview
           PUBLIC_FORM_ID: ${{ vars.PUBLIC_FORM_ID }}
+          PUBLIC_BOOKING_URL: ${{ vars.PUBLIC_BOOKING_URL }}
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

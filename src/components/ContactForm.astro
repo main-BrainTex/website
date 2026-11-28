@@ -53,6 +53,8 @@ const t = {
     projectTypes: ['Bando o finanziamento', 'Co-sviluppo', 'Ricerca', 'Altro'],
     projectDeadline: 'Scadenza',
     projectDeadlineHint: 'Per i bandi, la data entro cui presentare la proposta.',
+    booking: 'Vuoi fare prima? Prenota una call conoscitiva',
+    bookingNote: 'Si apre il calendario di Cal.com in una nuova scheda.',
     topics: {
       fattibilita: 'Vorrei proporvi un’esigenza particolare da valutare: ',
       presentazione: 'Vorrei ricevere la presentazione di BrainTex per investitori.',
@@ -131,6 +133,8 @@ const t = {
     projectTypes: ['Funding call', 'Co-development', 'Research', 'Other'],
     projectDeadline: 'Deadline',
     projectDeadlineHint: 'For funding calls, the date by which the proposal must be submitted.',
+    booking: 'In a hurry? Book an introductory call',
+    bookingNote: 'Cal.com opens in a new tab.',
     topics: {
       fattibilita: 'I would like you to assess a specific need: ',
       presentazione: 'I would like to receive the BrainTex investor presentation.',
@@ -165,6 +169,10 @@ const t = {
     required: 'required',
   },
 }[lang];
+
+// Pagina per prenotare una call (Cal.com), da variabile di build: senza variabile il link non compare.
+const bookingEnv = import.meta.env.PUBLIC_BOOKING_URL as string | undefined;
+const bookingUrl = bookingEnv?.startsWith('https://') ? bookingEnv : '';
 
 // Messaggi passati allo script tramite attributi data-* (niente script inline, per la CSP).
 const messages = JSON.stringify({
@@ -293,6 +301,17 @@ const variants = JSON.stringify({
     <p class="form-status" role="status" aria-live="polite" data-status></p>
   </div>
 
+  {
+    bookingUrl && (
+      <p class="field--wide booking" data-booking hidden>
+        <a class="btn btn--ghost" href={bookingUrl} target="_blank" rel="noopener" data-booking-link>
+          {t.booking}
+        </a>
+        <span class="booking__note">{t.bookingNote}</span>
+      </p>
+    )
+  }
+
   <p class="field--wide form-notice">
     {t.notice}<a href={href('privacy', lang)}>{t.noticeLink}</a>.
   </p>
@@ -411,6 +430,23 @@ const variants = JSON.stringify({
     display: none;
   }
 
+  .booking {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin: 0;
+  }
+
+  .booking[hidden] {
+    display: none;
+  }
+
+  .booking__note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+
   .form-notice {
     margin: 0;
     font-size: 0.85rem;
@@ -442,7 +478,10 @@ const variants = JSON.stringify({
   import { sendContactMessage } from '../lib/form-submit';
   import { track } from '../lib/analytics';
 
+  const BOOKING_AUDIENCES = ['cliente', 'terzista', 'confezionista'];
+
   const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  form?.querySelector('[data-booking-link]')?.addEventListener('click', () => track('book_call_click'));
   if (form) {
     const msg = JSON.parse(form.dataset.messages ?? '{}') as Record<string, string> & { topics: Record<string, string> };
     const status = form.querySelector<HTMLElement>('[data-status]')!;
@@ -541,6 +580,9 @@ const variants = JSON.stringify({
 
       if (result.ok) {
         track('generate_lead', { form: 'contatti', audience: audience.value });
+        // Ai potenziali clienti si offre subito la prenotazione di una call.
+        const booking = form.querySelector<HTMLElement>('[data-booking]');
+        if (booking) booking.hidden = !BOOKING_AUDIENCES.includes(audience.value);
         form.reset();
         applyAudience();
         fields.forEach((f) => f.removeAttribute('aria-invalid'));
