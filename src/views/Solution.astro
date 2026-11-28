@@ -109,6 +109,29 @@ const t = {
       { title: 'Controllo del greggio', text: 'Il controllo integrato in macchina: un passaggio in meno, consegne più rapide.' },
       { title: 'Controllo finito', text: 'In specola, il 100% del tessuto prima della consegna, con mappa e report.' },
     ],
+    qcEyebrow: 'Controllo qualità conto terzi',
+    qcTitle: 'Controlli i tessuti degli altri? Qui la qualità è il tuo prodotto.',
+    qcText:
+      'Se il controllo è il tuo mestiere, BrainTex lavora accanto ai tuoi operatori in specola: loro decidono, il sistema non si stanca.',
+    qc: [
+      {
+        title: 'Benessere di chi controlla',
+        text: 'Ore di attenzione continua pesano su vista, postura e concentrazione. Il sistema guarda ogni centimetro e chiama l’operatore solo dove serve.',
+      },
+      {
+        title: 'Più velocità',
+        text: 'L’ispezione procede a circa 2,5 volte il controllo manuale, fino a 1 m/s, con lo stesso criterio dal primo all’ultimo metro.',
+      },
+      {
+        title: 'Più capacità produttiva',
+        text: 'Più metri controllati con le stesse persone e le stesse postazioni: accetti più lavoro senza allungare i tempi di consegna.',
+      },
+      {
+        title: 'Un report per ogni committente',
+        text: 'Ogni pezza esce con mappa dei difetti e report: un servizio in più da offrire, e meno discussioni.',
+      },
+    ],
+    qcCta: 'Parliamo del tuo reparto',
     trustEyebrow: 'Dati e proprietà intellettuale',
     trustTitle: 'I tuoi dati restano tuoi.',
     trust: [
@@ -214,6 +237,29 @@ const t = {
       { title: 'Greige inspection', text: 'Inspection built into the machine: one step less, faster deliveries.' },
       { title: 'Final inspection', text: 'On the inspection table, 100% of the fabric before delivery, with defect map and report.' },
     ],
+    qcEyebrow: 'Quality control as a service',
+    qcTitle: 'Do you inspect other companies’ fabrics? Here quality is your product.',
+    qcText:
+      'If inspection is your business, BrainTex works next to your operators at the inspection table: they decide, the system never gets tired.',
+    qc: [
+      {
+        title: 'Wellbeing of inspectors',
+        text: 'Hours of continuous attention weigh on eyesight, posture and concentration. The system watches every centimetre and calls the operator only where needed.',
+      },
+      {
+        title: 'More speed',
+        text: 'Inspection runs at about 2.5 times manual inspection, up to 1 m/s, with the same criteria from the first metre to the last.',
+      },
+      {
+        title: 'More capacity',
+        text: 'More metres inspected with the same people and the same stations: you take on more work without longer lead times.',
+      },
+      {
+        title: 'A report for every customer',
+        text: 'Every piece leaves with a defect map and report: one more service to offer, and fewer disputes.',
+      },
+    ],
+    qcCta: 'Let’s talk about your department',
     trustEyebrow: 'Data and intellectual property',
     trustTitle: 'Your data stays yours.',
     trust: [
@@ -331,6 +377,29 @@ const t = {
     </div>
   </section>
 
+  <section id="conto-terzi" class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.qcEyebrow}</p>
+        <h2>{t.qcTitle}</h2>
+        <p class="lead">{t.qcText}</p>
+      </div>
+      <ul class="grid grid--4 plain">
+        {
+          t.qc.map((item, i) => (
+            <li class="card" data-reveal={String(i + 1)}>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="qc-cta" data-reveal>
+        <a class="btn btn--ghost" href={`${href('contact', lang)}?chi=terzista`}>{t.qcCta}</a>
+      </p>
+    </div>
+  </section>
+
   <section class="numbers" aria-label={t.numbersLabel}>
     <ul class="wrap numbers__list plain">
       {
@@ -360,6 +429,10 @@ const t = {
 </Base>
 
 <style>
+  .qc-cta {
+    margin: 2rem 0 0;
+  }
+
   .views {
     margin: 0;
     padding: 0;
