@@ -11,6 +11,14 @@ import fotoSergio from '../assets/team/sergio.jpg';
 import fotoSimone from '../assets/team/simone.jpg';
 import fotoMarco from '../assets/team/marco.jpg';
 import fotoAndrea from '../assets/team/andrea.jpg';
+import logoAssintel from '../assets/logos/assintel.png';
+import logoInnovup from '../assets/logos/innovup.png';
+import logoPointex from '../assets/logos/pointex.png';
+import logoMics from '../assets/logos/mics.png';
+import logoPoloIct from '../assets/logos/polo-ict.png';
+import logoI3p from '../assets/logos/i3p.png';
+import logoNovaraSviluppo from '../assets/logos/novara-sviluppo.png';
+import logoItaliaUsa from '../assets/logos/fondazione-italia-usa.png';
 
 interface Props {
   lang: Lang;
@@ -27,6 +35,9 @@ const team = [
   { name: 'Marco Buzzonetti', role: 'Chief Financial Officer', photo: fotoMarco },
   { name: 'Andrea Gullì', role: 'VP of Technology', photo: fotoAndrea },
 ];
+
+const networkLogos = [logoAssintel, logoInnovup, logoPointex, logoMics, logoPoloIct];
+const supporterLogos = [logoI3p, logoNovaraSviluppo, logoItaliaUsa];
 
 const t = {
   it: {
@@ -69,8 +80,14 @@ const t = {
       { name: 'InnovUp', text: 'L’associazione che rappresenta l’ecosistema italiano dell’innovazione: startup, PMI innovative e incubatori.' },
       { name: 'Po.In.Tex', text: 'Il polo di innovazione tessile della Regione Piemonte, gestito da Città Studi Biella.' },
       { name: 'MICS', text: 'Made in Italy Circolare e Sostenibile: il partenariato esteso tra università, centri di ricerca e imprese.' },
+      { name: 'Polo ICT', text: 'Il polo di innovazione ICT della Regione Piemonte, gestito da Fondazione Piemonte Innova.' },
     ],
-    logoPlaceholder: 'Logo in arrivo',
+    supportersTitle: 'Ci hanno sostenuto',
+    supporters: [
+      { name: 'I3P, Incubatore del Politecnico di Torino', note: 'Incubatore' },
+      { name: 'Fondazione Novara Sviluppo', note: 'Start Up Now 2025' },
+      { name: 'Fondazione Italia USA', note: 'Riconoscimento' },
+    ],
     teamEyebrow: 'Conosci il team',
     teamTitle: 'Il team che guida il cambiamento.',
     awardsEyebrow: 'Riconoscimenti',
@@ -133,8 +150,14 @@ const t = {
       { name: 'InnovUp', text: 'The association representing the Italian innovation ecosystem: startups, innovative SMEs and incubators.' },
       { name: 'Po.In.Tex', text: 'The textile innovation cluster of the Piedmont Region, managed by Città Studi Biella.' },
       { name: 'MICS', text: 'Made in Italy Circolare e Sostenibile: the extended partnership between universities, research centres and companies.' },
+      { name: 'Polo ICT', text: 'The ICT innovation cluster of the Piedmont Region, managed by Fondazione Piemonte Innova.' },
     ],
-    logoPlaceholder: 'Logo coming soon',
+    supportersTitle: 'They supported us',
+    supporters: [
+      { name: 'I3P, Politecnico di Torino incubator', note: 'Incubator' },
+      { name: 'Fondazione Novara Sviluppo', note: 'Start Up Now 2025' },
+      { name: 'Fondazione Italia USA', note: 'Award' },
+    ],
     teamEyebrow: 'Meet the team',
     teamTitle: 'The team leading the change.',
     awardsEyebrow: 'Awards',
@@ -185,6 +208,21 @@ const t = {
           ))
         }
       </ol>
+      <div class="supporters" data-reveal>
+        <h3>{t.supportersTitle}</h3>
+        <ul class="plain">
+          {
+            t.supporters.map((s, i) => (
+              <li>
+                <div class="logo-tile">
+                  <Image src={supporterLogos[i]} alt={`Logo ${s.name}`} height={64} densities={[1, 2]} format="webp" />
+                </div>
+                <p>{s.note}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -260,12 +298,12 @@ const t = {
         <p class="eyebrow">{t.networkEyebrow}</p>
         <h2>{t.networkTitle}</h2>
       </div>
-      <ul class="grid grid--4 plain">
+      <ul class="grid network-grid plain">
         {
           t.network.map((n, i) => (
             <li class="card network" data-reveal={String((i % 4) + 1)}>
-              <div class="placeholder network__logo" title={t.logoPlaceholder}>
-                <span>{n.name}</span>
+              <div class="logo-tile">
+                <Image src={networkLogos[i]} alt={`Logo ${n.name}`} height={64} densities={[1, 2]} format="webp" />
               </div>
               <h3>{n.name}</h3>
               <p>{n.text}</p>
@@ -315,14 +353,45 @@ const t = {
     color: var(--text-muted);
   }
 
-  .network__logo {
-    height: 5rem;
-    margin-bottom: 1rem;
-    border-radius: var(--radius-sm);
+  .network-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
   }
 
-  .network__logo span {
-    font-weight: 700;
+  .logo-tile {
+    display: grid;
+    place-items: center;
+    height: 6rem;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--radius-sm);
+    background: #fff;
+  }
+
+  .logo-tile img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .supporters {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .supporters h3 {
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+  }
+
+  .supporters ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 1rem 1.5rem;
+  }
+
+  .supporters p {
+    margin: 0;
+    font-size: 0.9rem;
     color: var(--text-muted);
   }
 
