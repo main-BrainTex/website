@@ -2,6 +2,12 @@
 import { formatAddress, SITE } from '../config';
 import { href, UI, type Lang, type RouteKey } from '../i18n';
 import Logo from './Logo.astro';
+import { Image } from 'astro:assets';
+import logoFse from '../assets/funders/fse-piemonte.png';
+import logoNgeu from '../assets/funders/nextgenerationeu.png';
+import logoItaliaDomani from '../assets/funders/italiadomani.png';
+import logoMur from '../assets/funders/mur.png';
+import logoMics from '../assets/logos/mics.png';
 
 interface Props {
   lang: Lang;
@@ -32,14 +38,21 @@ const year = new Date().getFullYear();
     </div>
 
     <section class="site-footer__funding" aria-label={f.funderLogos}>
-      <ul class="site-footer__logos">
-        <li class="placeholder">Logo FSE+</li>
-        <li class="placeholder">Logo Regione</li>
-        <li class="placeholder">Logo UE</li>
-        <li class="placeholder">Logo NextGenerationEU</li>
-      </ul>
-      <p>{f.fse}</p>
-      <p>{f.ngeu}</p>
+      <div class="site-footer__funder">
+        <div class="site-footer__logos">
+          <Image src={logoFse} alt={f.fseLogos} height={32} format="webp" />
+        </div>
+        <p>{f.fse}</p>
+      </div>
+      <div class="site-footer__funder">
+        <div class="site-footer__logos">
+          <Image src={logoNgeu} alt="Finanziato dall'Unione europea – NextGenerationEU" height={36} format="webp" />
+          <Image src={logoItaliaDomani} alt="Italiadomani – Piano nazionale di ripresa e resilienza" height={30} densities={[1, 1.5]} format="webp" />
+          <Image src={logoMur} alt="Ministero dell'Università e della Ricerca" height={28} format="webp" />
+          <Image src={logoMics} alt="MICS – Made in Italy Circolare e Sostenibile" height={30} densities={[1, 2]} format="webp" />
+        </div>
+        <p>{f.ngeu}</p>
+      </div>
     </section>
 
     <div class="site-footer__legal">
@@ -100,25 +113,33 @@ const year = new Date().getFullYear();
     margin-top: 3rem;
     padding-top: 2rem;
     border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+    gap: 1.5rem 2rem;
+    align-items: start;
   }
 
   .site-footer__funding p {
-    margin-bottom: 0.25rem;
+    margin: 0;
+    font-size: 0.9rem;
     color: var(--text-muted);
   }
 
   .site-footer__logos {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 0 0 1.25rem;
-    padding: 0;
-    list-style: none;
+    align-items: center;
+    gap: 0.75rem 1.1rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    background: #fff;
   }
 
-  .site-footer__logos li {
-    min-width: 8.5rem;
-    min-height: 3rem;
+  .site-footer__logos img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
   }
 
   .site-footer__legal {
