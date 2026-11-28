@@ -120,6 +120,7 @@ const t = {
       { title: 'Finissaggio', text: 'Rameuse e lavaggio: niente lavorazioni su un tessuto già difettoso.' },
       { title: 'Controllo del greggio', text: 'Il controllo integrato in macchina: un passaggio in meno, consegne più rapide.' },
       { title: 'Controllo finito', text: 'In specola, il 100% del tessuto prima della consegna, con mappa e report.' },
+      { title: 'Controllo in accettazione', text: 'Per chi riceve il tessuto, come i confezionisti: ogni pezza verificata all’arrivo, prima di stenderla e tagliarla.' },
     ],
     qcEyebrow: 'Controllo qualità conto terzi',
     qcTitle: 'Controlli i tessuti degli altri? Qui la qualità è il tuo prodotto.',
@@ -270,6 +271,7 @@ const t = {
       { title: 'Finishing', text: 'Stenters and washing: no processing of fabric that is already defective.' },
       { title: 'Greige inspection', text: 'Inspection built into the machine: one step less, faster deliveries.' },
       { title: 'Final inspection', text: 'On the inspection table, 100% of the fabric before delivery, with defect map and report.' },
+      { title: 'Incoming inspection', text: 'For those who receive the fabric, such as garment makers: every piece checked on arrival, before spreading and cutting.' },
     ],
     qcEyebrow: 'Quality control as a service',
     qcTitle: 'Do you inspect other companies’ fabrics? Here quality is your product.',
@@ -436,7 +438,7 @@ const t = {
         <h2>{t.phasesTitle}</h2>
         <p class="lead">{t.phasesText}</p>
       </div>
-      <ol class="grid grid--4 plain">
+      <ol class="phases plain">
         {
           t.phases.map((ph, i) => (
             <li class="card" data-reveal={String(i + 1)}>
@@ -530,6 +532,12 @@ const t = {
 </Base>
 
 <style>
+  .phases {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12.5rem), 1fr));
+    gap: 1rem;
+  }
+
   .glossary-link {
     margin: 2rem 0 0;
     font-weight: 700;

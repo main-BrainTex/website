@@ -45,10 +45,10 @@ export const FAQS: Faq[] = [
     group: 'sistema',
     q: tx('Su quali macchine e in quali fasi si usa?', 'On which machines and at which stages is it used?'),
     a: tx(
-      'Si monta sulle macchine che hai già, lungo la filiera: tessitura (telai e maglieria), controllo del greggio, finissaggio (per esempio rameuse e lavaggio) e controllo finito in specola. Valutiamo insieme dove porta più valore nella tua produzione.',
-      'It fits the machines you already have, along the supply chain: weaving (looms and knitting), greige inspection, finishing (for example stenters and washing) and final inspection. Together we assess where it adds the most value in your production.',
+      'Si monta sulle macchine che hai già, lungo la filiera: tessitura (telai e maglieria), controllo del greggio, finissaggio (per esempio rameuse e lavaggio), controllo finito in specola e controllo in accettazione per chi riceve il tessuto. Valutiamo insieme dove porta più valore nella tua produzione.',
+      'It fits the machines you already have, along the supply chain: weaving (looms and knitting), greige inspection, finishing (for example stenters and washing), final inspection and incoming inspection for those who receive the fabric. Together we assess where it adds the most value in your production.',
     ),
-    keys: tx('telaio maglieria rameuse lavaggio specola greggio finissaggio tintoria montare installare', 'loom knitting stenter washing greige finishing dyeing fit mount install'),
+    keys: tx('telaio maglieria rameuse lavaggio specola greggio finissaggio tintoria accettazione arrivo ingresso montare installare', 'loom knitting stenter washing greige finishing dyeing incoming receiving fit mount install'),
     link: 'solution',
   },
   {
