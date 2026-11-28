@@ -14,6 +14,7 @@ export const ROUTES = {
   investors: { it: '/investitori-e-partner', en: '/en/investors-partners' },
   press: { it: '/parlano-di-noi', en: '/en/press' },
   contact: { it: '/contatti', en: '/en/contact' },
+  faq: { it: '/domande-frequenti', en: '/en/faq' },
   privacy: { it: '/privacypolicy-braintex', en: '/en/privacy-policy' },
   cookies: { it: '/cookie-policy', en: '/en/cookie-policy' },
 } as const satisfies Record<string, Record<Lang, string>>;
@@ -53,6 +54,7 @@ export const UI = {
       investors: 'Investitori e partner',
       press: 'Parlano di noi',
       contact: 'Contatti',
+      faq: 'Domande frequenti',
     },
     logoPlaceholder: 'Segnaposto logo: in attesa del file vettoriale ufficiale',
     footer: {
@@ -86,6 +88,7 @@ export const UI = {
       investors: 'Investors & partners',
       press: 'Press',
       contact: 'Contact',
+      faq: 'FAQ',
     },
     logoPlaceholder: 'Logo placeholder: awaiting the official vector file',
     footer: {

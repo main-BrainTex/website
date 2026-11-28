@@ -495,6 +495,9 @@ const variants = JSON.stringify({
     const topic = msg.topics[new URLSearchParams(location.search).get('tema') ?? ''];
     const messageField = form.elements.namedItem('message') as HTMLTextAreaElement;
     if (topic && !messageField.value) messageField.value = topic;
+    // Domanda arrivata dall'assistente delle FAQ (?domanda=...).
+    const question = new URLSearchParams(location.search).get('domanda')?.slice(0, 500);
+    if (question && !messageField.value) messageField.value = question;
 
     // Campi e testi che dipendono da "Chi sei?": i campi nascosti sono disattivati, quindi non vengono né controllati né inviati.
     const variants = JSON.parse(form.dataset.variants ?? '{}') as Record<string, Record<string, string>>;
