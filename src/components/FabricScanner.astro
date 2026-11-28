@@ -24,6 +24,11 @@ const t = {
     note: 'Simulazione illustrativa, dati di esempio',
     kinds: { stain: 'Macchia', pull: 'Filo tirato', knot: 'Nodo', weft: 'Trama mancante', hole: 'Buco' },
     modes: { filter: 'Filtra', show: 'Mostra', alarm: 'Allarma' },
+    viewLabel: 'Vista',
+    viewOutline: 'Contorni',
+    viewHeat: 'Mappa di calore',
+    heatLow: 'conforme',
+    heatHigh: 'anomalia',
     tablet: 'Tablet dell’operatore',
     tabletEmpty: 'Nessun difetto da mostrare',
     alarm: 'Allarme · {kind}: 3 volte in 2 m',
@@ -52,6 +57,11 @@ const t = {
     note: 'Illustrative simulation, sample data',
     kinds: { stain: 'Stain', pull: 'Pulled thread', knot: 'Knot', weft: 'Missing weft', hole: 'Hole' },
     modes: { filter: 'Filter', show: 'Show', alarm: 'Alarm' },
+    viewLabel: 'View',
+    viewOutline: 'Outlines',
+    viewHeat: 'Heat map',
+    heatLow: 'compliant',
+    heatHigh: 'anomaly',
     tablet: 'Operator tablet',
     tabletEmpty: 'No defects to show',
     alarm: 'Alarm · {kind}: 3 times in 2 m',
@@ -99,6 +109,16 @@ const texts = JSON.stringify({ kinds: t.kinds, alarm: t.alarm, empty: t.tabletEm
       ))
     }
     <span class="scanner__line" aria-hidden="true"></span>
+
+    <div class="view-toggle" role="group" aria-label={t.viewLabel}>
+      <button type="button" aria-pressed="true" data-view="outline">{t.viewOutline}</button>
+      <button type="button" aria-pressed="false" data-view="heat">{t.viewHeat}</button>
+    </div>
+    <p class="heat-legend" aria-hidden="true">
+      <span>{t.heatLow}</span>
+      <span class="heat-legend__bar"></span>
+      <span>{t.heatHigh}</span>
+    </p>
 
     <div class="tablet" data-tablet>
       <p class="tablet__title">{t.tablet}</p>
@@ -229,6 +249,7 @@ const texts = JSON.stringify({ kinds: t.kinds, alarm: t.alarm, empty: t.tabletEm
   .defect--x74 { left: 74%; }
 
   .defect__mark {
+    position: relative;
     display: block;
     outline: 1.5px solid transparent;
     outline-offset: 6px;
@@ -300,6 +321,113 @@ const texts = JSON.stringify({ kinds: t.kinds, alarm: t.alarm, empty: t.tabletEm
   /* Classe filtrata: contata, ma segnata appena e senza etichetta */
   .defect.is-filtered .defect__mark {
     outline: 1px dashed rgb(169 196 214 / 0.55);
+  }
+
+  /* Vista "mappa di calore": ogni difetto si accende di un alone, più caldo quanto più è grave */
+  .defect__mark::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: 50%;
+    top: 50%;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgb(156 237 64 / 0.85), rgb(53 210 243 / 0.45) 45%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .defect--weft .defect__mark::before {
+    width: 180px;
+    height: 64px;
+  }
+
+  .defect--pull .defect__mark::before {
+    width: 60px;
+    height: 110px;
+  }
+
+  .is-heat .defect.is-found .defect__mark::before {
+    opacity: 1;
+  }
+
+  .is-heat .defect.is-filtered .defect__mark::before {
+    opacity: 0.45;
+    background: radial-gradient(circle, rgb(53 210 243 / 0.6), transparent 65%);
+  }
+
+  .is-heat .defect.is-alarm .defect__mark::before {
+    background: radial-gradient(circle, rgb(255 140 90 / 0.95), rgb(255 200 87 / 0.7) 40%, transparent 72%);
+  }
+
+  .is-heat .defect .defect__mark {
+    outline-color: transparent;
+    box-shadow: none;
+  }
+
+  .is-heat .scanner__fabric {
+    filter: saturate(0.4) brightness(0.7);
+  }
+
+  .view-toggle {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    display: flex;
+    border: 1px solid rgb(169 196 214 / 0.45);
+    border-radius: 999px;
+    background: rgb(0 23 42 / 0.85);
+    overflow: hidden;
+  }
+
+  .view-toggle button {
+    padding: 0.3rem 0.75rem;
+    border: 0;
+    background: transparent;
+    color: var(--text-muted);
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  .view-toggle button[aria-pressed='true'] {
+    background: var(--cyan-200);
+    color: var(--bg-deep);
+    font-weight: 700;
+  }
+
+  .view-toggle button:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: -2px;
+  }
+
+  .heat-legend {
+    position: absolute;
+    left: 0.6rem;
+    bottom: 0.6rem;
+    display: none;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgb(0 23 42 / 0.85);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+  }
+
+  .is-heat .heat-legend {
+    display: flex;
+  }
+
+  .heat-legend__bar {
+    width: 4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgb(53 210 243 / 0.6), rgb(156 237 64), rgb(255 200 87), rgb(255 140 90));
   }
 
   .defect.is-alarm .defect__mark {
@@ -701,6 +829,15 @@ const texts = JSON.stringify({ kinds: t.kinds, alarm: t.alarm, empty: t.tabletEm
     new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
     }).observe(root);
+
+    // Vista contorni / mappa di calore
+    const viewButtons = [...root.querySelectorAll<HTMLButtonElement>('[data-view]')];
+    viewButtons.forEach((b) =>
+      b.addEventListener('click', () => {
+        root.classList.toggle('is-heat', b.dataset.view === 'heat');
+        viewButtons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      }),
+    );
 
     // All'avvio i difetti già sopra la linea non contano: si parte da una pezza "nuova".
     const { tile, scanY } = geometry();
