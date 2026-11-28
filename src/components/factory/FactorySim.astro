@@ -17,6 +17,7 @@ const t = {
     modeLabel: 'Mostra la giornata',
     view3d: 'Entra in fabbrica 3D',
     view2d: 'Torna alla mappa 2D',
+    drag3d: 'Trascina per ruotare la vista.',
     demo: 'Esplora la simulazione completa',
     close: 'Chiudi la simulazione completa',
     disclaimer: 'Simulazione esemplificativa: eventi e risultati sono illustrativi.',
@@ -25,7 +26,7 @@ const t = {
     inspected: 'Metri controllati',
     source: 'Difetti fermati alla fonte',
     inspection: 'Difetti fermati al controllo',
-    customer: 'Difetti arrivati al cliente',
+    customer: 'Difetti arrivati al confezionista',
     saved: 'Metri salvati',
     lost: 'Metri persi',
     indicators: 'Indicatori',
@@ -50,6 +51,7 @@ const t = {
     modeLabel: 'Show the day',
     view3d: 'Enter the 3D factory',
     view2d: 'Back to the 2D map',
+    drag3d: 'Drag to rotate the view.',
     demo: 'Explore the full simulation',
     close: 'Close the full simulation',
     disclaimer: 'Illustrative simulation: events and results are examples.',
@@ -58,7 +60,7 @@ const t = {
     inspected: 'Metres inspected',
     source: 'Defects stopped at the source',
     inspection: 'Defects stopped at inspection',
-    customer: 'Defects that reached the customer',
+    customer: 'Defects that reached the garment maker',
     saved: 'Metres saved',
     lost: 'Metres lost',
     indicators: 'Indicators',
@@ -88,6 +90,7 @@ const ui = JSON.stringify({
   play: t.play,
   stop: t.stop,
   view3d: t.view3d,
+  drag3d: t.drag3d,
   view2d: t.view2d,
   loading3d: t.loading3d,
   failed3d: t.failed3d,
@@ -120,7 +123,7 @@ const node = (key: string) => NODES.find((n) => n.key === key)!;
       <rect class="map__floor" x="20" y="300" width="760" height="190" rx="18" />
       <line class="map__fabric" x1={lineStart} y1={lineY} x2={lineEnd} y2={lineY} />
       <line class="map__fabric-weft" x1={lineStart} y1={lineY} x2={lineEnd} y2={lineY} />
-      <line class="map__exit" x1={lineEnd} y1={lineY} x2={node('cliente').x * S - 70} y2={lineY} />
+      <line class="map__exit" x1={lineEnd} y1={lineY} x2={node('confezionista').x * S - 70} y2={lineY} />
 
       {
         departments.map((n) => (
@@ -145,7 +148,7 @@ const node = (key: string) => NODES.find((n) => n.key === key)!;
         <rect class="map__bin-fill" data-bin-fill x="-36" y="16" width="72" height="0" />
         <text y="45">{t.scrap}</text>
       </g>
-      <text class="map__badge" x={node('cliente').x * S} y={node('cliente').y * S + 75} data-returns-badge></text>
+      <text class="map__badge" x={node('confezionista').x * S} y={node('confezionista').y * S + 75} data-returns-badge></text>
       <text class="map__badge" x={node('controllo').x * S} y={node('controllo').y * S - 85} data-queue-badge></text>
       <g data-pulses></g>
     </svg>
@@ -506,6 +509,12 @@ const node = (key: string) => NODES.find((n) => n.key === key)!;
     display: block;
     width: 100%;
     height: 100%;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+
+  .sim__three :global(canvas:active) {
+    cursor: grabbing;
   }
 
   .sim__three :global(.label3d) {

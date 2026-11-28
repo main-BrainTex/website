@@ -298,6 +298,7 @@ export function initFactorySim(root: HTMLElement): FactoryController {
       three.replaceChildren();
       svg.classList.remove('is-hidden');
       view3dBtn.textContent = ui.view3d;
+      status.textContent = '';
       return;
     }
     status.textContent = ui.loading3d;
@@ -310,7 +311,7 @@ export function initFactorySim(root: HTMLElement): FactoryController {
       scene.focus(focusNode);
       if (sim.last) scene.showEvent(sim.last, sim.mode);
       view3dBtn.textContent = ui.view2d;
-      status.textContent = '';
+      status.textContent = ui.drag3d;
     } catch {
       status.textContent = ui.failed3d;
       view3dBtn.hidden = true;
