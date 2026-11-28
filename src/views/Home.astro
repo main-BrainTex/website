@@ -91,6 +91,14 @@ const t = {
       },
     ],
     howCta: 'Scopri come funziona',
+    infoEyebrow: 'Il vero problema',
+    infoTitle: 'Quello che manca non è l’occhio. Sono le informazioni.',
+    infoText: [
+      'Oggi le informazioni sui difetti restano sparse: su un foglio in specola, nella memoria di chi controlla, in una mail arrivata settimane dopo.',
+      'BrainTex le raccoglie su ogni metro e le rende uguali per tutti: chi produce, chi controlla, chi vende e chi confeziona guardano gli stessi dati e possono decidere insieme.',
+    ],
+    infoReport: 'Guarda un report di esempio',
+    infoDash: 'E il cruscotto',
     benefitsEyebrow: 'I vantaggi',
     benefitsTitle: 'Un controllo completo, costante, misurabile.',
     benefits: [
@@ -218,6 +226,14 @@ const t = {
       },
     ],
     howCta: 'See how it works',
+    infoEyebrow: 'The real problem',
+    infoTitle: 'What is missing is not the eye. It is the information.',
+    infoText: [
+      'Today, information about defects is scattered: on a sheet at the inspection table, in the memory of the inspector, in an email that arrives weeks later.',
+      'BrainTex collects it on every metre and makes it the same for everyone: those who produce, inspect, sell and make garments look at the same data and can decide together.',
+    ],
+    infoReport: 'See a sample report',
+    infoDash: 'And the dashboard',
     benefitsEyebrow: 'Benefits',
     benefitsTitle: 'Complete, constant, measurable control.',
     benefits: [
@@ -404,6 +420,22 @@ const jsonLd = {
   </section>
 
   <HomeStory lang={lang} />
+
+  <section class="section" id="informazioni">
+    <div class="wrap split">
+      <div data-reveal>
+        <p class="eyebrow">{t.infoEyebrow}</p>
+        <h2>{t.infoTitle}</h2>
+      </div>
+      <div data-reveal="1">
+        {t.infoText.map((p) => <p class="lead">{p}</p>)}
+        <div class="actions">
+          <a class="btn" href={`${href('solution', lang)}#report`}>{t.infoReport}</a>
+          <a class="btn btn--ghost" href={`${href('solution', lang)}#cruscotto`}>{t.infoDash}</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="section section--raised">
     <div class="wrap">
