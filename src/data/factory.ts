@@ -184,8 +184,8 @@ export const EVENTS: FactoryEvent[] = [
       en: ['Every new article changes the references', 'Less reliable inspection on the first pieces'],
     },
     with: {
-      it: ['Il sistema impara l’articolo in meno di 2 minuti', 'Stessa attenzione dal primo metro'],
-      en: ['The system learns the article in less than 2 minutes', 'The same attention from the first metre'],
+      it: ['BrainTex impara l’articolo in meno di 2 minuti', 'Stessa attenzione dal primo metro'],
+      en: ['BrainTex learns the article in less than 2 minutes', 'The same attention from the first metre'],
     },
     indicators: ['qualita'],
     defect: { without: 'confezionista', with: 'controllo' },
@@ -220,8 +220,8 @@ export const EVENTS: FactoryEvent[] = [
       en: ['Months of shadowing', 'Dependence on the expert', 'Risk when the expert retires'],
     },
     with: {
-      it: ['Il sistema guida con le segnalazioni', 'L’esperienza degli esperti resta in azienda'],
-      en: ['The system guides with its alerts', 'Experts’ experience stays in the company'],
+      it: ['BrainTex guida con le sue segnalazioni', 'L’esperienza degli esperti resta in azienda'],
+      en: ['BrainTex guides with its alerts', 'Experts’ experience stays in the company'],
     },
     indicators: ['processo', 'serenita'],
   }),
