@@ -108,6 +108,7 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - Palette: verdi #9CED40 #30A016; azzurri #57F0FE #35D2F3 #169FCC; blu #1373A8 #00355D.
 - Tema scuro su base #00355D (variante più profonda per gli sfondi); azzurri per evidenziare, verdi per "difetto trovato"/esito positivo; logo bianco su scuro.
 - Logo: usare solo il vettoriale ufficiale fornito da bt (non ricostruirlo). Finché manca: segnaposto ben segnalati.
+- Immagini (28/11/2026): le tre viste in Soluzione sono illustrazioni disegnate dal codice (`FabricView.astro`), sostituibili con immagini reali; l'immagine per i social (`public/social-it.jpg`, `social-en.jpg`) non contiene il logo. Restano segnaposto, in attesa dei file ufficiali: logo e favicon, foto del team, loghi dei finanziatori, loghi delle reti.
 
 ## Sicurezza
 - Nessuna parte lato server, nessun CMS. Simulatori/contatori/3D girano solo nel browser con dati statici: mai collegarsi a sistemi interni, flotta o VPN.
