@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
-import { DEFECT_PHASES, DEFECTS, TERM_GROUPS, TERMS, type DefectPhase, type TermGroup } from '../data/glossary';
-import { canonical, href, type Lang } from '../i18n';
+import { DEFECT_PHASES, DEFECTS, MACHINES, TERM_GROUPS, TERMS, type DefectPhase, type TermGroup } from '../data/glossary';
+import { canonical, href, withBase, type Lang } from '../i18n';
 
 interface Props {
   lang: Lang;
@@ -22,7 +22,12 @@ const t = {
     noResults: 'Nessun risultato. Forse la chiamate in un altro modo? Diccelo qui sotto.',
     defectsEyebrow: 'Guida ai difetti',
     defectsTitle: 'I difetti più comuni, fase per fase.',
-    defectsText: 'Come si riconoscono e da dove nascono di solito. Tocca un difetto per aprirlo.',
+    defectsText: 'Come si riconoscono e da dove nascono di solito. Tocca un difetto per aprirlo: gli schemi sono illustrativi, non in scala.',
+    sketchAlt: (name: string) => `Schema illustrativo del difetto: ${name}`,
+    machinesEyebrow: 'Le macchine, in breve',
+    machinesTitle: 'Dove passa il tessuto, e dove nasce il difetto.',
+    machinesText: 'Schemi semplificati delle macchine più comuni. I numeri seguono il percorso del tessuto.',
+    bornHere: 'Qui nascono, per esempio:',
     aka: 'Detto anche',
     look: 'Come si riconosce',
     cause: 'Da dove nasce',
@@ -45,7 +50,12 @@ const t = {
     noResults: 'No results. Maybe you call it something else? Let us know below.',
     defectsEyebrow: 'Defect guide',
     defectsTitle: 'The most common defects, stage by stage.',
-    defectsText: 'How to recognise them and where they usually come from. Tap a defect to open it.',
+    defectsText: 'How to recognise them and where they usually come from. Tap a defect to open it: the diagrams are illustrative, not to scale.',
+    sketchAlt: (name: string) => `Illustrative diagram of the defect: ${name}`,
+    machinesEyebrow: 'Machines at a glance',
+    machinesTitle: 'Where the fabric goes, and where defects are born.',
+    machinesText: 'Simplified diagrams of the most common machines. The numbers follow the path of the fabric.',
+    bornHere: 'Defects that start here include:',
     aka: 'Also called',
     look: 'How to recognise it',
     cause: 'Where it comes from',
@@ -105,6 +115,15 @@ const jsonLd = {
                       <span class="gl__term">{d.name[lang]}</span>
                       {d.aka[lang] && <span class="gl__aka">{d.aka[lang]}</span>}
                     </summary>
+                    <img
+                      class="gl__sketch"
+                      src={withBase(`/schemi/difetto-${d.id}.svg`)}
+                      alt={t.sketchAlt(d.name[lang])}
+                      width="240"
+                      height="160"
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <dl class="gl__body">
                       <dt>{t.look}</dt>
                       <dd>{d.look[lang]}</dd>
@@ -120,7 +139,51 @@ const jsonLd = {
       </div>
     </section>
 
-    <section class="section section--raised" id="termini">
+    <section class="section section--raised" id="macchine">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">{t.machinesEyebrow}</p>
+          <h2>{t.machinesTitle}</h2>
+          <p>{t.machinesText}</p>
+        </div>
+        <div class="machines">
+          {
+            MACHINES.map((m) => (
+              <article class="machine card">
+                <h3>{m.title[lang]}</h3>
+                <img
+                  class="machine__img"
+                  src={withBase(`/schemi/macchina-${m.id}.svg`)}
+                  alt={m.alt[lang]}
+                  width="480"
+                  height="240"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <p class="machine__text">{m.text[lang]}</p>
+                <ol class="machine__steps">
+                  {m.steps.map((st) => (
+                    <li>
+                      <strong>{st.name[lang]}</strong> – {st.text[lang]}
+                    </li>
+                  ))}
+                </ol>
+                {m.defects.length > 0 && (
+                  <p class="machine__defects">
+                    {t.bornHere}{' '}
+                    {m.defects.map((id, k) => (
+                      <><a href={`#${id}`}>{DEFECTS.find((x) => x.id === id)!.name[lang].toLowerCase()}</a>{k < m.defects.length - 1 ? ', ' : '.'}</>
+                    ))}
+                  </p>
+                )}
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="termini">
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">{t.termsEyebrow}</p>
@@ -269,6 +332,55 @@ const jsonLd = {
     color: var(--text-muted);
   }
 
+  .gl__sketch {
+    display: block;
+    width: calc(100% - 2rem);
+    height: auto;
+    margin: 0 1rem 0.5rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .machines {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  .machine h3 {
+    margin-bottom: 0.75rem;
+  }
+
+  .machine__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+  }
+
+  .machine__text {
+    margin: 0.9rem 0 0.5rem;
+  }
+
+  .machine__steps {
+    margin: 0;
+    padding-left: 1.4rem;
+    color: var(--text-muted);
+  }
+
+  .machine__steps li + li {
+    margin-top: 0.25rem;
+  }
+
+  .machine__steps strong {
+    color: var(--text);
+  }
+
+  .machine__defects {
+    margin: 0.9rem 0 0;
+    font-size: 0.95rem;
+    color: var(--text-muted);
+  }
+
   .gl__body {
     margin: 0;
     padding: 0 1rem 1rem;
@@ -342,8 +454,12 @@ const jsonLd = {
       none.textContent = shown === 0 ? (none.dataset.text ?? '') : '';
     });
 
-    // Link diretto a un termine (es. #rameuse): lo apre.
-    const target = location.hash && document.getElementById(location.hash.slice(1));
-    if (target instanceof HTMLDetailsElement) target.open = true;
+    // Link diretto a un termine (es. #rameuse), anche dagli schemi delle macchine: lo apre.
+    const openFromHash = () => {
+      const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target instanceof HTMLDetailsElement) target.open = true;
+    };
+    openFromHash();
+    window.addEventListener('hashchange', openFromHash);
   }
 </script>

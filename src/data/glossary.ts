@@ -173,6 +173,77 @@ export const DEFECTS: DefectEntry[] = [
   },
 ];
 
+// ---- Le macchine, in breve --------------------------------------------------------------
+// Schemi in `src/lib/sketches.ts` (file /schemi/macchina-<id>.svg): i numeri del disegno
+// corrispondono all'ordine dei passaggi.
+
+export interface MachineEntry {
+  id: 'telaio' | 'maglieria' | 'finissaggio' | 'specola';
+  title: T;
+  text: T;
+  alt: T;
+  steps: { name: T; text: T }[];
+  /** Difetti che nascono di solito in questa fase (id della guida). */
+  defects: string[];
+}
+
+export const MACHINES: MachineEntry[] = [
+  {
+    id: 'telaio',
+    title: tx('Il telaio', 'The loom'),
+    text: tx('Visto di lato: l’ordito avanza da sinistra, la trama lo attraversa e il tessuto si forma a destra.', 'Side view: the warp moves from left to right, the weft crosses it and the fabric forms on the right.'),
+    alt: tx('Schema di un telaio visto di lato, con cinque punti numerati.', 'Diagram of a loom seen from the side, with five numbered points.'),
+    steps: [
+      { name: tx('Subbio d’ordito', 'Warp beam'), text: tx('Da qui si svolgono i fili di ordito, uno accanto all’altro.', 'The warp yarns unwind from here, side by side.') },
+      { name: tx('Licci', 'Heddles'), text: tx('Alzano e abbassano i fili di ordito e aprono il passo.', 'They raise and lower the warp yarns and open the shed.') },
+      { name: tx('Inserzione della trama', 'Weft insertion'), text: tx('Il filo di trama attraversa il passo, da cimosa a cimosa.', 'The weft yarn crosses the shed, from selvedge to selvedge.') },
+      { name: tx('Pettine', 'Reed'), text: tx('Batte ogni trama contro il tessuto già formato.', 'It beats each pick against the fabric already formed.') },
+      { name: tx('Tessuto', 'Fabric'), text: tx('Avanza e si avvolge sul subbio del tessuto.', 'It moves forward and winds onto the cloth roll.') },
+    ],
+    defects: ['trama-mancante', 'doppia-trama', 'filo-mancante', 'fermata', 'fitto-rado'],
+  },
+  {
+    id: 'maglieria',
+    title: tx('La macchina circolare', 'The circular knitting machine'),
+    text: tx('Vista di fronte: il filato scende dalle rocche agli aghi e il tessuto esce a tubo, sotto il cilindro.', 'Front view: the yarn comes down from the cones to the needles and the fabric comes out as a tube below the cylinder.'),
+    alt: tx('Schema di una macchina circolare per maglieria vista di fronte, con cinque punti numerati.', 'Diagram of a circular knitting machine seen from the front, with five numbered points.'),
+    steps: [
+      { name: tx('Rocche', 'Cones'), text: tx('Il filato arriva dalle rocche sopra la macchina.', 'The yarn comes from the cones above the machine.') },
+      { name: tx('Guidafili', 'Yarn feeders'), text: tx('Portano ogni filo fino agli aghi.', 'They bring each yarn to the needles.') },
+      { name: tx('Cilindro con gli aghi', 'Needle cylinder'), text: tx('Gli aghi formano le maglie, giro dopo giro.', 'The needles form the stitches, round after round.') },
+      { name: tx('Tubolare', 'Fabric tube'), text: tx('Il tessuto esce a tubo, sotto il cilindro.', 'The fabric comes out as a tube below the cylinder.') },
+      { name: tx('Tiraggio e avvolgimento', 'Take-down and winding'), text: tx('I rulli tirano il tessuto e lo avvolgono.', 'The rollers pull the fabric down and wind it up.') },
+    ],
+    defects: ['riga-ago', 'smagliatura', 'buco'],
+  },
+  {
+    id: 'finissaggio',
+    title: tx('Tintoria e finissaggio', 'Dyeing and finishing'),
+    text: tx('Una linea semplificata: il tessuto passa nel bagno, viene spremuto, asciugato in rameuse e arrotolato.', 'A simplified line: the fabric goes through the bath, is squeezed, dried on the stenter and rolled up.'),
+    alt: tx('Schema di una linea di tintoria e finissaggio, con quattro punti numerati.', 'Diagram of a dyeing and finishing line, with four numbered points.'),
+    steps: [
+      { name: tx('Vasca', 'Bath'), text: tx('Il tessuto passa nel bagno di lavaggio o di tintura.', 'The fabric goes through the washing or dyeing bath.') },
+      { name: tx('Spremitura', 'Squeezing'), text: tx('I rulli tolgono l’acqua in eccesso.', 'The rollers remove the excess water.') },
+      { name: tx('Rameuse', 'Stenter'), text: tx('Un forno ad aria calda in cui catene a spilli tengono il tessuto alla larghezza voluta mentre asciuga.', 'A hot-air oven where pin chains hold the fabric at the right width while it dries.') },
+      { name: tx('Avvolgimento', 'Winding'), text: tx('Il tessuto finito si arrotola.', 'The finished fabric is rolled up.') },
+    ],
+    defects: ['macchia', 'differenza-tinta', 'piega', 'trama-storta'],
+  },
+  {
+    id: 'specola',
+    title: tx('La specola', 'The inspection table'),
+    text: tx('Qui la pezza viene controllata: i difetti nati nelle fasi precedenti vengono cercati e segnati.', 'This is where the fabric roll is checked: the defects born in the earlier stages are looked for and marked.'),
+    alt: tx('Schema di una specola con l’operatore, con quattro punti numerati.', 'Diagram of an inspection table with the operator, with four numbered points.'),
+    steps: [
+      { name: tx('Rotolo in entrata', 'Incoming roll'), text: tx('La pezza da controllare si svolge.', 'The roll to be checked unwinds.') },
+      { name: tx('Piano luminoso', 'Light table'), text: tx('La luce sul piano inclinato fa risaltare i difetti.', 'The light on the inclined table makes the defects stand out.') },
+      { name: tx('Operatore', 'Operator'), text: tx('Guarda il tessuto mentre scorre e segna i difetti.', 'They watch the fabric as it moves and mark the defects.') },
+      { name: tx('Rotolo in uscita', 'Outgoing roll'), text: tx('La pezza controllata si riavvolge.', 'The checked roll is wound up again.') },
+    ],
+    defects: [],
+  },
+];
+
 // ---- Glossario --------------------------------------------------------------------------
 
 export const TERM_GROUPS = {
