@@ -1,6 +1,7 @@
 ---
-// Illustrazione interattiva: la pezza avanza (da sola e con lo scroll) sotto una linea di scansione;
-// i difetti che la attraversano si "accendono". Simulazione illustrativa, nessun dato reale.
+// Illustrazione interattiva: la pezza avanza (da sola e con lo scroll) sotto una linea di scansione.
+// Il sistema conta tutti i difetti; per ogni classe si sceglie se filtrarla, mostrarla sul tablet o farla allarmare.
+// Simulazione illustrativa con dati inventati: nessun dato reale.
 import type { Lang } from '../i18n';
 
 interface Props {
@@ -8,60 +9,156 @@ interface Props {
 }
 const { lang } = Astro.props;
 
+const KINDS = ['stain', 'pull', 'knot', 'weft', 'hole'] as const;
+// Impostazione iniziale di ogni classe: i nodini sono contati ma non disturbano l'operatore.
+const DEFAULT_MODE = { stain: 'show', pull: 'show', knot: 'filter', weft: 'alarm', hole: 'alarm' } as const;
+const MODES = ['filter', 'show', 'alarm'] as const;
+
 const t = {
   it: {
     label: 'Simulazione: un tessuto scorre sotto la linea di ispezione e i difetti vengono evidenziati',
-    meters: 'Metri ispezionati',
-    found: 'Difetti segnalati',
-    note: 'Simulazione illustrativa',
-    defects: ['Macchia', 'Filo tirato', 'Nodo', 'Trama mancante', 'Buco'],
+    meters: 'm ispezionati',
+    total: 'difetti contati',
+    filtered: 'filtrati',
+    alarms: 'allarmi',
+    note: 'Simulazione illustrativa, dati di esempio',
+    kinds: { stain: 'Macchia', pull: 'Filo tirato', knot: 'Nodo', weft: 'Trama mancante', hole: 'Buco' },
+    modes: { filter: 'Filtra', show: 'Mostra', alarm: 'Allarma' },
+    tablet: 'Tablet dell’operatore',
+    tabletEmpty: 'Nessun difetto da mostrare',
+    alarm: 'Allarme · {kind}: 3 volte in 2 m',
+    classesTitle: 'Classi di difetto: decidi tu cosa vedere',
+    classesText:
+      'Il sistema conta tutto. Tu scegli, classe per classe, cosa nascondere all’operatore, cosa mostrargli e cosa deve far scattare un allarme.',
+    rule: 'Regola di esempio: scatta l’allarme se la stessa classe si ripete 3 volte in 2 metri.',
+    modeFor: 'Cosa fare con',
+    pieceTitle: 'Scheda della pezza',
+    piece: [
+      ['Pezza', 'P-000482'],
+      ['Articolo', 'Esempio 100'],
+      ['Disegno e colore', 'Tinta unita, blu'],
+      ['Lotto', 'L-24'],
+      ['Altezza', '150 cm'],
+      ['Macchina', 'Telaio 07'],
+      ['Capitolato', 'Standard di esempio'],
+    ],
   },
   en: {
     label: 'Simulation: fabric moves under the inspection line and defects are highlighted',
-    meters: 'Metres inspected',
-    found: 'Defects flagged',
-    note: 'Illustrative simulation',
-    defects: ['Stain', 'Pulled thread', 'Knot', 'Missing weft', 'Hole'],
+    meters: 'm inspected',
+    total: 'defects counted',
+    filtered: 'filtered',
+    alarms: 'alarms',
+    note: 'Illustrative simulation, sample data',
+    kinds: { stain: 'Stain', pull: 'Pulled thread', knot: 'Knot', weft: 'Missing weft', hole: 'Hole' },
+    modes: { filter: 'Filter', show: 'Show', alarm: 'Alarm' },
+    tablet: 'Operator tablet',
+    tabletEmpty: 'No defects to show',
+    alarm: 'Alarm · {kind}: 3 times in 2 m',
+    classesTitle: 'Defect classes: you decide what to see',
+    classesText:
+      'The system counts everything. Class by class, you choose what to hide from the operator, what to show and what must trigger an alarm.',
+    rule: 'Sample rule: the alarm goes off when the same class occurs 3 times within 2 metres.',
+    modeFor: 'What to do with',
+    pieceTitle: 'Piece record',
+    piece: [
+      ['Piece', 'P-000482'],
+      ['Article', 'Sample 100'],
+      ['Pattern and colour', 'Plain, blue'],
+      ['Lot', 'L-24'],
+      ['Width', '150 cm'],
+      ['Machine', 'Loom 07'],
+      ['Specification', 'Sample standard'],
+    ],
   },
 }[lang];
 
-// Posizioni nel "modulo" di tessuto (percentuali) e forma di ciascun difetto.
-const defects = [
-  { kind: 'stain', x: 22, y: 18 },
-  { kind: 'pull', x: 62, y: 38 },
-  { kind: 'knot', x: 38, y: 58 },
-  { kind: 'weft', x: 8, y: 76 },
-  { kind: 'hole', x: 74, y: 92 },
+// Posizioni (percentuali) dei difetti nel "modulo" di tessuto che si ripete.
+const slots = [
+  { x: 22, y: 6 },
+  { x: 62, y: 20 },
+  { x: 38, y: 34 },
+  { x: 8, y: 48 },
+  { x: 74, y: 62 },
+  { x: 30, y: 76 },
+  { x: 54, y: 90 },
 ];
+
+const texts = JSON.stringify({ kinds: t.kinds, alarm: t.alarm, empty: t.tabletEmpty });
 ---
 
-<figure class="scanner" aria-label={t.label} data-scanner data-lang={lang}>
+<figure class="scanner" aria-label={t.label} data-scanner data-lang={lang} data-texts={texts}>
   <div class="scanner__window">
     <div class="scanner__fabric" data-fabric></div>
     {
-      defects.map((d, i) => (
-        <span
-          class={`defect defect--${d.kind} defect--x${d.x}`}
-          data-defect
-          data-y={d.y}
-          aria-hidden="true"
-        >
+      slots.map((s) => (
+        <span class={`defect defect--x${s.x}`} data-defect data-y={s.y} aria-hidden="true">
           <span class="defect__mark" />
-          <span class="defect__label">{t.defects[i]}</span>
+          <span class="defect__label" />
         </span>
       ))
     }
     <span class="scanner__line" aria-hidden="true"></span>
+
+    <div class="tablet" data-tablet>
+      <p class="tablet__title">{t.tablet}</p>
+      <p class="tablet__alarm" data-alarm role="status" aria-live="polite"></p>
+      <ol class="tablet__list" data-tablet-list>
+        <li class="tablet__empty">{t.tabletEmpty}</li>
+      </ol>
+    </div>
   </div>
+
   <figcaption class="scanner__hud">
-    <span><strong data-meters>0,0</strong> m <small>{t.meters}</small></span>
-    <span><strong data-found>0</strong> <small>{t.found}</small></span>
-    <span class="scanner__note">{t.note}</span>
+    <span><strong data-meters>0,0</strong> <small>{t.meters}</small></span>
+    <span><strong data-total>0</strong> <small>{t.total}</small></span>
+    <span><strong data-filtered>0</strong> <small>{t.filtered}</small></span>
+    <span><strong data-alarms>0</strong> <small>{t.alarms}</small></span>
   </figcaption>
+
+  <details class="panel" open>
+    <summary>{t.classesTitle}</summary>
+    <div class="panel__body">
+      <p>{t.classesText}</p>
+      {
+        KINDS.map((kind) => (
+          <div class="klass" role="radiogroup" aria-label={`${t.modeFor} ${t.kinds[kind]}`}>
+            <span class="klass__name">{t.kinds[kind]}</span>
+            <div class="klass__modes">
+              {MODES.map((mode) => (
+                <label class={`klass__mode klass__mode--${mode}`}>
+                  <input type="radio" name={`scan-${kind}`} value={mode} data-kind={kind} checked={DEFAULT_MODE[kind] === mode} />
+                  <span>{t.modes[mode]}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+      <p class="panel__rule">{t.rule}</p>
+    </div>
+  </details>
+
+  <details class="panel">
+    <summary>{t.pieceTitle}</summary>
+    <dl class="panel__body piece">
+      {
+        t.piece.map(([term, value]) => (
+          <div>
+            <dt>{term}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </details>
+
+  <p class="scanner__note">{t.note}</p>
 </figure>
 
 <style>
   .scanner {
+    --alarm: #ffc857;
     margin: 0;
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -72,7 +169,7 @@ const defects = [
 
   .scanner__window {
     position: relative;
-    height: clamp(18rem, 42vw, 26rem);
+    height: clamp(17rem, 38vw, 23rem);
     overflow: hidden;
   }
 
@@ -119,9 +216,15 @@ const defects = [
     will-change: transform;
   }
 
+  .defect.is-empty {
+    visibility: hidden;
+  }
+
   .defect--x8 { left: 8%; }
   .defect--x22 { left: 22%; }
+  .defect--x30 { left: 30%; }
   .defect--x38 { left: 38%; }
+  .defect--x54 { left: 54%; }
   .defect--x62 { left: 62%; }
   .defect--x74 { left: 74%; }
 
@@ -149,14 +252,14 @@ const defects = [
   }
 
   .defect--knot .defect__mark {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     background: rgb(150 225 255 / 0.85);
   }
 
   .defect--weft .defect__mark {
-    width: 120px;
+    width: 110px;
     height: 5px;
     background: rgb(0 15 30 / 0.9);
   }
@@ -194,14 +297,109 @@ const defects = [
     transform: none;
   }
 
-  .scanner__hud {
+  /* Classe filtrata: contata, ma segnata appena e senza etichetta */
+  .defect.is-filtered .defect__mark {
+    outline: 1px dashed rgb(169 196 214 / 0.55);
+  }
+
+  .defect.is-alarm .defect__mark {
+    outline-color: var(--alarm);
+    box-shadow: 0 0 18px rgb(255 200 87 / 0.55);
+  }
+
+  .defect.is-alarm .defect__label {
+    background: var(--alarm);
+  }
+
+  /* Tablet dell'operatore, sovrapposto alla pezza */
+  .tablet {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    width: min(13.5rem, 55%);
+    padding: 0.6rem 0.7rem;
+    border: 2px solid rgb(169 196 214 / 0.5);
+    border-radius: 10px;
+    background: rgb(0 23 42 / 0.92);
+    font-size: 0.78rem;
+  }
+
+  .tablet__title {
+    margin: 0 0 0.35rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .tablet__alarm {
+    margin: 0 0 0.35rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: 5px;
+    background: var(--alarm);
+    color: var(--bg-deep);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .tablet__alarm:empty {
+    display: none;
+  }
+
+  .tablet__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-height: 4.6rem;
+  }
+
+  .tablet__list :global(li) {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.5rem 1.5rem;
-    padding: 0.9rem 1.1rem;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.12rem 0;
+  }
+
+  .tablet__list :global(.is-alarm) {
+    color: var(--alarm);
+    font-weight: 700;
+  }
+
+  .tablet__list :global(.tablet__empty) {
+    color: var(--text-muted);
+  }
+
+  .tablet.is-alarm {
+    border-color: var(--alarm);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .tablet.is-alarm {
+      animation: alarm-flash 0.6s steps(2, jump-none) infinite;
+    }
+  }
+
+  @keyframes alarm-flash {
+    from {
+      box-shadow: 0 0 0 0 rgb(255 200 87 / 0);
+    }
+    to {
+      box-shadow: 0 0 0 5px rgb(255 200 87 / 0.55);
+    }
+  }
+
+  .scanner__hud {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    padding: 0.8rem 1.1rem;
     border-top: 1px solid var(--line);
-    font-size: 0.9rem;
+  }
+
+  .scanner__hud span {
+    display: flex;
+    flex-direction: column;
   }
 
   .scanner__hud strong {
@@ -211,13 +409,119 @@ const defects = [
   }
 
   .scanner__hud small {
-    margin-left: 0.25rem;
-    font-size: 0.8rem;
+    font-size: 0.72rem;
     color: var(--text-muted);
   }
 
+  .panel {
+    border-top: 1px solid var(--line);
+  }
+
+  .panel summary {
+    padding: 0.8rem 1.1rem;
+    font-weight: 700;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+
+  .panel summary:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  .panel__body {
+    margin: 0;
+    padding: 0 1.1rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .panel__body p {
+    margin: 0 0 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .panel__body .panel__rule {
+    margin: 0.75rem 0 0;
+    font-style: italic;
+  }
+
+  .klass {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+  }
+
+  .klass__name {
+    font-weight: 700;
+  }
+
+  .klass__modes {
+    display: flex;
+    border: 1px solid rgb(169 196 214 / 0.45);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .klass__mode {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .klass__mode input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .klass__mode span {
+    display: block;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .klass__mode input:checked + span {
+    background: var(--cyan-200);
+    color: var(--bg-deep);
+    font-weight: 700;
+  }
+
+  .klass__mode--filter input:checked + span {
+    background: rgb(169 196 214 / 0.85);
+  }
+
+  .klass__mode--alarm input:checked + span {
+    background: var(--alarm);
+  }
+
+  .klass__mode input:focus-visible + span {
+    outline: 2px solid var(--text);
+    outline-offset: -2px;
+  }
+
+  .piece {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.6rem 1rem;
+  }
+
+  .piece dt {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .piece dd {
+    margin: 0;
+    font-weight: 700;
+  }
+
   .scanner__note {
-    margin-left: auto;
+    margin: 0;
+    padding: 0.6rem 1.1rem;
+    border-top: 1px solid var(--line);
     font-size: 0.75rem;
     font-style: italic;
     color: var(--text-muted);
@@ -225,56 +529,149 @@ const defects = [
 </style>
 
 <script>
+  type Kind = 'stain' | 'pull' | 'knot' | 'weft' | 'hole';
+  type Mode = 'filter' | 'show' | 'alarm';
+
+  // Sequenza fissa dei difetti che entrano (null = tratto pulito): contiene piccole "raffiche"
+  // della stessa classe, per far vedere quando scatta la regola di allarme.
+  const SEQUENCE: (Kind | null)[] = [
+    'knot', null, 'stain', 'knot', null, 'pull', null, 'knot', 'hole', null, null, 'knot',
+    'weft', 'weft', 'weft', null, 'knot', null, 'pull', null, 'stain', 'knot', null, null,
+    'knot', 'pull', null, 'hole', 'hole', 'knot', 'hole', null, 'stain', 'stain', 'knot', 'stain',
+  ];
+  const KIND_CLASSES = ['stain', 'pull', 'knot', 'weft', 'hole'].map((k) => `defect--${k}`);
+  const PX_PER_METRE = 400; // scala della simulazione
+  const SPEED = 42; // px al secondo
+  const RULE_COUNT = 3;
+  const RULE_METRES = 2;
+  const ALARM_SECONDS = 4;
+
   const root = document.querySelector<HTMLElement>('[data-scanner]');
   if (root) {
     const win = root.querySelector<HTMLElement>('.scanner__window')!;
     const fabric = root.querySelector<HTMLElement>('[data-fabric]')!;
-    const metersEl = root.querySelector<HTMLElement>('[data-meters]')!;
-    const foundEl = root.querySelector<HTMLElement>('[data-found]')!;
-    const items = [...root.querySelectorAll<HTMLElement>('[data-defect]')].map((el) => ({
-      el,
-      y: Number(el.dataset.y) / 100,
-      wasBelow: true,
-    }));
+    const tablet = root.querySelector<HTMLElement>('[data-tablet]')!;
+    const list = root.querySelector<HTMLElement>('[data-tablet-list]')!;
+    const alarmEl = root.querySelector<HTMLElement>('[data-alarm]')!;
+    const out = (name: string) => root.querySelector<HTMLElement>(`[data-${name}]`)!;
+    const metersEl = out('meters');
+    const totalEl = out('total');
+    const filteredEl = out('filtered');
+    const alarmsEl = out('alarms');
+    const texts = JSON.parse(root.dataset.texts ?? '{}') as {
+      kinds: Record<Kind, string>;
+      alarm: string;
+      empty: string;
+    };
     const locale = root.dataset.lang === 'en' ? 'en-GB' : 'it-IT';
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-    const PX_PER_METRE = 400; // scala della simulazione
-    const SPEED = 42; // px al secondo
+    const fmt = (metres: number) =>
+      metres.toLocaleString(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    let next = 0;
+    const items = [...root.querySelectorAll<HTMLElement>('[data-defect]')].map((el) => ({
+      el,
+      label: el.querySelector<HTMLElement>('.defect__label')!,
+      y: Number(el.dataset.y) / 100,
+      kind: null as Kind | null,
+      wasBelow: true,
+    }));
+    type Item = (typeof items)[number];
+
+    // Assegna al difetto la prossima classe della sequenza (quando rientra dal basso).
+    const assign = (d: Item) => {
+      d.kind = SEQUENCE[next++ % SEQUENCE.length];
+      d.el.classList.remove(...KIND_CLASSES, 'is-found', 'is-filtered', 'is-alarm');
+      d.el.classList.toggle('is-empty', d.kind === null);
+      if (d.kind) {
+        d.el.classList.add(`defect--${d.kind}`);
+        d.label.textContent = texts.kinds[d.kind];
+      }
+    };
+
+    const modeOf = (kind: Kind) =>
+      (root.querySelector<HTMLInputElement>(`input[data-kind="${kind}"]:checked`)?.value ?? 'show') as Mode;
 
     let offset = 0;
-    let found = 0;
+    let total = 0;
+    let filtered = 0;
+    let alarms = 0;
+    let alarmUntil = 0;
     let visible = true;
     let last = performance.now();
     let lastScroll = scrollY;
+    const history: { kind: Kind; at: number }[] = []; // ultimi difetti contati, con la posizione in metri
+    const shown: { text: string; alarm: boolean }[] = [];
+
+    const renderTablet = () => {
+      list.replaceChildren(
+        ...(shown.length
+          ? shown.map((row) => {
+              const li = document.createElement('li');
+              if (row.alarm) li.className = 'is-alarm';
+              li.textContent = row.text;
+              return li;
+            })
+          : [Object.assign(document.createElement('li'), { className: 'tablet__empty', textContent: texts.empty })]),
+      );
+    };
+
+    // Un difetto ha attraversato la linea: si conta sempre, poi si applica la scelta fatta per la sua classe.
+    const detect = (d: Item) => {
+      if (!d.kind) return;
+      const at = offset / PX_PER_METRE;
+      total += 1;
+      history.push({ kind: d.kind, at });
+      while (history.length && history[0].at < at - RULE_METRES) history.shift();
+
+      const mode = modeOf(d.kind);
+      if (mode === 'filter') {
+        filtered += 1;
+        d.el.classList.add('is-filtered');
+        return;
+      }
+      const repeated = history.filter((h) => h.kind === d.kind).length >= RULE_COUNT;
+      const alarm = mode === 'alarm' && repeated;
+      d.el.classList.add('is-found');
+      if (alarm) {
+        d.el.classList.add('is-alarm');
+        if (performance.now() > alarmUntil) alarms += 1;
+        alarmUntil = performance.now() + ALARM_SECONDS * 1000;
+        alarmEl.textContent = texts.alarm.replace('{kind}', texts.kinds[d.kind]);
+        tablet.classList.add('is-alarm');
+      }
+      shown.unshift({ text: `${fmt(at)} m · ${texts.kinds[d.kind]}`, alarm });
+      shown.length = Math.min(shown.length, 4);
+      renderTablet();
+    };
 
     // Posizione verticale di un difetto nella finestra (il tessuto si ripete a moduli).
     const geometry = () => {
       const h = win.clientHeight;
       return { tile: h + 80, scanY: h * 0.55 };
     };
-    const posOf = (d: (typeof items)[number], tile: number) =>
-      ((((d.y * tile - offset) % tile) + tile) % tile) - 40;
+    const posOf = (d: Item, tile: number) => ((((d.y * tile - offset) % tile) + tile) % tile) - 40;
 
     const render = () => {
       const { tile, scanY } = geometry();
       fabric.style.backgroundPosition = `0 ${-offset}px, 0 ${-offset}px, 0 0`;
       for (const d of items) {
         const y = posOf(d, tile);
-        d.el.style.transform = `translateY(${y}px)`;
         const below = y > scanY;
-        if (d.wasBelow && !below) {
-          found += 1;
-          d.el.classList.add('is-found');
-        } else if (!d.wasBelow && below) {
-          d.el.classList.remove('is-found'); // rientra dal basso: nuovo tratto di pezza
-        }
+        if (d.wasBelow && !below) detect(d);
+        else if (!d.wasBelow && below) assign(d); // rientra dal basso: nuovo tratto di pezza
         d.wasBelow = below;
+        d.el.style.transform = `translateY(${y}px)`;
       }
-      metersEl.textContent = (offset / PX_PER_METRE).toLocaleString(locale, {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1,
-      });
-      foundEl.textContent = String(found);
+      if (alarmUntil && performance.now() > alarmUntil) {
+        alarmUntil = 0;
+        alarmEl.textContent = '';
+        tablet.classList.remove('is-alarm');
+      }
+      metersEl.textContent = fmt(offset / PX_PER_METRE);
+      totalEl.textContent = String(total);
+      filteredEl.textContent = String(filtered);
+      alarmsEl.textContent = String(alarms);
     };
 
     const frame = (now: number) => {
@@ -294,7 +691,7 @@ const defects = [
         const delta = Math.abs(scrollY - lastScroll);
         lastScroll = scrollY;
         if (visible) {
-          offset += delta * 0.8;
+          offset += Math.min(delta * 0.8, 60);
           if (reduced.matches) render();
         }
       },
@@ -305,16 +702,14 @@ const defects = [
       visible = entry.isIntersecting;
     }).observe(root);
 
-    if (reduced.matches) {
-      // Nessuna animazione continua: mostra una pezza con alcuni difetti già rilevati.
-      offset = win.clientHeight * 0.6;
-      render();
-    } else {
-      // All'avvio i difetti già sopra la linea non contano: si parte da una pezza "nuova".
-      const { tile, scanY } = geometry();
-      for (const d of items) d.wasBelow = posOf(d, tile) > scanY;
-      render();
-      requestAnimationFrame(frame);
+    // All'avvio i difetti già sopra la linea non contano: si parte da una pezza "nuova".
+    const { tile, scanY } = geometry();
+    for (const d of items) {
+      d.wasBelow = posOf(d, tile) > scanY;
+      if (d.wasBelow) assign(d);
+      else d.el.classList.add('is-empty');
     }
+    render();
+    if (!reduced.matches) requestAnimationFrame(frame);
   }
 </script>
