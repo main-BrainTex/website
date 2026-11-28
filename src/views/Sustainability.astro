@@ -300,6 +300,7 @@ const calc = JSON.stringify({ ...FACTORS, locale: t.locale });
 
   .calc {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 1.5rem;
   }
 
@@ -317,6 +318,8 @@ const calc = JSON.stringify({ ...FACTORS, locale: t.locale });
   }
 
   .calc__inputs input {
+    width: 100%;
+    min-width: 0;
     min-height: 3rem;
     padding: 0.6rem 0.9rem;
     border: 1px solid rgb(169 196 214 / 0.45);
@@ -352,6 +355,10 @@ const calc = JSON.stringify({ ...FACTORS, locale: t.locale });
   .calc__note {
     margin: 0;
     font-size: 0.85rem;
+  }
+
+  .calc__note .src {
+    white-space: normal;
   }
 
   .sources h2 {
