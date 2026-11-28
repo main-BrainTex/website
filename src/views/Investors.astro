@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import { STATS } from '../config';
 import { href, type Lang } from '../i18n';
 
 interface Props {
@@ -8,27 +9,43 @@ interface Props {
 }
 const { lang } = Astro.props;
 const contact = href('contact', lang);
+const millions = Math.floor(STATS.metersInspected / 1_000_000);
 
 const t = {
   it: {
     title: 'Investitori e partner',
     description:
-      'BrainTex per investitori, costruttori di macchine, software house ERP e MES, confezionisti e brand, università, istituzioni e fornitori: opportunità di collaborazione.',
+      'BrainTex per investitori e partner: dalla visione artificiale per il controllo qualità alla fabbrica intelligente. Costruttori di macchine, software house ERP e MES, confezionisti, università e fornitori.',
     eyebrow: 'Investitori e partner',
     h1: 'Costruiamo insieme il controllo qualità del futuro.',
     lead: 'Partiamo dal tessile, dove il controllo a vista è ancora la norma. La stessa tecnologia può portare valore ovunque un materiale scorra in rotoli.',
+    investors: {
+      eyebrow: 'Investitori',
+      title: 'Il controllo qualità è solo l’inizio.',
+      text: [
+        'La visione artificiale applicata al controllo qualità è la tecnologia abilitante: ci porta dentro le macchine, ogni giorno, su ogni metro di tessuto.',
+        'La nostra visione è la fabbrica intelligente: sistemi interconnessi che generano dati, li trasformano in insight e permettono decisioni basate sui fatti, lungo tutta la filiera. Partiamo dal tessile, ma la stessa tecnologia può crescere ovunque un materiale venga prodotto e controllato in continuo.',
+      ],
+      pathTitle: 'Dove stiamo andando',
+      path: [
+        { step: 'Oggi', title: 'Vedere', text: 'Ogni difetto, su ogni metro, in tempo reale, sulle macchine che l’azienda ha già.' },
+        { step: 'Domani', title: 'Collegare', text: 'Le fasi della filiera si parlano: tessitura, finissaggio, controllo, confezione, gestionali.' },
+        { step: 'La visione', title: 'Decidere', text: 'Una fabbrica intelligente in cui i dati diventano insight e le decisioni si prendono sui fatti.' },
+      ],
+      whyTitle: 'Perché adesso, perché noi',
+      why: [
+        { title: 'Già al lavoro in produzione', text: `Oltre ${millions} milioni di metri di tessuto ispezionati in aziende vere, non in laboratorio.` },
+        { title: 'Tecnologia protetta', text: 'Domanda di brevetto depositata e modelli addestrati sul tessuto di ogni singolo cliente.' },
+        { title: 'Dati che valgono sempre di più', text: 'Ogni pezza ispezionata aggiunge informazioni: il valore del sistema cresce con l’uso.' },
+        { title: 'Il vento della normativa', text: 'Con il passaporto digitale di prodotto (ESPR) i dati di filiera contano sempre di più. Quelli di BrainTex sono dati utili anche per questo.' },
+        { title: 'Riconosciuti dall’ecosistema', text: 'Forbes Under 30 2026, Premio Nazionale per l’Innovazione 2025 (Top 4 Industrial e Premio Venture CDP), Start Up Now 2025.' },
+        { title: 'Nati al Politecnico, cresciuti nel distretto', text: 'Incubati in I3P, l’incubatore del Politecnico di Torino, con la sede operativa a Biella, nel cuore del tessile.' },
+      ],
+      ctaText: 'Il resto te lo raccontiamo di persona: numeri, piani e prossimi passi.',
+      ctaDeck: 'Richiedi la presentazione',
+      ctaCall: 'Fissiamo una call',
+    },
     blocks: [
-      {
-        id: 'investitori',
-        eyebrow: 'Investitori',
-        title: 'Una tecnologia nata nel tessile, pronta a crescere.',
-        text: [
-          'BrainTex controlla il 100% del tessuto in tempo reale, si applica dalla tessitura al controllo finito ed è protetta da una domanda di brevetto depositata.',
-          'Guardiamo ai mercati adiacenti in cui il controllo qualità su materiali continui è decisivo: carta, pneumatici, packaging e pelle.',
-        ],
-        audience: 'investitore',
-        cta: 'Contattaci come investitore',
-      },
       {
         id: 'partner',
         eyebrow: 'Costruttori di macchine e integratori',
@@ -87,22 +104,37 @@ const t = {
   en: {
     title: 'Investors & partners',
     description:
-      'BrainTex for investors, machine builders, ERP and MES software houses, garment makers and brands, universities, institutions and suppliers: partnership opportunities.',
+      'BrainTex for investors and partners: from machine vision for quality control to the smart factory. Machine builders, ERP and MES software houses, garment makers, universities and suppliers.',
     eyebrow: 'Investors & partners',
     h1: 'Let’s build the future of quality control together.',
     lead: 'We start from textiles, where visual inspection is still the norm. The same technology can add value wherever material runs in rolls.',
+    investors: {
+      eyebrow: 'Investors',
+      title: 'Quality control is only the beginning.',
+      text: [
+        'Machine vision applied to quality control is the enabling technology: it takes us inside the machines, every day, on every metre of fabric.',
+        'Our vision is the smart factory: interconnected systems that generate data, turn it into insight and enable fact-based decisions across the whole supply chain. We start from textiles, but the same technology can grow wherever material is produced and inspected continuously.',
+      ],
+      pathTitle: 'Where we are heading',
+      path: [
+        { step: 'Today', title: 'See', text: 'Every defect, on every metre, in real time, on the machines a company already has.' },
+        { step: 'Next', title: 'Connect', text: 'The stages of the supply chain talk to each other: weaving, finishing, inspection, garment making, management systems.' },
+        { step: 'The vision', title: 'Decide', text: 'A smart factory where data becomes insight and decisions are based on facts.' },
+      ],
+      whyTitle: 'Why now, why us',
+      why: [
+        { title: 'Already at work in production', text: `Over ${millions} million metres of fabric inspected in real companies, not in a lab.` },
+        { title: 'Protected technology', text: 'A filed patent application and models trained on each customer’s own fabric.' },
+        { title: 'Data that keeps gaining value', text: 'Every inspected piece adds information: the value of the system grows with use.' },
+        { title: 'Regulation is moving towards data', text: 'With the Digital Product Passport (ESPR), supply chain data matters more and more. BrainTex data is useful for this too.' },
+        { title: 'Recognised by the ecosystem', text: 'Forbes Under 30 2026, National Innovation Award 2025 (Top 4 Industrial and CDP Venture Award), Start Up Now 2025.' },
+        { title: 'Born at the Politecnico, grown in the district', text: 'Incubated at I3P, the Politecnico di Torino incubator, with our operational site in Biella, at the heart of textiles.' },
+      ],
+      ctaText: 'We will tell you the rest in person: figures, plans and next steps.',
+      ctaDeck: 'Request the presentation',
+      ctaCall: 'Let’s book a call',
+    },
     blocks: [
-      {
-        id: 'investitori',
-        eyebrow: 'Investors',
-        title: 'A technology born in textiles, ready to grow.',
-        text: [
-          'BrainTex inspects 100% of the fabric in real time, applies from weaving to final inspection, and is protected by a filed patent application.',
-          'We look at adjacent markets where quality control on continuous materials is critical: paper, tyres, packaging and leather.',
-        ],
-        audience: 'investitore',
-        cta: 'Contact us as an investor',
-      },
       {
         id: 'partner',
         eyebrow: 'Machine builders & integrators',
@@ -164,9 +196,56 @@ const t = {
 <Base lang={lang} routeKey="investors" title={t.title} description={t.description}>
   <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
 
+  <section id="investitori" class="section">
+    <div class="wrap">
+      <div class="split">
+        <div data-reveal>
+          <p class="eyebrow">{t.investors.eyebrow}</p>
+          <h2>{t.investors.title}</h2>
+        </div>
+        <div data-reveal="1">
+          {t.investors.text.map((p) => <p class="lead">{p}</p>)}
+        </div>
+      </div>
+
+      <h3 class="inv__h">{t.investors.pathTitle}</h3>
+      <ol class="path plain">
+        {
+          t.investors.path.map((p, i) => (
+            <li class="card path__step" data-reveal={String(i + 1)}>
+              <span class="path__when">{p.step}</span>
+              <strong class="path__what">{p.title}</strong>
+              <p>{p.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <h3 class="inv__h">{t.investors.whyTitle}</h3>
+      <ul class="grid grid--3 plain">
+        {
+          t.investors.why.map((w, i) => (
+            <li class="card" data-reveal={String((i % 3) + 1)}>
+              <h4>{w.title}</h4>
+              <p>{w.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="inv__cta" data-reveal>
+        <p class="lead">{t.investors.ctaText}</p>
+        <div class="actions">
+          <a class="btn" href={`${contact}?chi=investitore&tema=presentazione`}>{t.investors.ctaDeck}</a>
+          <a class="btn btn--ghost" href={`${contact}?chi=investitore&tema=call`}>{t.investors.ctaCall}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   {
     t.blocks.map((b, i) => (
-      <section id={b.id} class:list={['section', { 'section--raised': i % 2 === 1 }]}>
+      <section id={b.id} class:list={['section', { 'section--raised': i % 2 === 0 }]}>
         <div class="wrap split">
           <div data-reveal>
             <p class="eyebrow">{b.eyebrow}</p>
@@ -185,3 +264,66 @@ const t = {
     ))
   }
 </Base>
+
+<style>
+  .inv__h {
+    margin: clamp(2.5rem, 6vw, 4rem) 0 1.25rem;
+    font-size: 1.35rem;
+  }
+
+  h4 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .card p {
+    margin-bottom: 0;
+  }
+
+  .path {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: 1rem;
+  }
+
+  .path__step {
+    position: relative;
+    border-top: 3px solid var(--cyan-500);
+  }
+
+  .path__step:last-child {
+    border-top-color: var(--green-300);
+  }
+
+  .path__when {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .path__what {
+    display: block;
+    margin: 0.3rem 0 0.5rem;
+    font-size: 1.6rem;
+    color: var(--accent);
+  }
+
+  .path__step:last-child .path__what {
+    color: var(--green-300);
+  }
+
+  .inv__cta {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .inv__cta .lead {
+    margin-top: 0;
+  }
+</style>
