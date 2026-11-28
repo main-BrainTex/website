@@ -520,3 +520,63 @@ export const TOUR: { focus: NodeKey | null; events: string[]; title: T; text: T 
     ),
   },
 ];
+
+/** Giro guidato nella fabbrica 3D: la vista si sposta da sola, una frase per tappa. */
+export const GUIDED_TOUR: { focus: NodeKey | null; text: T }[] = [
+  {
+    focus: 'tessitura',
+    text: tx(
+      'Tessitura: BrainTex guarda il tessuto sul telaio e si accorge di un guasto dopo pochi centimetri.',
+      'Weaving: BrainTex watches the fabric on the loom and notices a fault after a few centimetres.',
+    ),
+  },
+  {
+    focus: 'greggio',
+    text: tx(
+      'Controllo del greggio: ogni pezza viene guardata metro per metro prima di andare avanti.',
+      'Greige inspection: every piece is looked at metre by metre before it moves on.',
+    ),
+  },
+  {
+    focus: 'finissaggio',
+    text: tx(
+      'Tintoria e finissaggio: una pezza difettosa si ferma prima di consumare acqua, energia e prodotti chimici.',
+      'Dyeing and finishing: a defective piece stops before it uses up water, energy and chemicals.',
+    ),
+  },
+  {
+    focus: 'controllo',
+    text: tx(
+      'Controllo finito: l’operatore decide, BrainTex non si stanca e prepara il report di ogni pezza.',
+      'Final inspection: the operator decides, BrainTex never tires and prepares the report for every piece.',
+    ),
+  },
+  {
+    focus: 'uffici',
+    text: tx(
+      'Uffici e direzione: i dati di tutte le fasi arrivano nel cruscotto e diventano decisioni.',
+      'Offices and management: data from every stage reaches the dashboard and becomes decisions.',
+    ),
+  },
+  {
+    focus: 'magazzino',
+    text: tx(
+      'Magazzino e spedizioni: ogni pezza parte con la sua mappa dei difetti.',
+      'Warehouse and shipping: every piece leaves with its defect map.',
+    ),
+  },
+  {
+    focus: 'confezionista',
+    text: tx(
+      'Confezionista: il taglio evita i difetti, la resa sale e la fiducia nel fornitore cresce.',
+      'Garment maker: cutting avoids the defects, yield goes up and trust in the supplier grows.',
+    ),
+  },
+  {
+    focus: null,
+    text: tx(
+      'Questa è la filiera intera. Usa l’interruttore per vederla senza e con BrainTex.',
+      'This is the whole supply chain. Use the switch to see it without and with BrainTex.',
+    ),
+  },
+];

@@ -574,7 +574,11 @@ export function createScene(container: HTMLElement, lang: 'it' | 'en'): SceneVie
   const canvas = renderer.domElement;
   const onDown = (e: PointerEvent) => {
     dragX = e.clientX;
-    canvas.setPointerCapture(e.pointerId);
+    try {
+      canvas.setPointerCapture(e.pointerId);
+    } catch {
+      // puntatore già rilasciato: si trascina comunque finché resta premuto
+    }
   };
   const onMove = (e: PointerEvent) => {
     if (dragX === null) return;

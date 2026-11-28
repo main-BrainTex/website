@@ -1,6 +1,6 @@
 // Collega il motore della simulazione all'interfaccia: mappa 2D, catena, contatori, indicatori,
 // comandi della modalità demo e caricamento su richiesta della vista 3D.
-import { EVENTS, INDICATORS, LENSES, NODES, type FactoryEvent, type NodeKey } from '../../data/factory';
+import { EVENTS, GUIDED_TOUR, INDICATORS, LENSES, NODES, type FactoryEvent, type NodeKey } from '../../data/factory';
 import { FactorySim, levelWord, type Mode } from './engine';
 
 export interface SceneView {
@@ -48,6 +48,8 @@ export function initFactorySim(root: HTMLElement): FactoryController {
   const three = root.querySelector<HTMLElement>('[data-three]')!;
   const status = root.querySelector<HTMLElement>('[data-status]')!;
   const view3dBtn = root.querySelector<HTMLButtonElement>('[data-view3d]')!;
+  const tourBtn = root.querySelector<HTMLButtonElement>('[data-tour3d]')!;
+  const caption = root.querySelector<HTMLElement>('[data-caption]')!;
   const playBtn = root.querySelector<HTMLButtonElement>('[data-play]')!;
   const lensSelect = root.querySelector<HTMLSelectElement>('[data-lens]')!;
   const fmt = new Intl.NumberFormat(lang === 'it' ? 'it-IT' : 'en-GB');
@@ -199,8 +201,40 @@ export function initFactorySim(root: HTMLElement): FactoryController {
     b.addEventListener('click', () => sim.setMode(b.dataset.modeBtn as Mode)),
   );
 
+  // Giro guidato nella fabbrica 3D: la vista si sposta da sola da una tappa all'altra.
+  let tourTimer = 0;
+  const stopTour = () => {
+    if (!tourTimer) return;
+    window.clearTimeout(tourTimer);
+    tourTimer = 0;
+    caption.hidden = true;
+    tourBtn.textContent = ui.tour;
+    tourBtn.setAttribute('aria-pressed', 'false');
+    controller.focus(null);
+  };
+  const tourStep = (i: number) => {
+    const stop = GUIDED_TOUR[i];
+    if (!stop) {
+      tourTimer = -1; // fine del giro: stopTour riporta tutto com'era
+      return stopTour();
+    }
+    controller.focus(stop.focus);
+    caption.textContent = stop.text[lang];
+    caption.hidden = false;
+    tourTimer = window.setTimeout(() => tourStep(i + 1), 6000);
+  };
+  tourBtn.addEventListener('click', () => {
+    if (tourTimer) return stopTour();
+    tourBtn.textContent = ui.tourStop;
+    tourBtn.setAttribute('aria-pressed', 'true');
+    tourStep(0);
+  });
+  // Chi tocca la scena riprende il comando.
+  three.addEventListener('pointerdown', stopTour);
+
   root.querySelectorAll<HTMLButtonElement>('[data-event]').forEach((b) =>
     b.addEventListener('click', () => {
+      stopTour();
       applied.delete(b.dataset.event!); // nella demo ogni clic fa accadere di nuovo l'evento
       controller.play(b.dataset.event!);
     }),
@@ -266,6 +300,7 @@ export function initFactorySim(root: HTMLElement): FactoryController {
     placeholder.replaceWith(root);
     if (document.fullscreenElement) document.exitFullscreen().catch(() => undefined);
     stopShift();
+    stopTour();
     openBtn.focus();
   };
   openBtn.addEventListener('click', openDemo);
@@ -287,6 +322,8 @@ export function initFactorySim(root: HTMLElement): FactoryController {
   view3dBtn.hidden = !can3d;
   view3dBtn.addEventListener('click', async () => {
     if (scene) {
+      stopTour();
+      tourBtn.hidden = true;
       scene.dispose();
       scene = null;
       three.hidden = true;
@@ -307,6 +344,7 @@ export function initFactorySim(root: HTMLElement): FactoryController {
       if (sim.last) scene.showEvent(sim.last, sim.mode);
       view3dBtn.textContent = ui.view2d;
       status.textContent = ui.drag3d;
+      tourBtn.hidden = false;
     } catch {
       status.textContent = ui.failed3d;
       view3dBtn.hidden = true;

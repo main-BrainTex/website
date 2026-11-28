@@ -18,6 +18,8 @@ const t = {
     view3d: 'Entra in fabbrica 3D',
     view2d: 'Torna alla mappa 2D',
     drag3d: 'Trascina per ruotare la vista.',
+    tour: 'Fai il giro',
+    tourStop: 'Ferma il giro',
     demo: 'Esplora la simulazione completa',
     close: 'Chiudi la simulazione completa',
     disclaimer: 'Simulazione esemplificativa: eventi e risultati sono illustrativi.',
@@ -52,6 +54,8 @@ const t = {
     view3d: 'Enter the 3D factory',
     view2d: 'Back to the 2D map',
     drag3d: 'Drag to rotate the view.',
+    tour: 'Take the tour',
+    tourStop: 'Stop the tour',
     demo: 'Explore the full simulation',
     close: 'Close the full simulation',
     disclaimer: 'Illustrative simulation: events and results are examples.',
@@ -91,6 +95,8 @@ const ui = JSON.stringify({
   stop: t.stop,
   view3d: t.view3d,
   drag3d: t.drag3d,
+  tour: t.tour,
+  tourStop: t.tourStop,
   view2d: t.view2d,
   loading3d: t.loading3d,
   failed3d: t.failed3d,
@@ -113,6 +119,7 @@ const node = (key: string) => NODES.find((n) => n.key === key)!;
     </div>
     <div class="sim__bar-actions">
       <button type="button" class="sim__link" data-view3d hidden>{t.view3d}</button>
+      <button type="button" class="sim__link" data-tour3d aria-pressed="false" hidden>{t.tour}</button>
       <button type="button" class="btn btn--ghost sim__demo-open" data-demo-open>{t.demo}</button>
       <button type="button" class="sim__close" data-demo-close aria-label={t.close}><span aria-hidden="true"></span></button>
     </div>
@@ -154,6 +161,7 @@ const node = (key: string) => NODES.find((n) => n.key === key)!;
     </svg>
     <div class="sim__three" data-three hidden></div>
     <p class="sim__status" data-status role="status"></p>
+    <p class="sim__caption" data-caption aria-live="polite" hidden></p>
   </div>
 
   <div class="sim__chain" aria-live="polite" data-chain>
@@ -543,6 +551,21 @@ const node = (key: string) => NODES.find((n) => n.key === key)!;
     margin: 0;
     font-size: 0.85rem;
     color: var(--text-muted);
+  }
+
+  .sim__caption {
+    position: absolute;
+    top: 0.75rem;
+    left: 50%;
+    width: min(36rem, calc(100% - 1.5rem));
+    margin: 0;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    background: rgb(0 23 42 / 0.88);
+    font-weight: 700;
+    text-align: center;
+    transform: translateX(-50%);
   }
 
   .sim__chain {
