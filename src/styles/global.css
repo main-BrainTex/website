@@ -44,7 +44,7 @@
   --font: 'Metropolis', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --radius: 14px;
   --radius-sm: 8px;
-  --wrap: 72rem;
+  --wrap: 84rem;
   --gutter: clamp(1.25rem, 4vw, 2.5rem);
   --section: clamp(4rem, 10vw, 7.5rem);
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -60,6 +60,19 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: 5rem;
+}
+
+/* Schermi grandi: tutto un po' più grande, così i margini laterali non diventano enormi */
+@media (min-width: 105rem) {
+  html {
+    font-size: 106.25%;
+  }
+}
+
+@media (min-width: 135rem) {
+  html {
+    font-size: 118.75%;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -207,21 +220,23 @@ a:hover {
   margin-bottom: clamp(2.5rem, 5vw, 4rem);
 }
 
+/* Le griglie si adattano allo schermo ma non superano 2, 3 o 4 colonne */
 .grid {
+  --gap: clamp(1rem, 2.5vw, 1.75rem);
   display: grid;
-  gap: clamp(1rem, 2.5vw, 1.75rem);
+  gap: var(--gap);
 }
 
 .grid--2 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(22rem, (100% - var(--gap)) / 2)), 1fr));
 }
 
 .grid--3 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(17rem, (100% - 2 * var(--gap)) / 3)), 1fr));
 }
 
 .grid--4 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(14rem, (100% - 3 * var(--gap)) / 4)), 1fr));
 }
 
 /* Due colonne: titolo a sinistra, testo a destra */

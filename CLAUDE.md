@@ -43,6 +43,7 @@ Fase attuale: solo progettazione e anteprima. Il sito Wix resta online; il domin
 - JSON-LD Organization in home, con sede legale, sede operativa, LinkedIn e logo (`public/logo.png`, versione a colori su bianco, URL fisso). LocalBusiness non serve: BrainTex non riceve clienti in sede.
 - `alt` su tutte le immagini; immagini ottimizzate (WebP/AVIF, dimensioni corrette, lazy loading).
 - Ottime Core Web Vitals, responsive, accessibile (contrasto AA, tastiera, "riduci movimento"). Pagina 404 personalizzata.
+- Larghezze (decisione 28/11/2026): contenitore fino a 84rem; oltre 1680 px i caratteri crescono un po' (106%, 119% oltre 2160 px) per non lasciare margini laterali enormi; le griglie `grid--2/3/4` non superano 2, 3 o 4 colonne. Verificare da 320 a 2560 px che nessuna pagina sbordi.
 
 ## Google Analytics
 - GA4, ID di misurazione `G-MCRF25VPT6` (proprietà 227207275). Attivo solo su www.braintex.it / braintex.it, mai sull'anteprima github.io (controllo in build e a runtime sull'hostname).
