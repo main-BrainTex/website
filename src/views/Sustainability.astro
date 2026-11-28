@@ -1,0 +1,418 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { STATS } from '../config';
+import { href, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+// Fonti originali, verificate il 28/11/2026. Ogni dato in pagina ha accanto il suo link.
+const SRC = {
+  eeaFaq: 'https://www.eea.europa.eu/en/about/contact-us/faqs/what-are-the-environmental-impacts-of-textiles',
+  eeaTopic: 'https://www.eea.europa.eu/en/topics/in-depth/textiles',
+  wetStudy: 'https://link.springer.com/article/10.1007/s11356-024-32768-2',
+  cutStudy: 'https://link.springer.com/article/10.1186/s40691-021-00262-9',
+};
+// Fattori medi per la tintura e il finissaggio di tessuti di lana a navetta (studio su 150 aziende, fonte SRC.wetStudy).
+const FACTORS = { waterLPerKg: 345, kWhPerKg: 7 };
+
+const t = {
+  it: {
+    title: 'Sostenibilità: il difetto fermato prima fa bene anche all’ambiente',
+    description:
+      'Perché un difetto scoperto tardi pesa sull’ambiente e dove BrainTex aiuta a evitarlo: alla fonte, prima della tintoria, al taglio. Con dati e fonti verificate.',
+    eyebrow: 'Sostenibilità',
+    h1: 'Il difetto più sostenibile è quello che si ferma prima.',
+    lead: 'Ogni metro scartato a fine filiera si porta dietro l’acqua, l’energia e i prodotti chimici di tutte le lavorazioni che ha già fatto. BrainTex aiuta a fermarlo dove nasce.',
+    whyEyebrow: 'Perché conta',
+    whyTitle: 'Il tessile pesa sull’ambiente.',
+    why: [
+      {
+        text: 'Secondo l’Agenzia europea dell’ambiente, nel 2020 i consumi tessili nell’UE sono stati la terza voce per pressione su acqua e suolo e la quinta per materie prime ed emissioni di gas serra.',
+        source: 'Agenzia europea dell’ambiente',
+        url: SRC.eeaTopic,
+      },
+      {
+        text: 'Sempre secondo l’Agenzia, i tessili consumati in media da ogni cittadino europeo hanno richiesto circa 9 m³ di acqua e 391 kg di materie prime, con un’impronta di carbonio di circa 270 kg.',
+        source: 'Agenzia europea dell’ambiente',
+        url: SRC.eeaFaq,
+      },
+    ],
+    whereEyebrow: 'Dove aiuta BrainTex',
+    whereTitle: 'Meno spreco in ogni punto della filiera.',
+    where: [
+      {
+        title: 'Alla fonte',
+        text: 'In tessitura BrainTex si accorge di un guasto dopo pochi centimetri: il difetto non si ripete per decine di metri.',
+      },
+      {
+        title: 'Prima della tintoria',
+        text: 'Una pezza difettosa si ferma prima di essere tinta e finita, senza consumare acqua, energia e prodotti chimici per niente.',
+      },
+      {
+        title: 'Al taglio',
+        text: 'Con la mappa dei difetti il taglio li evita e la resa del tessuto sale. In confezione gli avanzi possono arrivare a una quota tra il 25% e il 40% del tessuto usato, secondo la dimensione della fabbrica.',
+        source: 'Fashion and Textiles, 2021',
+        url: SRC.cutStudy,
+      },
+      {
+        title: 'Meno resi e meno viaggi',
+        text: 'Quando si spedisce solo ciò che è stato controllato, diminuiscono contestazioni, resi e nuove spedizioni.',
+      },
+    ],
+    statValue: `> ${STATS.wasteReductionPercent}%`,
+    statLabel: 'di scarti e rilavorazioni in meno con BrainTex',
+    calcEyebrow: 'Fai due conti',
+    calcTitle: 'Quanto pesa una pezza fermata prima della tintoria?',
+    calcText:
+      'Una stima di ordine di grandezza: acqua ed elettricità che la tintura e il finissaggio di tessuti di lana consumano, in media, per i metri che non vengono lavorati.',
+    calcMeters: 'Metri fermati',
+    calcWeight: 'Grammatura (g/m²)',
+    calcWidth: 'Altezza (cm)',
+    calcKg: 'tessuto',
+    calcWater: 'di acqua',
+    calcEnergy: 'di elettricità',
+    calcNote:
+      'Fattori medi: circa 345 litri di acqua e 7 kWh di elettricità per kg di tessuto di lana tinto e finito, da uno studio su 150 aziende. I valori reali variano molto da un’azienda all’altra: è un ordine di grandezza, non una misura.',
+    calcSource: 'Environmental Science and Pollution Research, 2024',
+    rulesEyebrow: 'Le nuove regole',
+    rulesTitle: 'Dati utili per il passaporto digitale di prodotto.',
+    rules:
+      'Le norme europee chiedono sempre più informazioni sui prodotti tessili. I dati di qualità di ogni pezza, raccolti da BrainTex lungo la filiera, sono dati utili per il passaporto digitale di prodotto previsto dal regolamento ESPR e per le regole di calcolo dell’impronta ambientale (PEFCR).',
+    sourcesTitle: 'Fonti',
+    disclaimer: 'I dati di settore sono riportati dalle fonti indicate; la stima è illustrativa.',
+    newTab: '(si apre in una nuova scheda)',
+    ctaTitle: 'Vuoi capire quanto spreco puoi evitare?',
+    ctaText: 'Raccontaci la tua produzione: lo valutiamo insieme nell’analisi di fattibilità.',
+    ctaButton: 'Parliamone',
+    locale: 'it-IT',
+  },
+  en: {
+    title: 'Sustainability: stopping defects early is good for the environment too',
+    description:
+      'Why a defect found late weighs on the environment and where BrainTex helps avoid it: at the source, before dyeing, at cutting. With data and verified sources.',
+    eyebrow: 'Sustainability',
+    h1: 'The most sustainable defect is the one stopped early.',
+    lead: 'Every metre scrapped at the end of the chain carries the water, energy and chemicals of all the processes it has already been through. BrainTex helps stop it where it starts.',
+    whyEyebrow: 'Why it matters',
+    whyTitle: 'Textiles weigh on the environment.',
+    why: [
+      {
+        text: 'According to the European Environment Agency, in 2020 textile consumption in the EU ranked third for pressure on water and land use and fifth for raw materials and greenhouse gas emissions.',
+        source: 'European Environment Agency',
+        url: SRC.eeaTopic,
+      },
+      {
+        text: 'The Agency also estimates that the textiles consumed by the average European required about 9 m³ of water and 391 kg of raw materials, with a carbon footprint of about 270 kg.',
+        source: 'European Environment Agency',
+        url: SRC.eeaFaq,
+      },
+    ],
+    whereEyebrow: 'Where BrainTex helps',
+    whereTitle: 'Less waste at every point of the supply chain.',
+    where: [
+      {
+        title: 'At the source',
+        text: 'In weaving, BrainTex notices a fault after a few centimetres: the defect does not repeat for dozens of metres.',
+      },
+      {
+        title: 'Before dyeing',
+        text: 'A defective piece is stopped before being dyed and finished, without wasting water, energy and chemicals.',
+      },
+      {
+        title: 'At cutting',
+        text: 'With the defect map, cutting avoids the defects and fabric yield goes up. In garment making, leftovers can reach 25% to 40% of the fabric used, depending on factory size.',
+        source: 'Fashion and Textiles, 2021',
+        url: SRC.cutStudy,
+      },
+      {
+        title: 'Fewer returns and trips',
+        text: 'When only inspected goods are shipped, disputes, returns and new shipments go down.',
+      },
+    ],
+    statValue: `> ${STATS.wasteReductionPercent}%`,
+    statLabel: 'less waste and rework with BrainTex',
+    calcEyebrow: 'Do the maths',
+    calcTitle: 'How much does a piece stopped before dyeing weigh?',
+    calcText:
+      'An order-of-magnitude estimate: the water and electricity that dyeing and finishing of wool fabrics use, on average, for the metres that are not processed.',
+    calcMeters: 'Metres stopped',
+    calcWeight: 'Fabric weight (g/m²)',
+    calcWidth: 'Width (cm)',
+    calcKg: 'of fabric',
+    calcWater: 'of water',
+    calcEnergy: 'of electricity',
+    calcNote:
+      'Average factors: about 345 litres of water and 7 kWh of electricity per kg of dyed and finished wool fabric, from a study of 150 companies. Real values vary widely from one company to another: this is an order of magnitude, not a measurement.',
+    calcSource: 'Environmental Science and Pollution Research, 2024',
+    rulesEyebrow: 'New rules',
+    rulesTitle: 'Data useful for the Digital Product Passport.',
+    rules:
+      'European rules increasingly ask for information about textile products. The quality data of every piece, collected by BrainTex along the supply chain, are data useful for the Digital Product Passport under the ESPR regulation and for the product environmental footprint category rules (PEFCR).',
+    sourcesTitle: 'Sources',
+    disclaimer: 'Industry data are reported from the sources shown; the estimate is illustrative.',
+    newTab: '(opens in a new tab)',
+    ctaTitle: 'Want to know how much waste you can avoid?',
+    ctaText: 'Tell us about your production: we will assess it together in the feasibility study.',
+    ctaButton: 'Let’s talk',
+    locale: 'en-GB',
+  },
+}[lang];
+
+const sources = [
+  { label: lang === 'it' ? 'Agenzia europea dell’ambiente – Tessili' : 'European Environment Agency – Textiles', url: SRC.eeaTopic },
+  { label: lang === 'it' ? 'Agenzia europea dell’ambiente – Impatti ambientali dei tessili' : 'European Environment Agency – Environmental impacts of textiles', url: SRC.eeaFaq },
+  { label: 'Resource utilization in the sub-sectors of the textile industry: opportunities for sustainability (Environmental Science and Pollution Research, 2024)', url: SRC.wetStudy },
+  { label: lang === 'it' ? 'Studio sugli avanzi di tessuto nella produzione di abbigliamento (Fashion and Textiles, 2021)' : 'Study on fabric leftovers in garment manufacturing (Fashion and Textiles, 2021)', url: SRC.cutStudy },
+];
+const calc = JSON.stringify({ ...FACTORS, locale: t.locale });
+---
+
+<Base lang={lang} routeKey="sustainability" title={t.title} description={t.description}>
+  <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
+
+  <section class="section">
+    <div class="wrap split">
+      <div data-reveal>
+        <p class="eyebrow">{t.whyEyebrow}</p>
+        <h2>{t.whyTitle}</h2>
+      </div>
+      <div data-reveal="1">
+        {
+          t.why.map((w) => (
+            <p class="lead">
+              {w.text}{' '}
+              <a class="src" href={w.url} target="_blank" rel="noopener">
+                {w.source}
+                <span class="visually-hidden"> {t.newTab}</span>
+              </a>
+            </p>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--raised">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.whereEyebrow}</p>
+        <h2>{t.whereTitle}</h2>
+      </div>
+      <ul class="grid grid--4 plain">
+        {
+          t.where.map((w, i) => (
+            <li class="card" data-reveal={String((i % 4) + 1)}>
+              <h3>{w.title}</h3>
+              <p>{w.text}</p>
+              {w.url && (
+                <a class="src" href={w.url} target="_blank" rel="noopener">
+                  {w.source}
+                  <span class="visually-hidden"> {t.newTab}</span>
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <p class="stat" data-reveal>
+        <strong>{t.statValue}</strong>
+        <span>{t.statLabel}</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="stima">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow">{t.calcEyebrow}</p>
+        <h2>{t.calcTitle}</h2>
+        <p>{t.calcText}</p>
+      </div>
+      <form class="calc card" data-calc={calc} novalidate>
+        <div class="calc__inputs">
+          <label>
+            {t.calcMeters}
+            <input type="number" name="meters" min="1" max="1000000" step="1" value="500" inputmode="numeric" />
+          </label>
+          <label>
+            {t.calcWeight}
+            <input type="number" name="gsm" min="50" max="1500" step="10" value="300" inputmode="numeric" />
+          </label>
+          <label>
+            {t.calcWidth}
+            <input type="number" name="width" min="20" max="400" step="1" value="150" inputmode="numeric" />
+          </label>
+        </div>
+        <output class="calc__out" aria-live="polite">
+          <span><strong data-out="kg">–</strong> {t.calcKg}</span>
+          <span><strong data-out="water">–</strong> {t.calcWater}</span>
+          <span><strong data-out="energy">–</strong> {t.calcEnergy}</span>
+        </output>
+        <p class="calc__note">
+          {t.calcNote}{' '}
+          <a class="src" href={SRC.wetStudy} target="_blank" rel="noopener">
+            {t.calcSource}
+            <span class="visually-hidden"> {t.newTab}</span>
+          </a>
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap split">
+      <div data-reveal>
+        <p class="eyebrow">{t.rulesEyebrow}</p>
+        <h2>{t.rulesTitle}</h2>
+      </div>
+      <p class="lead" data-reveal="1">{t.rules}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap sources">
+      <h2>{t.sourcesTitle}</h2>
+      <ul>
+        {
+          sources.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener">
+                {s.label}
+                <span class="visually-hidden"> {t.newTab}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="muted">{t.disclaimer}</p>
+    </div>
+  </section>
+
+  <CtaBand title={t.ctaTitle} text={t.ctaText} button={t.ctaButton} link={`${href('contact', lang)}?chi=cliente`} />
+</Base>
+
+<style>
+  .src {
+    font-size: 0.85rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .card p {
+    color: var(--text-muted);
+  }
+
+  .stat {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 1rem;
+    margin: 2rem 0 0;
+  }
+
+  .stat strong {
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: var(--green-300);
+  }
+
+  .calc {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .calc__inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1rem;
+  }
+
+  .calc__inputs label {
+    display: grid;
+    gap: 0.4rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  .calc__inputs input {
+    min-height: 3rem;
+    padding: 0.6rem 0.9rem;
+    border: 1px solid rgb(169 196 214 / 0.45);
+    border-radius: var(--radius-sm);
+    background: var(--bg-deep);
+    color: var(--text);
+    font: inherit;
+  }
+
+  .calc__inputs input:focus-visible {
+    outline: 2px solid var(--accent);
+    border-color: var(--accent);
+  }
+
+  .calc__out {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1rem;
+  }
+
+  .calc__out span {
+    display: flex;
+    flex-direction: column;
+    color: var(--text-muted);
+  }
+
+  .calc__out strong {
+    font-size: 1.8rem;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .calc__note {
+    margin: 0;
+    font-size: 0.85rem;
+  }
+
+  .sources h2 {
+    font-size: 1.3rem;
+  }
+
+  .sources ul {
+    padding-left: 1.2rem;
+  }
+
+  .sources li + li {
+    margin-top: 0.4rem;
+  }
+</style>
+
+<script>
+  // Stima di ordine di grandezza: metri × altezza × grammatura = kg; kg × fattori medi = acqua ed elettricità.
+  const form = document.querySelector<HTMLFormElement>('[data-calc]');
+  if (form) {
+    const f = JSON.parse(form.dataset.calc ?? '{}') as { waterLPerKg: number; kWhPerKg: number; locale: string };
+    const out = (name: string) => form.querySelector<HTMLElement>(`[data-out="${name}"]`)!;
+    const num = (name: string) => Number((form.elements.namedItem(name) as HTMLInputElement).value);
+    // Due cifre significative: è un ordine di grandezza, non una misura.
+    const round = (v: number) => {
+      if (!Number.isFinite(v) || v <= 0) return 0;
+      const p = 10 ** Math.max(0, Math.floor(Math.log10(v)) - 1);
+      return Math.round(v / p) * p;
+    };
+    const fmt = (v: number, unit: string) => `~${round(v).toLocaleString(f.locale)} ${unit}`;
+
+    const update = () => {
+      const kg = (num('meters') * (num('width') / 100) * num('gsm')) / 1000;
+      const ok = kg > 0;
+      out('kg').textContent = ok ? fmt(kg, 'kg') : '–';
+      out('water').textContent = ok ? fmt(kg * f.waterLPerKg, 'L') : '–';
+      out('energy').textContent = ok ? fmt(kg * f.kWhPerKg, 'kWh') : '–';
+    };
+    form.addEventListener('input', update);
+    form.addEventListener('submit', (e) => e.preventDefault());
+    update();
+  }
+</script>

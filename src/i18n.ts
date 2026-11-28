@@ -16,6 +16,7 @@ export const ROUTES = {
   contact: { it: '/contatti', en: '/en/contact' },
   faq: { it: '/domande-frequenti', en: '/en/faq' },
   glossary: { it: '/glossario-tessile', en: '/en/textile-glossary' },
+  sustainability: { it: '/sostenibilita', en: '/en/sustainability' },
   privacy: { it: '/privacypolicy-braintex', en: '/en/privacy-policy' },
   cookies: { it: '/cookie-policy', en: '/en/cookie-policy' },
 } as const satisfies Record<string, Record<Lang, string>>;
@@ -57,6 +58,7 @@ export const UI = {
       contact: 'Contatti',
       faq: 'Domande frequenti',
       glossary: 'Glossario tessile',
+      sustainability: 'Sostenibilità',
     },
     logoPlaceholder: 'Segnaposto logo: in attesa del file vettoriale ufficiale',
     footer: {
@@ -92,6 +94,7 @@ export const UI = {
       contact: 'Contact',
       faq: 'FAQ',
       glossary: 'Textile glossary',
+      sustainability: 'Sustainability',
     },
     logoPlaceholder: 'Logo placeholder: awaiting the official vector file',
     footer: {

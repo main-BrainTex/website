@@ -112,6 +112,7 @@ const t = {
       },
     ],
     claim: 'Il difetto diventa valore.',
+    claimLink: 'Scopri l’impatto ambientale',
     claimText:
       'BrainTex è una soluzione concreta per guidare il cambiamento verso un’industria più sostenibile: meno scarti, meno rilavorazioni, più valore da ogni metro prodotto.',
     doorsEyebrow: 'Non solo aziende',
@@ -238,6 +239,7 @@ const t = {
       },
     ],
     claim: 'Defects become value.',
+    claimLink: 'See the environmental impact',
     claimText:
       'BrainTex is a concrete way to lead the shift towards a more sustainable industry: less waste, less rework, more value from every metre produced.',
     doorsEyebrow: 'Not only companies',
@@ -427,6 +429,7 @@ const jsonLd = {
     <div class="wrap" data-reveal>
       <p class="claim__title">{t.claim}</p>
       <p class="lead">{t.claimText}</p>
+      <a class="btn btn--ghost" href={href('sustainability', lang)}>{t.claimLink}</a>
     </div>
   </section>
 
