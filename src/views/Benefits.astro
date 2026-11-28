@@ -10,53 +10,54 @@ interface Props {
 }
 const { lang } = Astro.props;
 
-const total = BENEFITS.length;
 const areaKeys = Object.keys(AREAS) as AreaKey[];
 const roleKeys = Object.keys(ROLES) as RoleKey[];
 
 const t = {
   it: {
     title: 'Benefici: cosa cambia con BrainTex',
-    description: `${total} benefici di BrainTex in sei aree: produzione, qualità, macchine e processo, dati, persone e sostenibilità. Filtra per area o per il tuo ruolo.`,
+    description: `I benefici di BrainTex in sei aree: produzione, qualità, macchine e processo, dati, persone e sostenibilità. Filtra per area o per il tuo ruolo.`,
     eyebrow: 'Benefici',
     h1: 'Un difetto visto in tempo cambia tutto quello che viene dopo.',
-    lead: `${total} benefici in sei aree. Alcuni li vedi da subito, altri crescono nel tempo, man mano che i dati si accumulano. Scegli il tuo ruolo per vedere quelli che contano per te.`,
+    lead: `Benefici in sei aree. Alcuni li vedi da subito, altri crescono nel tempo, man mano che i dati si accumulano. Scegli il tuo ruolo per vedere quelli che contano per te.`,
     filters: 'Filtra i benefici',
     area: 'Area',
     role: 'Il tuo ruolo',
     all: 'Tutti',
     forWhom: 'Per',
-    count: (n: number) => (n === 1 ? '1 beneficio' : `${n} benefici`),
+    filtered: 'Elenco aggiornato.',
+    none: 'Nessun beneficio con questi filtri.',
     ctaTitle: 'Quali contano di più per te?',
     ctaText: 'Raccontaci la tua produzione: partiamo dai benefici che ti servono davvero.',
     ctaButton: 'Richiedi una demo',
   },
   en: {
     title: 'Benefits: what changes with BrainTex',
-    description: `${total} BrainTex benefits across six areas: production, quality, machines and process, data, people and sustainability. Filter by area or by your role.`,
+    description: `BrainTex benefits across six areas: production, quality, machines and process, data, people and sustainability. Filter by area or by your role.`,
     eyebrow: 'Benefits',
     h1: 'A defect spotted in time changes everything that comes after.',
-    lead: `${total} benefits across six areas. Some you see straight away, others grow over time as data builds up. Choose your role to see the ones that matter to you.`,
+    lead: `Benefits across six areas. Some you see straight away, others grow over time as data builds up. Choose your role to see the ones that matter to you.`,
     filters: 'Filter the benefits',
     area: 'Area',
     role: 'Your role',
     all: 'All',
     forWhom: 'For',
-    count: (n: number) => (n === 1 ? '1 benefit' : `${n} benefits`),
+    filtered: 'List updated.',
+    none: 'No benefits match these filters.',
     ctaTitle: 'Which ones matter most to you?',
     ctaText: 'Tell us about your production: we start from the benefits you really need.',
     ctaButton: 'Request a demo',
   },
 }[lang];
 
-// Etichette del contatore passate allo script senza codice inline (CSP).
-const countLabels = JSON.stringify({ one: t.count(1), many: t.count(2).replace('2', '{n}') });
+// Messaggi di stato passati allo script senza codice inline (CSP). Il numero dei benefici non viene mostrato.
+const statusLabels = JSON.stringify({ filtered: t.filtered, none: t.none });
 ---
 
 <Base lang={lang} routeKey="benefits" title={t.title} description={t.description}>
   <PageHero eyebrow={t.eyebrow} title={t.h1} lead={t.lead} />
 
-  <section class="section benefits" data-benefits data-count-labels={countLabels}>
+  <section class="section benefits" data-benefits data-status-labels={statusLabels}>
     <div class="wrap">
       <div class="filters" role="group" aria-label={t.filters}>
         <div class="filters__group">
@@ -85,7 +86,7 @@ const countLabels = JSON.stringify({ one: t.count(1), many: t.count(2).replace('
             }
           </div>
         </div>
-        <p class="filters__count" role="status" aria-live="polite" data-count>{t.count(total)}</p>
+        <p class="filters__status" role="status" aria-live="polite" data-status></p>
       </div>
 
       {
@@ -168,10 +169,13 @@ const countLabels = JSON.stringify({ one: t.count(1), many: t.count(2).replace('
     font-weight: 700;
   }
 
-  .filters__count {
+  .filters__status {
     margin: 0;
-    font-weight: 700;
-    color: var(--green-300);
+    color: var(--text-muted);
+  }
+
+  .filters__status:empty {
+    display: none;
   }
 
   .area {
@@ -210,8 +214,8 @@ const countLabels = JSON.stringify({ one: t.count(1), many: t.count(2).replace('
 <script>
   const root = document.querySelector<HTMLElement>('[data-benefits]');
   if (root) {
-    const labels = JSON.parse(root.dataset.countLabels ?? '{}') as { one: string; many: string };
-    const countEl = root.querySelector<HTMLElement>('[data-count]')!;
+    const labels = JSON.parse(root.dataset.statusLabels ?? '{}') as { filtered: string; none: string };
+    const statusEl = root.querySelector<HTMLElement>('[data-status]')!;
     const state = { area: '', role: '' };
 
     const apply = () => {
@@ -228,7 +232,7 @@ const countLabels = JSON.stringify({ one: t.count(1), many: t.count(2).replace('
         group.hidden = groupShown === 0;
         shown += groupShown;
       });
-      countEl.textContent = shown === 1 ? labels.one : labels.many.replace('{n}', String(shown));
+      statusEl.textContent = shown === 0 ? labels.none : state.area || state.role ? labels.filtered : '';
     };
 
     root.addEventListener('click', (e) => {
