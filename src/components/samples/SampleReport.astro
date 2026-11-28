@@ -148,7 +148,7 @@ const CH = { x: 40, base: 150, unit: 24, bw: 44, step: 82 };
 
   <section>
     <h4>{t.map}</h4>
-    <div class="scroll">
+    <div class="scroll" tabindex="0" role="region" aria-label={t.map}>
       <svg class="chart chart--map" viewBox="0 0 640 122" role="img" aria-label={t.mapAlt}>
         <rect class="map-fabric" x={MAP.x} y={MAP.y} width={MAP.w} height={MAP.h} rx="3" />
         <rect class="map-zone" x={mx(30.6)} y={MAP.y} width={mx(33.4) - mx(30.6)} height={MAP.h} />
@@ -182,7 +182,7 @@ const CH = { x: 40, base: 150, unit: 24, bw: 44, step: 82 };
 
   <section>
     <h4>{t.list}</h4>
-    <div class="scroll">
+    <div class="scroll" tabindex="0" role="region" aria-label={t.list}>
       <table>
         <thead>
           <tr>{t.cols.map((c) => <th scope="col">{c}</th>)}</tr>
@@ -344,6 +344,11 @@ const CH = { x: 40, base: 150, unit: 24, bw: 44, step: 82 };
 
   .scroll {
     overflow-x: auto;
+  }
+
+  .scroll:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
   }
 
   .chart {

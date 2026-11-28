@@ -367,8 +367,9 @@ const t = {
     }
   }
 
+  /* Passi e finali attenuati restano leggibili (contrasto AA anche quando non sono in primo piano) */
   .story__step {
-    opacity: 0.45;
+    opacity: 0.65;
     transition: opacity 0.4s;
   }
 
@@ -415,9 +416,9 @@ const t = {
   }
 
   /* L'interruttore mette in primo piano un finale e attenua l'altro */
-  [data-mode='with'] .chain--without,
-  [data-mode='without'] .chain--with {
-    opacity: 0.45;
+  [data-mode='with'] .story__step.is-active .chain--without,
+  [data-mode='without'] .story__step.is-active .chain--with {
+    opacity: 0.65;
   }
 
   .chain__label {
