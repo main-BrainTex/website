@@ -299,7 +299,7 @@ const data = JSON.stringify({
 
   // Parole troppo comuni per aiutare la ricerca.
   const STOP = new Set(
-    'che chi cosa come con per dei del della delle dal dalla nel nella sul sulla una uno gli le lo la il un di da in su si non anche sono avete fate posso può vostro vostra vostri the and for are you your with does can how what which who from this that have'.split(
+    'che chi cosa come con per dei del della delle dal dalla nel nella sul sulla una uno gli le lo la il un di da in su si non anche sono avete fate posso può vostro vostra vostri quanto quanta quanti quale quali dove quando perche the and for are you your with does can how what which who where when why much many from this that have'.split(
       ' ',
     ),
   );
@@ -312,8 +312,9 @@ const data = JSON.stringify({
       .filter((w) => w.length > 2 && !STOP.has(w));
   // Confronto tollerante: basta la radice comune (es. "costa" trova "costo").
   const near = (a: string, b: string) => {
+    if (a === b) return true;
     const n = Math.min(a.length, b.length, 5);
-    return n >= 3 && a.slice(0, n) === b.slice(0, n);
+    return n >= 4 && a.slice(0, n) === b.slice(0, n);
   };
 
   const root = document.querySelector<HTMLElement>('[data-assistant]');
@@ -353,7 +354,7 @@ const data = JSON.stringify({
         })
         .filter((r) => r.score >= 3)
         .sort((x, y) => y.score - x.score)
-        .filter((r, _, all) => r.score * 2 >= all[0].score) // solo le risposte vicine alla migliore
+        .filter((r, _, all) => r.score * 2 > all[0].score) // solo le risposte vicine alla migliore
         .slice(0, 3)
         .map((r) => r.f);
     };
