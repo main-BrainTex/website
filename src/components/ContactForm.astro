@@ -23,6 +23,7 @@ const t = {
       partner: 'Costruttore di macchine o integratore',
       it: 'IT provider o software house (ERP, MES…)',
       fornitore: 'Fornitore',
+      progetto: 'Proposta di progetto (bandi, co-sviluppo, ricerca)',
       stampa: 'Stampa',
       altro: 'Altro',
     },
@@ -48,7 +49,12 @@ const t = {
     agentSectors: 'Settori e tipo di aziende che visiti',
     agentMandates: 'Mandati che hai già',
     agentMandatesHint: 'Ci aiuta a evitare sovrapposizioni.',
+    projectType: 'Che tipo di progetto?',
+    projectTypes: ['Bando o finanziamento', 'Co-sviluppo', 'Ricerca', 'Altro'],
+    projectDeadline: 'Scadenza',
+    projectDeadlineHint: 'Per i bandi, la data entro cui presentare la proposta.',
     topics: {
+      fattibilita: 'Vorrei proporvi un’esigenza particolare da valutare: ',
       presentazione: 'Vorrei ricevere la presentazione di BrainTex per investitori.',
       call: 'Vorrei fissare una call conoscitiva con BrainTex.',
     },
@@ -57,7 +63,7 @@ const t = {
     privacyLink: 'informativa privacy',
     privacyAfter: '.',
     notice:
-      'Titolare del trattamento è BrainTex srl. Usiamo i dati che ci invii solo per rispondere alla tua richiesta e, se ti candidi o ci proponi una collaborazione o una fornitura, per valutarla; li conserviamo al massimo 24 mesi. Trovi i dettagli e i tuoi diritti nella ',
+      'Titolare del trattamento è BrainTex srl. Usiamo i dati che ci invii solo per rispondere alla tua richiesta e, se ti candidi o ci proponi una collaborazione, una fornitura o un progetto, per valutarli; li conserviamo al massimo 24 mesi. Trovi i dettagli e i tuoi diritti nella ',
     noticeLink: 'Privacy Policy',
     send: 'Invia il messaggio',
     sending: 'Invio in corso…',
@@ -68,6 +74,7 @@ const t = {
       company: 'Indica l’azienda.',
       supplierCategory: 'Scegli una categoria.',
       agentAreas: 'Indica almeno una zona.',
+      projectType: 'Scegli il tipo di progetto.',
       link: 'Inserisci un indirizzo web completo (https://…).',
       message: 'Scrivi un messaggio di almeno 10 caratteri.',
       privacy: 'Conferma di aver letto l’informativa privacy.',
@@ -94,6 +101,7 @@ const t = {
       partner: 'Machine builder or integrator',
       it: 'IT provider or software house (ERP, MES…)',
       fornitore: 'Supplier',
+      progetto: 'Project proposal (funding calls, co-development, research)',
       stampa: 'Press',
       altro: 'Other',
     },
@@ -119,7 +127,12 @@ const t = {
     agentSectors: 'Sectors and type of companies you visit',
     agentMandates: 'Mandates you already hold',
     agentMandatesHint: 'It helps us avoid overlaps.',
+    projectType: 'What kind of project?',
+    projectTypes: ['Funding call', 'Co-development', 'Research', 'Other'],
+    projectDeadline: 'Deadline',
+    projectDeadlineHint: 'For funding calls, the date by which the proposal must be submitted.',
     topics: {
+      fattibilita: 'I would like you to assess a specific need: ',
       presentazione: 'I would like to receive the BrainTex investor presentation.',
       call: 'I would like to book an introductory call with BrainTex.',
     },
@@ -128,7 +141,7 @@ const t = {
     privacyLink: 'privacy notice',
     privacyAfter: '.',
     notice:
-      'The data controller is BrainTex srl. We use the data you send only to reply to your request and, if you apply or propose a partnership or supply, to assess it; we keep it for no longer than 24 months. Details and your rights are in the ',
+      'The data controller is BrainTex srl. We use the data you send only to reply to your request and, if you apply or propose a partnership, supply or project, to assess it; we keep it for no longer than 24 months. Details and your rights are in the ',
     noticeLink: 'Privacy Policy',
     send: 'Send message',
     sending: 'Sending…',
@@ -139,6 +152,7 @@ const t = {
       company: 'Please enter the company.',
       supplierCategory: 'Please choose a category.',
       agentAreas: 'Please enter at least one area.',
+      projectType: 'Please choose the type of project.',
       link: 'Please enter a full web address (https://…).',
       message: 'Please write a message of at least 10 characters.',
       privacy: 'Please confirm you have read the privacy notice.',
@@ -212,6 +226,21 @@ const variants = JSON.stringify({
       {Object.values(t.supplierCategories).map((label) => <option>{label}</option>)}
     </select>
     <p class="field__error" id="cf-supplier-category-err" data-error={t.errors.supplierCategory}></p>
+  </div>
+
+  {/* Campi in più per le proposte di progetto */}
+  <div class="field" data-for="progetto" hidden>
+    <label for="cf-project-type">{t.projectType} <span class="req" aria-hidden="true">*</span></label>
+    <select id="cf-project-type" name="projectType" required disabled aria-describedby="cf-project-type-err">
+      <option value="">{t.choose}</option>
+      {t.projectTypes.map((label) => <option>{label}</option>)}
+    </select>
+    <p class="field__error" id="cf-project-type-err" data-error={t.errors.projectType}></p>
+  </div>
+  <div class="field" data-for="progetto" hidden>
+    <label for="cf-project-deadline">{t.projectDeadline} <span class="opt">({t.optional})</span></label>
+    <input id="cf-project-deadline" name="projectDeadline" type="date" disabled aria-describedby="cf-project-deadline-hint" />
+    <p class="field__hint" id="cf-project-deadline-hint">{t.projectDeadlineHint}</p>
   </div>
 
   {/* Campi in più per agenti e rappresentanti */}
@@ -502,6 +531,8 @@ const variants = JSON.stringify({
           'Zone seguite': String(data.get('agentAreas') ?? ''),
           'Settori e aziende': String(data.get('agentSectors') ?? ''),
           'Mandati attuali': String(data.get('agentMandates') ?? ''),
+          'Tipo di progetto': String(data.get('projectType') ?? ''),
+          'Scadenza': String(data.get('projectDeadline') ?? ''),
         },
         lang: form.dataset.lang ?? 'it',
         honeypot: data.get('botcheck') !== null,
